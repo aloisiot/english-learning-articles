@@ -1,0 +1,8 @@
+node_modules/
+.next/
+out/
+
+# Generated at build time by Pagefind, mirrored here only for `next dev`.
+public/pagefind/
+.DS_Store
+*.log

@@ -1,0 +1,23 @@
+{
+  "name": "english-learning-articles",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "predev": "node scripts/ensure-index.mjs",
+    "dev": "next dev",
+    "build": "next build && node scripts/postbuild.mjs",
+    "search:index": "npm run build",
+    "start": "npx serve out"
+  },
+  "dependencies": {
+    "gray-matter": "^4.0.3",
+    "next": "^16.3.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "remark": "^15.0.1",
+    "remark-html": "^16.0.1"
+  },
+  "devDependencies": {
+    "pagefind": "^1.5.2"
+  }
+}

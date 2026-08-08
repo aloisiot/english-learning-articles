@@ -1,0 +1,898 @@
+/* ------------------------------------------------------------------
+   Quiet Editorial — the design described in STYLE-SPEC.md.
+
+   Serif for prose, system sans for everything that is not prose.
+   Hierarchy comes from size and space, never from colour or ornament:
+   there is no accent hue anywhere in this file.
+   ------------------------------------------------------------------ */
+
+:root {
+  /* --- typefaces ------------------------------------------------- */
+  /* --font-serif is injected by next/font (see app/layout.js). */
+  --font-body: var(--font-serif, Charter), Charter, Georgia,
+    "Times New Roman", serif;
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+
+  /* --- type scale ------------------------------------------------ */
+  --text-2xs: 0.75rem; /* uppercase micro-labels */
+  --text-xs: 0.8125rem; /* metadata row, footer */
+  --text-sm: 0.875rem; /* interface text, buttons, nav */
+  --text-base: 1rem; /* secondary prose, definitions */
+  --text-body: 1.125rem; /* article body */
+
+  /* Headings, all roughly 40% above the sizes the spec's scale started
+     from. --text-section is its own token rather than --text-sm so that
+     growing the in-article headings leaves nav, buttons and the footer
+     where they were. */
+  --text-section: 1.1875rem; /* 19px — in-article section headings */
+  --text-lg: 1.9375rem; /* 31px — index item titles */
+  --text-xl: 2.4375rem; /* 39px — page title, mobile */
+  --text-2xl: 2.8125rem; /* 45px — page title, desktop */
+  /* Fluid between the two, so the title has no hard jump at the breakpoint. */
+  --text-title: clamp(2.4375rem, 2.1rem + 1.68vw, 2.8125rem);
+
+  /* --- line height ----------------------------------------------- */
+  --leading-body: 1.7; /* above the usual range: second-language reading needs the air */
+  --leading-heading: 1.25;
+  --leading-ui: 1.4;
+  --leading-list: 1.6;
+
+  /* --- spacing, 4px base ----------------------------------------- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-7: 1.75rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-18: 4.5rem;
+
+  /* Space above a section heading is roughly three times the space
+     below it. That ratio is what makes sections findable at a glance
+     while scrolling during a class — the eye reads the gap, not a rule. */
+  --section-gap: var(--space-18);
+  --section-gap-after: var(--space-6);
+
+  /* --- colour ---------------------------------------------------- */
+  /* Both palettes are spelled out once here. The theme switch further
+     down only remaps which of the two --text and friends point at. */
+  --light-text: #1a1a1a; /* ~16:1 on --light-bg — AAA */
+  --light-muted: #6b6b6b; /* ~5.2:1 on --light-bg — AA */
+  --light-rule: #e5e5e5;
+  --light-bg: #fdfdfc; /* warm off-white: less glare over 30 minutes */
+  --light-surface: #ffffff; /* inputs read as distinct without a heavy border */
+  --light-mark: #f4ecc8;
+
+  --dark-text: #e6e3dd;
+  --dark-muted: #9b968d;
+  --dark-rule: #33312e;
+  --dark-bg: #1b1a18;
+  --dark-surface: #232120;
+  --dark-mark: #443c22;
+
+  color-scheme: light;
+  --text: var(--light-text);
+  --muted: var(--light-muted);
+  --rule: var(--light-rule);
+  --bg: var(--light-bg);
+  --surface: var(--light-surface);
+  --mark: var(--light-mark);
+  /* Light-on-dark makes thin serif strokes bloom, so dark mode steps the
+     prose weight down. Light mode has nothing to correct. */
+  --prose-wght: normal;
+
+  /* --- measure --------------------------------------------------- */
+  --measure: 34rem; /* ≈ 65 characters at 18px Source Serif 4 */
+  --gutter: var(--space-6);
+}
+
+/* --- theme -------------------------------------------------------- *
+
+   The dark palette applies in two situations: the reader's system asks
+   for dark and they have not overridden it, or they have chosen dark
+   explicitly. The two cannot be written as one rule, because one of them
+   lives inside a media query — hence the repeated block.
+
+   "Auto" is the absence of data-theme, so following the system remains
+   the default and still works with JavaScript disabled. */
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --text: var(--dark-text);
+    --muted: var(--dark-muted);
+    --rule: var(--dark-rule);
+    --bg: var(--dark-bg);
+    --surface: var(--dark-surface);
+    --mark: var(--dark-mark);
+    --prose-wght: "wght" 380;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --text: var(--dark-text);
+  --muted: var(--dark-muted);
+  --rule: var(--dark-rule);
+  --bg: var(--dark-bg);
+  --surface: var(--dark-surface);
+  --mark: var(--dark-mark);
+  --prose-wght: "wght" 380;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  font-optical-sizing: auto;
+  font-kerning: normal;
+  /* Deliberately no -webkit-font-smoothing: antialiased — it thins serif
+     strokes on macOS and makes the body text look weaker than intended. */
+}
+
+/* The prose weight is a palette value rather than a dark-mode rule, so it
+   follows whichever theme is active. Headings and emphasis opt back out:
+   font-variation-settings overrides font-weight, so they have to be reset
+   explicitly rather than simply re-declared. */
+.article-body,
+.intro,
+.article-list p,
+.search-excerpt {
+  font-variation-settings: var(--prose-wght);
+}
+
+.article-body h2,
+.article-body strong,
+.article-body b {
+  font-variation-settings: normal;
+}
+
+/* The gutter lives in the width calculation rather than in body padding,
+   so the column never touches the viewport edge on a narrow screen. */
+.site-header,
+main,
+.site-footer {
+  width: min(100% - 2 * var(--gutter), var(--measure));
+  margin-inline: auto;
+}
+
+/* --- links and focus --------------------------------------------- */
+
+a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
+  text-decoration-color: var(--muted);
+}
+
+a:hover {
+  text-decoration-color: var(--text);
+}
+
+:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+/* ---------- layout ---------- */
+
+.site-header {
+  padding: var(--space-8) 0 var(--space-4);
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.site-title {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  line-height: var(--leading-ui);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.site-header nav {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4);
+}
+
+.site-header nav a {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  line-height: var(--leading-ui);
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.site-header nav a:hover {
+  color: var(--text);
+  text-decoration: underline;
+}
+
+.nav-search {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Sized in em so it tracks the label rather than being pinned to a pixel
+   size, and drawn in currentColor so it dims and brightens with it. */
+.icon {
+  width: 0.95em;
+  height: 0.95em;
+  flex: none;
+  /* inline-flex aligns the box, not the baseline; this drops the glyph
+     back onto the line of the text beside it. */
+  transform: translateY(0.05em);
+}
+
+/* --- theme toggle --- */
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  line-height: var(--leading-ui);
+  color: var(--muted);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  /* A hit area larger than the word, pulled back out of the layout so the
+     header keeps its height and the baselines stay aligned. */
+  padding: var(--space-2);
+  margin-block: calc(-1 * var(--space-2));
+  margin-right: calc(-1 * var(--space-2));
+}
+
+.theme-toggle:hover {
+  color: var(--text);
+  text-decoration: underline;
+}
+
+/* A distinct glyph and a word, never colour alone. Which of the three
+   shows is decided by the same attribute that drives the palette, so it is
+   already correct on first paint — no JavaScript has to run to fix it up
+   afterwards, and the two can never disagree. */
+.theme-state {
+  display: none;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+:root:not([data-theme="light"]):not([data-theme="dark"]) .theme-state-auto,
+:root[data-theme="light"] .theme-state-light,
+:root[data-theme="dark"] .theme-state-dark {
+  display: inline-flex;
+}
+
+/* Nothing to toggle if scripts cannot run. */
+@media (scripting: none) {
+  .theme-toggle {
+    display: none;
+  }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+main {
+  padding: var(--space-12) 0 var(--space-16);
+}
+
+.site-footer {
+  padding: var(--space-6) 0 var(--space-12);
+  border-top: 1px solid var(--rule);
+  color: var(--muted);
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  line-height: var(--leading-ui);
+}
+
+/* ---------- index ---------- */
+
+.intro {
+  color: var(--muted);
+  margin: 0 0 var(--space-16);
+  text-wrap: pretty;
+}
+
+/* Small, grey, sans label above a homepage block ("Series", "All
+   Articles") — the same signpost treatment used for in-article section
+   headings, so both places read as one visual language. */
+.section-label {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  line-height: var(--leading-ui);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 var(--space-6);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--rule);
+}
+
+/* ---------- series (homepage) ---------- */
+
+.series-section {
+  margin-bottom: var(--space-16);
+}
+
+.series-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.series-list li {
+  padding: var(--space-6) 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.series-list li:first-child {
+  padding-top: 0;
+}
+
+.series-list h3 {
+  font-size: var(--text-lg);
+  line-height: var(--leading-heading);
+  font-weight: 400;
+  margin: 0 0 var(--space-2);
+  text-wrap: balance;
+}
+
+.series-list h3 a {
+  text-decoration: none;
+}
+
+.series-list h3 a:hover {
+  text-decoration: underline;
+}
+
+.series-list .meta {
+  margin: 0;
+}
+
+.article-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.article-list li {
+  padding: var(--space-12) 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.article-list li:first-child {
+  padding-top: 0;
+}
+
+.article-list h2 {
+  font-size: var(--text-lg);
+  line-height: var(--leading-heading);
+  font-weight: 400;
+  margin: 0 0 var(--space-3);
+  text-wrap: balance;
+}
+
+.article-list h2 a {
+  text-decoration: none;
+}
+
+.article-list h2 a:hover {
+  text-decoration: underline;
+}
+
+.article-list p {
+  margin: 0 0 var(--space-4);
+  color: var(--muted);
+  text-wrap: pretty;
+}
+
+/* ---------- meta ---------- */
+
+.meta {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  line-height: var(--leading-ui);
+  color: var(--muted);
+  letter-spacing: 0.02em;
+  font-variant-numeric: lining-nums;
+}
+
+.meta span + span::before {
+  content: "·";
+  margin: 0 var(--space-2);
+}
+
+/* A date set inside serif prose rather than in the metadata row: old-style
+   figures sit on the baseline with the lowercase letters around them. */
+.oldstyle-nums {
+  font-variant-numeric: oldstyle-nums;
+}
+
+/* ---------- article page ---------- */
+
+.article-header {
+  margin-bottom: var(--space-8);
+}
+
+.article-header h1 {
+  font-size: var(--text-title);
+  line-height: var(--leading-heading);
+  font-weight: 400;
+  margin: 0 0 var(--space-3);
+  text-wrap: balance;
+}
+
+.article-body {
+  hyphens: auto; /* a narrow measure needs it */
+  text-wrap: pretty; /* no single-word last lines */
+}
+
+/* Section headings: small, grey and sans — signposts, not competitors
+   to the prose. The space above them does the real dividing work. */
+.article-body h2 {
+  font-family: var(--font-sans);
+  font-size: var(--text-section);
+  font-weight: 600;
+  line-height: var(--leading-ui);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-block: var(--section-gap) var(--section-gap-after);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--rule);
+  hyphens: none;
+  text-wrap: balance;
+}
+
+.article-body > section:first-child > h2 {
+  margin-top: var(--space-8);
+}
+
+.article-body p {
+  margin: 0 0 var(--space-7);
+}
+
+.article-body ul,
+.article-body ol {
+  margin: 0 0 var(--space-7);
+  padding-left: var(--space-5);
+}
+
+.article-body li {
+  margin-bottom: var(--space-4);
+}
+
+.article-body .section-body > :last-child {
+  margin-bottom: 0;
+}
+
+/* Grammar Spotlight — the example pairs are the point. The target
+   structure sits in medium weight and the arrow carries the
+   transformation; no bold, no colour. */
+.section-grammar-spotlight strong {
+  font-weight: 500; /* medium — enough to mark the structure, short of bold */
+}
+
+.section-grammar-spotlight li {
+  margin-bottom: var(--space-3);
+}
+
+/* Key Vocabulary — scanned rather than read, so it is set a size down
+   and a little tighter: term in serif semibold, definition roman,
+   example sentence italic and muted. */
+.section-key-vocabulary li {
+  font-size: var(--text-base);
+  line-height: var(--leading-list);
+  margin-bottom: var(--space-6);
+}
+
+.section-key-vocabulary strong {
+  font-weight: 600;
+}
+
+.section-key-vocabulary em {
+  color: var(--muted);
+}
+
+/* Discussion Questions — each one is used on its own during class, so
+   they need to read as separate units rather than as a block. */
+.section-discussion-questions li {
+  margin-bottom: var(--space-6);
+  padding-left: var(--space-1);
+}
+
+/* Quick Recap — a hairline and padding say "summary" without resorting
+   to a tinted box. */
+.section-quick-recap .section-body {
+  border-left: 1px solid var(--rule);
+  padding-left: var(--space-4);
+  font-size: var(--text-base);
+  line-height: var(--leading-list);
+  color: var(--muted);
+}
+
+.back {
+  display: inline-block;
+  margin-top: var(--space-16);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  line-height: var(--leading-ui);
+}
+
+/* ---------- series sidebar (article page) ---------- */
+/*
+   Only rendered when an article carries a `series` field — a standalone
+   article gets no sidebar, not even an empty one.
+
+   Mobile-first: stacked, nav above article. From 900px there is room for
+   the sidebar beside the article's own measure without narrowing it, so
+   `main:has(.series-layout)` widens just that page's centred column —
+   every other page keeps the plain single-column width.
+*/
+.series-layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.series-nav {
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: var(--space-6);
+}
+
+.series-nav-label {
+  font-family: var(--font-sans);
+  font-size: var(--text-2xs);
+  line-height: var(--leading-ui);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 var(--space-1);
+}
+
+.series-nav-title {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  line-height: var(--leading-ui);
+  color: var(--text);
+  margin: 0;
+  text-wrap: balance;
+}
+
+.series-nav ol {
+  list-style: none;
+  margin: var(--space-4) 0 0;
+  padding: 0;
+}
+
+.series-nav li {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  line-height: var(--leading-ui);
+  margin-bottom: var(--space-3);
+}
+
+.series-nav a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.series-nav a:hover {
+  color: var(--text);
+  text-decoration: underline;
+}
+
+/* The current article: bold rather than coloured, so it never relies on
+   colour alone to signal state. */
+.series-nav-current {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/*
+   The article must stay centred on the page exactly as it is on every
+   other page — the sidebar cannot pull it off-centre. The fix is to give
+   it a mirror-image spacer of the same width on the right (an empty
+   ::after), so the row reads [sidebar][article][spacer]: symmetric
+   around the article, which keeps the article's centre equal to the
+   page's centre.
+
+   1100px is the threshold where that full symmetric row (sidebar + gap +
+   measure + gap + spacer = 64rem, ~1024px) still fits inside the
+   viewport with room for the outer gutter either side. Below it, there
+   is nowhere to put a 13rem sidebar without either narrowing the
+   article's measure or crowding the edge, so it stays stacked instead.
+*/
+@media (min-width: 1100px) {
+  main:has(.series-layout) {
+    width: min(
+      100% - 2 * var(--gutter),
+      calc(var(--measure) + 2 * (13rem + var(--space-8)))
+    );
+  }
+
+  .series-layout {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .series-layout > article {
+    flex: none;
+    width: var(--measure);
+  }
+
+  .series-nav {
+    flex: none;
+    width: 13rem;
+    border-bottom: none;
+    padding-bottom: 0;
+    position: sticky;
+    top: var(--space-8);
+  }
+
+  /* The invisible mirror of the sidebar's column, balancing the row. */
+  .series-layout::after {
+    content: "";
+    flex: none;
+    width: 13rem;
+  }
+}
+
+/* ---------- search ---------- */
+
+.page-title {
+  font-size: var(--text-title);
+  line-height: var(--leading-heading);
+  font-weight: 400;
+  margin: 0 0 var(--space-8);
+  text-wrap: balance;
+}
+
+.search-input {
+  width: 100%;
+  min-height: 2.75rem; /* 44px touch target */
+  padding: var(--space-3);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-ui);
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+}
+
+.search-input:focus {
+  border-color: var(--muted);
+}
+
+.search-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-top: var(--space-5);
+}
+
+.search-control {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-family: var(--font-sans);
+  font-size: var(--text-2xs);
+  line-height: var(--leading-ui);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.search-control select {
+  min-height: 2.25rem;
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--text);
+  background: var(--surface);
+  padding: var(--space-2) var(--space-2);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+}
+
+.search-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin: var(--space-8) 0 var(--space-6);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  line-height: var(--leading-ui);
+  color: var(--muted);
+}
+
+.search-clear {
+  font: inherit;
+  color: var(--muted);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.search-clear:hover {
+  color: var(--text);
+}
+
+.search-excerpt {
+  margin: 0 0 var(--space-3);
+  color: var(--muted);
+}
+
+/* Underlined as well as tinted, so the match is never signalled by
+   colour alone. */
+.search-excerpt mark {
+  background: var(--mark);
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.search-note {
+  color: var(--muted);
+}
+
+.search-note code {
+  font-size: 0.875em;
+  background: var(--rule);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+}
+
+/* ---------- responsive ---------- */
+
+/* One breakpoint. A single-column reading layout needs no more.
+   The body size drops slightly because the measure is constrained by the
+   viewport here — a smaller size keeps the characters per line inside
+   the target band rather than below it. */
+@media (max-width: 480px) {
+  :root {
+    --text-body: 1.0625rem;
+    --gutter: var(--space-5);
+    --section-gap: var(--space-12);
+  }
+
+  /* Both words together push the site title onto a second line at this
+     width. The icons carry their controls on their own here — each word
+     stays the control's accessible name, just not its visible text. */
+  .nav-search-label,
+  .theme-word {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* 44px square around a 16px icon, pulled back out of the layout so the
+     header keeps its height. */
+  .nav-search,
+  .theme-toggle {
+    justify-content: center;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    padding: var(--space-3);
+    margin-block: calc(-1 * var(--space-3));
+  }
+
+  .nav-search {
+    margin-left: calc(-1 * var(--space-3));
+  }
+
+  .theme-toggle {
+    margin-right: calc(-1 * var(--space-3));
+  }
+
+  /* Alone, they can afford to be a little larger. */
+  .nav-search .icon,
+  .theme-toggle .icon {
+    width: 1.15em;
+    height: 1.15em;
+  }
+
+  .search-control {
+    flex: 1 1 100%;
+  }
+
+  .search-control select {
+    min-height: 2.75rem; /* 44px touch target */
+  }
+}
+
+/* ---------- print ---------- */
+
+/* These pages are used live in class and may well be printed. */
+@media print {
+  .site-header,
+  .site-footer,
+  .back,
+  .search,
+  .series-nav {
+    display: none;
+  }
+
+  body {
+    background: #fff;
+    color: #000;
+    font-size: 11pt;
+  }
+
+  main {
+    width: auto;
+    max-width: none;
+    padding: 0;
+  }
+
+  .series-layout {
+    display: block;
+  }
+
+  h2 {
+    break-after: avoid;
+  }
+
+  li,
+  p {
+    break-inside: avoid;
+  }
+}
+
+/* There is no motion in this design to begin with; the guard is here so
+   that stays true if anything is ever added. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
