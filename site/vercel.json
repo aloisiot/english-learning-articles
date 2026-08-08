@@ -3,6 +3,6 @@
   "framework": null,
   "installCommand": "npm ci",
   "buildCommand": "npm run build",
-  "outputDirectory": "site/out",
+  "outputDirectory": "out",
   "trailingSlash": true
 }
