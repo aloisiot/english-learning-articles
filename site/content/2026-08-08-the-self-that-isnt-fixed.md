@@ -48,3 +48,11 @@ Understood this way, anatta isn't a bleak conclusion. It's closer to a descripti
 ## Quick Recap
 
 Anatta, the Buddhist doctrine of "no-self," doesn't deny that you exist — it denies that a fixed, permanent self exists behind your ever-changing experiences. Like the classic chariot analogy, "you" may be less a hidden thing and more a useful name for parts working together, which connects directly to the Buddhist teaching on impermanence.
+
+## References
+
+- [anatta — Encyclopaedia Britannica](https://www.britannica.com/topic/anatta)
+- [Mind in Indian Buddhist Philosophy — Stanford Encyclopedia of Philosophy](https://plato.stanford.edu/entries/mind-indian-buddhism/)
+- [Buddha — Stanford Encyclopedia of Philosophy](https://plato.stanford.edu/entries/buddha/)
+- [Simile of the chariot (Milindapañha) — Encyclopedia of Buddhism](https://encyclopediaofbuddhism.org/wiki/Simile_of_the_chariot)
+- [The Buddhist Theory of No-Self (Anātman/Anattā) — 1000-Word Philosophy](https://1000wordphilosophy.com/2023/02/25/no-self/)

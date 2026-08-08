@@ -48,3 +48,9 @@ Read alongside anatta and the relational self, wu wei completes something like a
 ## Quick Recap
 
 Wu wei, often translated as "effortless action," isn't passivity — it's acting in harmony with a situation rather than forcing it, like water flowing around a rock. Taken together with the relational self of Confucianism and the no-self of Buddhism, it suggests that acting well means moving with the current you're already part of, rather than trying to control it from outside.
+
+## References
+
+- [wuwei — Encyclopaedia Britannica](https://www.britannica.com/topic/wuwei-Chinese-philosophy)
+- [Daoist Philosophy — Internet Encyclopedia of Philosophy](https://iep.utm.edu/daoismdaoist-philosophy/)
+- [Daoism — Stanford Encyclopedia of Philosophy](https://plato.stanford.edu/entries/daoism/)

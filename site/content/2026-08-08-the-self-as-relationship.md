@@ -48,3 +48,10 @@ This is why the Confucian self is called relational rather than individual. It i
 ## Quick Recap
 
 Confucian philosophy treats the self as something built through relationships and ritual, not a fixed private thing. Ren (inner benevolence) and li (its outward, ritual expression) work together: one without the other is either empty performance or a feeling with no way to be shared.
+
+## References
+
+- [Confucius — Stanford Encyclopedia of Philosophy](https://plato.stanford.edu/entries/confucius/)
+- [Chinese Ethics — Stanford Encyclopedia of Philosophy](https://plato.stanford.edu/entries/ethics-chinese/)
+- [Confucius — Internet Encyclopedia of Philosophy](https://iep.utm.edu/confucius/)
+- [ren — Encyclopaedia Britannica](https://www.britannica.com/topic/ren)

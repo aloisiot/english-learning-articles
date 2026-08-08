@@ -45,3 +45,9 @@ The strain is unevenly distributed. Ireland's data centres already consume more 
 ## Quick Recap
 
 AI's growth is increasingly constrained not by chips but by electricity: data centre power demand is rising sharply while grid expansion takes far longer to deliver. Some regions already face acute strain, raising questions about who bears the cost.
+
+## References
+
+- [Gartner Says Data Center Electricity Consumption to Grow 26% in 2026 — Gartner](https://www.gartner.com/en/newsroom/press-releases/2026-06-10-gartner-says-data-center-electricity-demand-to-grow-26-percent-in-2026)
+- [AI, Data Centers, and the U.S. Electric Grid: A Watershed Moment — Belfer Center for Science and International Affairs, Harvard Kennedy School](https://www.belfercenter.org/research-analysis/ai-data-centers-us-electric-grid)
+- [AI data center energy in 2026 — dev/sustainability](https://www.devsustainability.com/p/ai-data-center-energy-in-2026)

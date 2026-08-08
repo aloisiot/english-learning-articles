@@ -46,3 +46,10 @@ The implication is uncomfortable. Climate models generally assume the ocean will
 ## Quick Recap
 
 The ocean absorbs about a quarter of human carbon emissions, but recent research suggests this capacity is weakening — partly because warmer water holds less dissolved gas. Scientists warn that climate models assuming a steady ocean sink may therefore be too optimistic.
+
+## References
+
+- [Study finds ocean carbon sink could be weakening — NOAA Atlantic Oceanographic and Meteorological Laboratory](https://www.aoml.noaa.gov/ocean-carbon-sink-could-be-weakening/)
+- [Landmark study indicates weakening of ocean carbon sink — NOAA Climate.gov](https://www.climate.gov/news-features/feed/landmark-study-indicates-weakening-ocean-carbon-sink)
+- [Integrated Ocean Carbon Research (IOC-R) report — Intergovernmental Oceanographic Commission, UNESCO](https://www.ioc.unesco.org/en/articles/integrated-ocean-carbon-research-ioc-r-report)
+- [The Ocean Carbon Sink Is Ailing — Columbia Climate School, State of the Planet](https://news.climate.columbia.edu/2025/09/04/the-ocean-carbon-sink-is-ailing/)
