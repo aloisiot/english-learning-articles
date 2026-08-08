@@ -14,25 +14,36 @@ Build a growing collection of short, original articles on subjects of interest, 
 
 ## Folder structure
 
+The original plan below (per-topic folders, each with its own `index.md`,
+plus a separate keyword index) was superseded once the site was actually
+built — see "Site generators" and "Status" further down. This is the
+structure as implemented:
+
 ```
 English Learning/
-  index.md                        ← master index, links to all subject indexes
-  _templates/
-    article-template.md
-  science-environment/
-    index.md
-    2026-08-07-ocean-acidification.md
-  technology/
-    index.md
-  philosophy/
-    index.md
-  _keywords/
-    index.md                      ← alphabetical keyword → article map
+  PROJECT-PLAN.md
+  STYLE-SPEC.md
+  research/
+    <series-slug>.md               ← per-series research/progress tracking
+                                      files (see "Series" below and the
+                                      english-learning-series skill)
+  site/                             ← the Next.js site
+    content/
+      YYYY-MM-DD-slug.md            ← every article, flat, one file per
+                                       article — no per-topic subfolders
+    app/                            ← pages (homepage, article, search)
+    lib/articles.js                 ← reads content/, parses front matter
+    scripts/                        ← Pagefind indexing (build step)
 ```
 
-- File naming: `YYYY-MM-DD-slug.md` — sorts chronologically, date visible without opening the file.
-- New subject = new folder + its own `index.md`.
-- `index.md` files are regenerated/updated whenever a new article is added (can be scripted later).
+- File naming: `YYYY-MM-DD-slug.md` — sorts chronologically, date visible
+  without opening the file. Unchanged from the original plan.
+- New subject = a new value in the `topic:` front-matter field. No folder,
+  no per-topic `index.md` — the homepage (`site/app/page.js`) lists every
+  article by reading front matter directly, and the search page filters by
+  topic the same way.
+- There is no separate keyword index file; `keywords:` in the front matter
+  feeds the search page's keyword filter (via Pagefind) instead.
 
 ## Article template
 
@@ -74,6 +85,11 @@ Goal: get a real conversation going, not a grammar drill.
 ## Quick Recap
 
 2-3 sentence summary, useful to skim before the next class.
+
+## References
+
+Every source actually used to research the article, as a markdown link
+list — see "References" below.
 ```
 
 ## Titles — required
@@ -97,10 +113,35 @@ subject for someone browsing the index; the section title names the piece
 of writing sitting in front of the learner. Using one as the other prints
 the same words on screen twice.
 
-The other four section headings — Grammar Spotlight, Key Vocabulary,
-Discussion Questions, Quick Recap — stay fixed. They label a _kind_ of
-content that is genuinely the same in every article, which is exactly what
-the reading section is not.
+The other five section headings — Grammar Spotlight, Key Vocabulary,
+Discussion Questions, Quick Recap, References — stay fixed. They label a
+_kind_ of content that is genuinely the same in every article, which is
+exactly what the reading section is not.
+
+## References
+
+Every article ends with a `## References` section: a markdown link list
+of the sources actually used to research and fact-check it (`- [Source
+title](URL)`), never a placeholder. Prefer 2+ sources per article,
+encyclopedic/academic ones over blogs or SEO content unless the blog is
+itself the primary source under discussion. Only sources that actually
+informed the article belong here — not a generic reading list.
+
+References is not part of the 30-minute timing budget below — it's a
+written record, not read aloud in class.
+
+For a series article, pull the list from the `Sources` column already
+recorded for that subject in `research/<series-slug>.md` rather than
+re-researching (see "Series" below and the `english-learning-series`
+skill).
+
+Site-wise, References is a section like any other — it gets wrapped in
+`.section-references` automatically — but it has no dedicated visual
+treatment of its own yet (unlike Key Vocabulary or Quick Recap in
+`STYLE-SPEC.md` §6); it currently renders with the same base paragraph/
+list styling as the reading section. The five articles published before
+this rule was added (`site/content/2026-08-07-*.md`) predate it and have
+no References section yet.
 
 ## Series
 
@@ -121,16 +162,30 @@ Site behaviour (implemented in `site/`):
 - The **homepage** shows a "Series" section above the full article list,
   one entry per series, linking to its first (`series_order: 1`) article.
 - Any article carrying a `series` field gets a **left-hand sidebar** on
-  its page, listing every article in that series in order, with the
-  current one highlighted. Articles with no `series` field get no
-  sidebar at all.
+  its page (≥1100px viewports), listing every article in that series in
+  order, with the current one bolded. Articles with no `series` field get
+  no sidebar at all — not even an empty one.
+- The article itself always stays centred on the page, exactly as on any
+  other article — the sidebar sits in a mirrored two-column layout (an
+  invisible spacer balances it on the other side) rather than shifting
+  the reading column off-centre.
+- Below 1100px there's no room for a true sidebar alongside the article's
+  measure, so it collapses to a plain block above the article — the first
+  thing on the page, not a sidebar — rather than disappearing.
 - `series` is also wired into the search page as a filter, alongside
   topic, grammar point, and level.
 
-Nothing about the reading section, grammar spotlight, vocabulary, or
-discussion questions changes for a series article — it's still a
-complete, self-contained 30-minute class on its own. The series is a
-navigation layer on top, not a requirement that classes be taken in order.
+Nothing about the reading section, grammar spotlight, vocabulary,
+discussion questions, or references changes for a series article — it's
+still a complete, self-contained 30-minute class on its own. The series is
+a navigation layer on top, not a requirement that classes be taken in
+order.
+
+**Research tracking.** Planning a series (picking subjects, researching
+each one, deciding the order) happens in `research/<series-slug>.md`
+before any article is drafted — see the `english-learning-series` skill
+for the full process and file format. That file, not chat history, is the
+source of truth for where a series' research stands.
 
 ## Fitting a 30-minute class — timing budget
 
@@ -301,9 +356,11 @@ Build flow: markdown articles → Next.js static build (SSG) → Pagefind
 indexes the output → deploy to Vercel. Every step happens at build time;
 nothing depends on a live server or external service at request time.
 
-Recommended order: build up a corpus of markdown articles first (current
-phase), then wire up the Next.js site once there's enough content to make
-search and navigation genuinely useful.
+Recommended order at the time: build up a corpus of markdown articles
+first, then wire up the Next.js site once there's enough content to make
+search and navigation genuinely useful. That site is now built — see
+"Status" below — so this section is kept as a record of the decision
+rather than as forward-looking guidance.
 
 ## Status
 
@@ -311,4 +368,7 @@ Site is live in `site/` (Next.js, static export, Pagefind search,
 Quiet Editorial design per `STYLE-SPEC.md`), with articles stored flat in
 `site/content/` rather than the per-topic folder tree originally sketched
 above. Series navigation (homepage section + per-article sidebar) is
-implemented. Ongoing work is adding articles to the corpus.
+implemented, and the References section is required on every new article
+(not yet backfilled onto the five articles published before the rule).
+Ongoing work is adding articles to the corpus, using the
+`english-learning-article` and `english-learning-series` skills.

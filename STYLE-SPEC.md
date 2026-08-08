@@ -119,19 +119,27 @@ more than from dramatic size jumps.
 
 | Token | Size | Use |
 |---|---|---|
-| `--text-2xs` | 0.75rem / 12px | Uppercase micro-labels (filter names) |
+| `--text-2xs` | 0.75rem / 12px | Uppercase micro-labels (filter names, series-nav label) |
 | `--text-xs` | 0.8125rem / 13px | Article metadata row, footer |
-| `--text-sm` | 0.875rem / 14px | Interface text, buttons, nav |
+| `--text-sm` | 0.875rem / 14px | Interface text, buttons, nav, series-nav links |
 | `--text-base` | 1rem / 16px | Secondary prose, vocabulary definitions |
 | `--text-body` | 1.125rem / 18px | **Article body** |
-| `--text-lg` | 1.375rem / 22px | Index item titles |
-| `--text-xl` | 1.75rem / 28px | Page title (mobile) |
-| `--text-2xl` | 2rem / 32px | Page title (desktop) |
+| `--text-section` | 1.1875rem / 19px | In-article section headings (`## Grammar Spotlight`, …) |
+| `--text-lg` | 1.9375rem / 31px | Index item titles (article list, series list) |
+| `--text-xl` | 2.4375rem / 39px | Page title, mobile |
+| `--text-2xl` | 2.8125rem / 45px | Page title, desktop |
+
+As implemented, the heading sizes ended up roughly 40% larger than this
+document originally specified (`--text-lg`/`--text-xl`/`--text-2xl` were
+first drafted at 22/28/32px) — the larger sizes read better in practice
+against the wide `--measure`. `--text-section` was added as its own token
+rather than reusing `--text-sm`, so growing the in-article section
+headings later doesn't also grow nav, buttons, and the footer.
 
 Fluid page title, avoiding a hard jump at the breakpoint:
 
 ```css
-font-size: clamp(1.75rem, 1.5rem + 1.2vw, 2rem);
+--text-title: clamp(2.4375rem, 2.1rem + 1.68vw, 2.8125rem);
 ```
 
 ### Line height
@@ -150,7 +158,7 @@ font-size: clamp(1.75rem, 1.5rem + 1.2vw, 2rem);
 The single highest-impact setting. Target **62–66 characters per line**.
 
 ```css
---measure: 34rem;  /* ≈ 62ch at 18px Source Serif 4 */
+--measure: 34rem;  /* ≈ 65 characters at 18px Source Serif 4, as implemented */
 ```
 
 Specify in `rem` for stable layout, but **verify empirically**: render a
@@ -161,15 +169,19 @@ measures the digit zero, wider than the average lowercase letter, so a
 **Retune whenever the typeface changes.**
 
 ```css
+--gutter: var(--space-6); /* 1.5rem; --space-5 (1.25rem) below 480px */
+
 main {
-  width: min(100% - 3rem, var(--measure));
+  width: min(100% - 2 * var(--gutter), var(--measure));
   margin-inline: auto;
+  padding: var(--space-12) 0 var(--space-16);
 }
 ```
 
-The gutter is built into the width calculation rather than applied as
-body padding, so the column never touches the viewport edge on small
-screens.
+The gutter is a token (`--gutter`) rather than a fixed value, so the
+480px breakpoint can shrink it without duplicating the width formula. It
+is built into the width calculation rather than applied as body padding,
+so the column never touches the viewport edge on small screens.
 
 ### Vertical rhythm
 
@@ -181,14 +193,26 @@ Spacing scale, 4px base:
 | `--space-2` | 0.5rem |
 | `--space-3` | 0.75rem |
 | `--space-4` | 1rem |
+| `--space-5` | 1.25rem |
 | `--space-6` | 1.5rem |
+| `--space-7` | 1.75rem |
 | `--space-8` | 2rem |
 | `--space-12` | 3rem |
 | `--space-16` | 4rem |
+| `--space-18` | 4.5rem |
 
 Rule: **space above a section heading should be roughly three times the
 space below it.** This is what makes sections findable without rules or
-colour — the eye reads the gap, not a border.
+colour — the eye reads the gap, not a border. As implemented, this ratio
+is two named tokens rather than a rule applied ad hoc at each heading:
+
+```css
+--section-gap: var(--space-18);        /* 4.5rem above a section heading */
+--section-gap-after: var(--space-6);   /* 1.5rem below it */
+```
+
+`--section-gap` drops to `--space-12` (3rem) below the 480px breakpoint,
+keeping the same roughly-3:1 ratio at a scale that fits a small screen.
 
 ---
 
@@ -203,6 +227,7 @@ Three tones plus pure white for input surfaces. No accent colour.
 | `--rule` | `#e5e5e5` | Hairlines, borders | Non-text |
 | `--bg` | `#fdfdfc` | Page background | — |
 | `--surface` | `#ffffff` | Input fields, select | — |
+| `--mark` | `#f4ecc8` | Search-result match highlight | Paired with underline, never colour alone |
 
 The background is warm off-white rather than `#fff`: it reduces glare
 over a 30-minute session, and makes pure-white input surfaces read as
@@ -220,7 +245,15 @@ a {
 a:hover { text-decoration-color: var(--text); }
 ```
 
-### Dark mode (optional, via `prefers-color-scheme`)
+### Dark mode
+
+Implemented as more than the "optional, automatic-only" version first
+scoped here: the site has a three-state manual toggle (auto / light /
+dark) in the header, in addition to following `prefers-color-scheme` when
+the reader hasn't overridden it. "Auto" is the *absence* of a
+`data-theme` attribute on `<html>`, so the system preference keeps working
+even with JavaScript disabled; a small inline script sets `data-theme`
+before first paint so there's no flash of the wrong palette.
 
 | Token | Value |
 |---|---|
@@ -229,33 +262,57 @@ a:hover { text-decoration-color: var(--text); }
 | `--rule` | `#33312e` |
 | `--bg` | `#1b1a18` |
 | `--surface` | `#232120` |
+| `--mark` | `#443c22` |
 
 Caveat specific to serifs: light-on-dark makes thin strokes bloom
-(halation), so **step the body weight down** in dark mode — with a
-variable font, `font-variation-settings: "wght" 380` instead of 400.
+(halation), so **step the body weight down** in dark mode. Implemented as
+a palette-level token rather than a one-off dark-mode rule, so it follows
+whichever theme is active and headings/`strong`/`b` can opt back out
+explicitly:
+
+```css
+--prose-wght: normal;              /* light mode: nothing to correct */
+--prose-wght: "wght" 380;          /* dark mode: steps the body down from 400 */
+```
+
+The toggle itself: a button cycling auto → light → dark, showing a
+distinct glyph *and* a word for the current state (never colour alone),
+with the accessible label hidden below the 480px breakpoint where only
+the icon fits.
 
 ---
 
 ## 6. Section treatments
 
-The article template has five sections with different reading modes.
-They must be distinguishable without boxes or colour.
+The article template has six sections with different reading modes (a
+References section was added after this document's first draft, which
+described five). They must be distinguishable without boxes or colour.
 
-**Section headings** (`## Grammar Spotlight`, `## Article`, …)
+**Section headings** (`## Grammar Spotlight`, `## Key Vocabulary`, …), as
+implemented:
 
 ```css
-font-family: var(--font-sans);
-font-size: var(--text-sm);
-font-weight: 600;
-letter-spacing: 0.06em;
-text-transform: uppercase;
-color: var(--muted);
-margin-block: var(--space-12) var(--space-4);
-padding-bottom: var(--space-2);
-border-bottom: 1px solid var(--rule);
+.article-body h2 {
+  font-family: var(--font-sans);
+  font-size: var(--text-section);
+  font-weight: 600;
+  line-height: var(--leading-ui);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-block: var(--section-gap) var(--section-gap-after);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--rule);
+  hyphens: none;
+  text-wrap: balance;
+}
 ```
 
 Small, grey, and sans — signposts rather than competitors to the prose.
+(The values differ slightly from this document's first draft —
+`--text-section` instead of `--text-sm`, the named `--section-gap`/
+`--section-gap-after` tokens instead of literal `--space-12`/`--space-4`
+— see §3 and §4 for why.)
 
 **Grammar Spotlight** — the example pairs are the important part. Set
 direct/reported pairs as a list with the target structure in medium
@@ -284,9 +341,66 @@ they are used one at a time during class.
 padding rather than a background tint. Signals "summary" without adding a
 coloured box.
 
+**References** — added to the required section list after this document
+was first written, and **has no dedicated treatment yet.** It inherits the
+same base rules as any other section (`.article-body ul/li`, the shared
+`h2` treatment above) rather than a bespoke style like Key Vocabulary or
+Quick Recap. Given its content is just a link list, the base styling is
+plausibly sufficient — but this is a gap against the rest of this section,
+not a considered decision, and worth a real pass if References ends up
+needing to look different (e.g. numbered citations, smaller type since
+it's reference material rather than content to teach from).
+
 ---
 
-## 7. Micro-typography
+## 7. Series navigation
+
+Added after this document's first draft, alongside the homepage's Series
+section and the article page's sidebar. Two places:
+
+**Homepage — `.section-label` + `.series-list`.** A "Series" block sits
+above the full article list, using the same small/grey/sans signpost
+language as in-article section headings (`.section-label`: `--text-sm`,
+uppercase, `--muted`, hairline underneath) so the two vocabularies read as
+one system. Each series is one entry — title linking to its
+`series_order: 1` article, plus a `.meta` line ("3 articles · philosophy")
+reusing the existing metadata styling rather than inventing a new one.
+
+**Article page — `.series-nav` sidebar.** Only rendered when the article
+has a `series` field. Two states:
+
+- **Below 1100px (default/stacked):** a plain block above the article —
+  the first thing on the page, not a persistent sidebar — with a small
+  uppercase "Series" label, the series title, and an ordered list of
+  every article in the series. The current article is bold
+  (`.series-nav-current`) rather than coloured, consistent with §10's
+  "never signal state by colour alone."
+- **From 1100px:** a true two-column layout, sidebar to the left,
+  `position: sticky` so it tracks the scroll during a long article. The
+  threshold is deliberately higher than the 480px breakpoint used
+  everywhere else on the site — see below for why.
+
+**Keeping the article centred.** The article must stay centred on the
+page exactly as on any page without a sidebar — the sidebar cannot be
+allowed to pull it off-centre. The implementation gives the sidebar a
+mirror-image, invisible spacer of the same width on the article's other
+side (an empty `::after`), so the row reads `[sidebar] [article]
+[spacer]`: symmetric around the article, so the article's centre stays
+equal to the page's centre. `main:has(.series-layout)` widens just that
+page's centred column to fit the full symmetric row — every other page
+keeps the plain single-column width from §4.
+
+**Why 1100px.** The full row — sidebar (13rem) + gap + `--measure` (34rem)
++ gap + spacer (13rem) — is 64rem (~1024px). Below roughly that viewport
+width plus the outer gutters, there's nowhere to put a 13rem sidebar
+without either narrowing the article's measure (against §4's rule that the
+measure is retuned deliberately, not squeezed by circumstance) or crowding
+the viewport edge. 1100px keeps a small buffer above the mathematical
+minimum.
+
+---
+
+## 8. Micro-typography
 
 The details that separate "sober" from "plain".
 
@@ -315,17 +429,30 @@ lowercase text.
 
 ---
 
-## 8. Responsive behaviour
+## 9. Responsive behaviour
 
-Single breakpoint at **480px**. A one-column reading layout needs no more.
+Two breakpoints, not the single one first specified here — the second was
+added for the series sidebar (§7), which needs real width to sit beside
+the article rather than above it.
+
+**480px** — the original breakpoint. A one-column reading layout needs no
+more for everything except the series sidebar.
 
 | Property | ≤480px | >480px |
 |---|---|---|
 | Body size | 1.0625rem / 17px | 1.125rem / 18px |
-| Page title | 1.75rem | 2rem (fluid) |
-| Gutter | 1.25rem | 1.5rem |
-| Section heading margin-top | `--space-8` | `--space-12` |
+| Gutter | 1.25rem (`--space-5`) | 1.5rem (`--space-6`) |
+| Section heading margin-top (`--section-gap`) | `--space-12` | `--space-18` |
+| Header search/theme controls | Icon only, 44px hit area | Icon + label |
 | Search filters | Full-width, stacked | Inline, wrapping |
+
+(Page title uses the fluid `--text-title` clamp from §3 rather than a
+hard breakpoint jump.)
+
+**1100px** — added for the series sidebar only (§7). Below it, a series
+article's sidebar is a stacked block above the article; from it, sidebar
+and article sit side by side with the article still centred on the page.
+No other page or element responds to this breakpoint.
 
 Slightly smaller body text on mobile is deliberate: the measure is
 constrained by viewport width there, so reducing size keeps characters
@@ -333,23 +460,30 @@ per line inside the target band.
 
 ---
 
-## 9. Print
+## 10. Print
 
 Worth specifying — these pages are used live in class and may be printed.
 
 ```css
 @media print {
-  .site-header, .site-footer, .back, .search { display: none; }
+  .site-header, .site-footer, .back, .search, .series-nav {
+    display: none;
+  }
   body { background: #fff; color: #000; font-size: 11pt; }
-  main { width: auto; max-width: none; }
+  main { width: auto; max-width: none; padding: 0; }
+  .series-layout { display: block; }
   h2 { break-after: avoid; }
   li, p { break-inside: avoid; }
 }
 ```
 
+`.series-nav` is hidden in print (it's navigation, not content — the same
+reasoning as `.back`), and `.series-layout` drops back to a plain block so
+the article prints as a normal single column even on a series page.
+
 ---
 
-## 10. Accessibility
+## 11. Accessibility
 
 - Body and muted text both clear WCAG AA (4.5:1); body text clears AAA.
 - Never remove focus outlines. Use `:focus-visible` with a 2px outline in
@@ -362,9 +496,10 @@ Worth specifying — these pages are used live in class and may be printed.
 
 ---
 
-## 11. Implementation notes
+## 12. Implementation notes
 
-**Files affected**
+**Files affected** (as originally scoped, before the series feature — see
+the row below for what §7 additionally touched)
 
 | File | Change |
 |---|---|
@@ -373,26 +508,39 @@ Worth specifying — these pages are used live in class and may be printed.
 | `app/articles/[slug]/page.js` | Section wrappers (see below) |
 | `lib/articles.js` | Markdown → HTML step needs section hooks |
 
-**The one real obstacle:** the markdown pipeline currently emits a flat
-sequence of `<h2>` and `<p>` elements, so there is no way to style
-"Key Vocabulary" differently from "Discussion Questions" — CSS cannot
-target a section by its heading text.
+**Additionally touched for series navigation (§7):** `app/page.js` (the
+homepage Series section), `app/search/search-client.js` (`series` added
+as a filter), and further additions to `app/globals.css` and
+`app/articles/[slug]/page.js` beyond the section-wrapper work below.
 
-Recommended fix: add a small remark/rehype step that wraps each `##`
-section in `<section class="section-{slug}">`, deriving the slug from the
-heading. That yields `.section-grammar-spotlight`,
-`.section-key-vocabulary`, and so on, with no change to how articles are
-written. Styling by `:nth-of-type()` would work today but breaks the
-moment an article omits or reorders a section.
+**The one real obstacle, as originally framed:** the markdown pipeline
+would otherwise emit a flat sequence of `<h2>` and `<p>` elements, with no
+way to style "Key Vocabulary" differently from "Discussion Questions" —
+CSS cannot target a section by its heading text.
+
+**As implemented** (`lib/articles.js`, `splitSections`): rather than a
+remark/rehype plugin wrapping headings inside one continuous parse, the
+raw markdown is split into per-heading chunks *before* parsing — each `##`
+line starts a new chunk, and each chunk's body is then run through
+`remark().use(html)` independently. The page then wraps each chunk in
+`<section class="section-{name}">`, giving the same
+`.section-grammar-spotlight`, `.section-key-vocabulary`, etc. classes the
+original plan called for, with no change to how articles are written.
+Fenced code blocks are tracked separately so a `##`-looking line inside
+one isn't mistaken for a real heading. Styling by `:nth-of-type()` would
+have worked today but would have broken the moment an article omits or
+reorders a section — this is why that approach was avoided.
 
 Derive the slug from the heading text **before any colon**, so that
 `## Grammar Spotlight: Reported Speech` stays `.section-grammar-spotlight`
 whatever grammar point an article happens to cover.
 
-The four fixed sections are therefore addressable by class. The reading
-section is not: its heading is the article's own title (§6), so its class
-is different on every page. Anything that section needs must come from the
-defaults on `.article-body`, never from a `.section-*` selector.
+The five fixed sections (Grammar Spotlight, Key Vocabulary, Discussion
+Questions, Quick Recap, References) are therefore addressable by class.
+The reading section is not: its heading is the article's own title (§6),
+so its class is different on every page. Anything that section needs must
+come from the defaults on `.article-body`, never from a `.section-*`
+selector.
 
 **Suggested order**
 
