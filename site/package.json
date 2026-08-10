@@ -6,6 +6,9 @@
     "predev": "node scripts/ensure-index.mjs",
     "dev": "next dev",
     "covers": "node scripts/download-covers.mjs",
+    "check:content": "node scripts/check-content.mjs",
+    "check:covers": "node scripts/check-cover-queue.mjs",
+    "verify": "node scripts/verify.mjs",
     "build": "next build && node scripts/postbuild.mjs",
     "search:index": "npm run build",
     "start": "npx serve out"
