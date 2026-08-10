@@ -21,6 +21,14 @@ import Link from "next/link";
  * grammar point, level, …) rendered as the usual `.meta` spans; the
  * caller decides which fields apply and in what order, since the
  * homepage and search page don't always have the same fields on hand.
+ *
+ * `coverImage` should be the small `-thumb.webp` file
+ * (`article.cover_image_thumb`), not the full hero (`cover_image`) —
+ * this component renders it at ~144px wide, and the thumbnail variant
+ * exists specifically so a list of many entries doesn't each pull a
+ * hero-sized file just to show a small crop of it (see
+ * download-covers.mjs). Callers fall back to `cover_image` only for
+ * anything predating the thumbnail field.
  */
 export default function ArticleSummary({
   href,
@@ -35,10 +43,16 @@ export default function ArticleSummary({
   return (
     <li className={coverImage ? "article-summary has-cover" : "article-summary"}>
       {coverImage && (
+        // Lazy: unlike the article page's hero image, most of these
+        // rows are below the fold, and there can be many on one page
+        // (the full homepage list, or a page of search results) —
+        // deferring off-screen ones is a real save, not a micro-opt.
         <img
           className="article-summary-cover"
           src={coverImage}
           alt={coverImageAlt ?? ""}
+          loading="lazy"
+          decoding="async"
         />
       )}
       <div className="article-summary-body">

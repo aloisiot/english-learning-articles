@@ -15,11 +15,12 @@ summary: >-
   practical question next: how, then, should we act?
 series: eastern-philosophy-and-the-self
 series_order: 3
-cover_image: /images/covers/2026-08-08-acting-without-forcing.jpg
+cover_image: /images/covers/2026-08-08-acting-without-forcing.webp
 cover_image_alt: A calm river flowing around rocks and along its natural course
 cover_image_credit: >-
   Photo by Romain Guy from San Francisco, USA on Wikimedia Commons (CC0,
   http://creativecommons.org/publicdomain/zero/1.0/deed.en)
+cover_image_thumb: /images/covers/2026-08-08-acting-without-forcing-thumb.webp
 ---
 
 ## Grammar Spotlight: Participle Clauses

@@ -1,6 +1,6 @@
 /**
- * Downloads cover images tracked in scripts/cover-images.json and wires
- * them into the matching article's front matter.
+ * Downloads cover images tracked in scripts/cover-images.json, compresses
+ * them, and wires them into the matching article's front matter.
  *
  * Why this exists: Claude's sandbox can't reach commons.wikimedia.org
  * (network allowlist), so it can only identify candidate images by web
@@ -8,6 +8,7 @@
  * internet connection — run it locally:
  *
  *   cd site
+ *   npm install        # first run only — installs the new `sharp` dependency
  *   node scripts/download-covers.mjs
  *
  * For every entry in the file (each one is a candidate still waiting on
@@ -15,16 +16,35 @@
  *   1. Calls the Wikimedia API for that file's current imageinfo —
  *      never trusts the license/author noted in the JSON, since that
  *      was found via search snippets, not read directly off the file
- *      page.
+ *      page. Requests a pre-scaled rendition (`iiurlwidth=1600`) rather
+ *      than the raw original — earlier versions of this script always
+ *      downloaded `imageinfo.url`, the full original, which produced
+ *      multi-megabyte files for anything sourced from a high-resolution
+ *      scan (one article ended up with a 7MB cover from a 5767×3604
+ *      source). Wikimedia's own thumbnail rendition avoids that at the
+ *      source instead of relying on local resizing to fix it after.
  *   2. Rejects anything whose license isn't in `allowed_licenses`
  *      (CC0 / Public Domain / CC BY / CC BY-SA) and reports why.
- *   3. Downloads the full-resolution image to `target_path`
- *      (public/images/covers/<slug>.<ext>), reusing the source
- *      extension.
+ *   3. Runs the downloaded bytes through `sharp` to produce two files
+ *      under `public/images/covers/`:
+ *        - `<slug>.webp` — the hero image shown on the article page,
+ *          resized to max 1600px wide (comfortably covers the ~707px
+ *          display width at 2x/retina density) at quality 80.
+ *        - `<slug>-thumb.webp` — a separate, smaller file for the
+ *          article-list rows on the homepage/search page, which only
+ *          display it at ~144px wide. Before this, list rows reused the
+ *          full hero file shrunk by CSS — every row on the homepage was
+ *          downloading a multi-hundred-KB (sometimes multi-MB) image to
+ *          show a thumbnail. Resized to max 500px wide, quality 75.
+ *      WebP over JPEG: ~25-35% smaller at equivalent visual quality,
+ *      and supported by every browser likely to view this site.
+ *      `withoutEnlargement: true` on both resizes, so a source already
+ *      smaller than the target width is never upscaled.
  *   4. Builds the credit line from the live API data (not the JSON's
- *      guess) and writes cover_image / cover_image_alt /
- *      cover_image_credit into content/<slug>.md's front matter via
- *      gray-matter, preserving the rest of the file untouched.
+ *      guess) and writes cover_image / cover_image_thumb /
+ *      cover_image_alt / cover_image_credit into content/<slug>.md's
+ *      front matter via gray-matter, preserving the rest of the file
+ *      untouched.
  *   5. On success, removes the entry from cover-images.json entirely —
  *      once an image is downloaded and wired into its article, the
  *      front matter is the source of truth, so keeping a "done" copy
@@ -35,16 +55,37 @@
  *
  * Re-run any time: only entries still in the file (i.e. not yet
  * successfully downloaded) are processed.
+ *
+ * Why not next/image: this site builds with `output: "export"` (a fully
+ * static build, see next.config.mjs) — there is no server for Next's
+ * on-demand image optimizer to run on, on Vercel or anywhere else. Using
+ * next/image here would require `images.unoptimized: true`, which skips
+ * resizing/format conversion/compression entirely and just serves the
+ * raw file — no different from a plain <img>, but with an extra
+ * dependency on Next's image plumbing. Doing the real compression once,
+ * at download time, in this script, is the only place it can actually
+ * happen for a fully static site.
  */
 import fs from "node:fs/promises";
 import path from "node:path";
 import matter from "gray-matter";
+import sharp from "sharp";
 
 const root = process.cwd();
 const trackingPath = path.join(root, "scripts", "cover-images.json");
 const contentDir = path.join(root, "content");
 
 const API = "https://commons.wikimedia.org/w/api.php";
+const USER_AGENT =
+  "EnglishLearningCoverImageBot/1.0 (personal project; contact via repo owner)";
+
+// Hero: displayed at up to ~707px (the site's --measure) — 1600px covers
+// that comfortably at 2x/retina density. Thumbnail: displayed at ~144px
+// in article-list rows — 500px covers that at up to ~3x density.
+const HERO_MAX_WIDTH = 1600;
+const HERO_QUALITY = 80;
+const THUMB_MAX_WIDTH = 500;
+const THUMB_QUALITY = 75;
 
 async function fetchImageInfo(fileTitle) {
   const url = new URL(API);
@@ -52,15 +93,13 @@ async function fetchImageInfo(fileTitle) {
   url.searchParams.set("titles", fileTitle);
   url.searchParams.set("prop", "imageinfo");
   url.searchParams.set("iiprop", "url|extmetadata|size|mime");
+  // Ask Wikimedia to pre-scale rather than always pulling the full
+  // original — see the file-level comment above for why this matters.
+  url.searchParams.set("iiurlwidth", String(HERO_MAX_WIDTH));
   url.searchParams.set("format", "json");
   url.searchParams.set("formatversion", "2");
 
-  const res = await fetch(url, {
-    headers: {
-      "User-Agent":
-        "EnglishLearningCoverImageBot/1.0 (personal project; contact via repo owner)",
-    },
-  });
+  const res = await fetch(url, { headers: { "User-Agent": USER_AGENT } });
 
   if (!res.ok) {
     throw new Error(`Wikimedia API request failed: HTTP ${res.status}`);
@@ -107,38 +146,30 @@ function isAllowed(normalized, allowedLicenses) {
   });
 }
 
-function extensionFromMime(mime, fallbackUrl) {
-  const byMime = {
-    "image/jpeg": ".jpg",
-    "image/png": ".png",
-    "image/webp": ".webp",
-  };
-  if (mime && byMime[mime]) return byMime[mime];
-  const match = fallbackUrl.match(/\.(jpe?g|png|webp)(?:\?.*)?$/i);
-  return match ? `.${match[1].toLowerCase().replace("jpeg", "jpg")}` : ".jpg";
-}
-
-async function downloadFile(url, destPath) {
-  const res = await fetch(url, {
-    headers: {
-      "User-Agent":
-        "EnglishLearningCoverImageBot/1.0 (personal project; contact via repo owner)",
-    },
-  });
+async function fetchImageBuffer(url) {
+  const res = await fetch(url, { headers: { "User-Agent": USER_AGENT } });
   if (!res.ok) {
     throw new Error(`Failed to download image: HTTP ${res.status}`);
   }
-  const buffer = Buffer.from(await res.arrayBuffer());
-  await fs.mkdir(path.dirname(destPath), { recursive: true });
-  await fs.writeFile(destPath, buffer);
+  return Buffer.from(await res.arrayBuffer());
 }
 
-async function updateFrontMatter(slug, { coverImage, alt, credit }) {
+/** Resize (never upscale) + re-encode to WebP, writing the result to disk. */
+async function writeWebp(buffer, destPath, { width, quality }) {
+  await fs.mkdir(path.dirname(destPath), { recursive: true });
+  await sharp(buffer)
+    .resize({ width, withoutEnlargement: true })
+    .webp({ quality })
+    .toFile(destPath);
+}
+
+async function updateFrontMatter(slug, { coverImage, coverImageThumb, alt, credit }) {
   const mdPath = path.join(contentDir, `${slug}.md`);
   const raw = await fs.readFile(mdPath, "utf8");
   const parsed = matter(raw);
 
   parsed.data.cover_image = coverImage;
+  parsed.data.cover_image_thumb = coverImageThumb;
   parsed.data.cover_image_alt = alt;
   parsed.data.cover_image_credit = credit;
 
@@ -229,24 +260,42 @@ async function main() {
         cleanAuthor(meta.Credit?.value) ??
         null;
       const licenseUrl = meta.LicenseUrl?.value ?? "";
-      const ext = extensionFromMime(info.mime, info.url);
-      const destRelative = entry.target_path.replace(/\.[^.]+$/, ext);
-      const destPath = path.join(root, destRelative);
 
-      await downloadFile(info.url, destPath);
+      // info.thumburl is Wikimedia's own pre-scaled rendition (see
+      // iiurlwidth above); info.url is always the full original and is
+      // only used as a fallback if a thumburl wasn't returned (e.g. the
+      // source is already smaller than HERO_MAX_WIDTH).
+      const sourceUrl = info.thumburl ?? info.url;
+      const buffer = await fetchImageBuffer(sourceUrl);
 
-      const coverImage = "/" + destRelative.replace(/^public\//, "");
+      const heroRelative = entry.target_path.replace(/\.[^.]+$/, ".webp");
+      const thumbRelative = heroRelative.replace(/\.webp$/, "-thumb.webp");
+      const heroPath = path.join(root, heroRelative);
+      const thumbPath = path.join(root, thumbRelative);
+
+      await writeWebp(buffer, heroPath, { width: HERO_MAX_WIDTH, quality: HERO_QUALITY });
+      await writeWebp(buffer, thumbPath, { width: THUMB_MAX_WIDTH, quality: THUMB_QUALITY });
+
+      const [heroStat, thumbStat] = await Promise.all([
+        fs.stat(heroPath),
+        fs.stat(thumbPath),
+      ]);
+
+      const coverImage = "/" + heroRelative.replace(/^public\//, "");
+      const coverImageThumb = "/" + thumbRelative.replace(/^public\//, "");
       const credit = buildCredit(author, licenseShortName, licenseUrl);
 
       await updateFrontMatter(entry.slug, {
         coverImage,
+        coverImageThumb,
         alt: entry.suggested_alt,
         credit,
       });
 
       changed = true;
 
-      console.log(`  OK — saved to ${destRelative}`);
+      console.log(`  OK — hero ${heroRelative} (${Math.round(heroStat.size / 1024)}KB)`);
+      console.log(`     — thumb ${thumbRelative} (${Math.round(thumbStat.size / 1024)}KB)`);
       console.log(`  credit: ${credit}`);
       console.log(`  front matter updated in content/${entry.slug}.md`);
       console.log(`  removed from cover-images.json (done)`);

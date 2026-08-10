@@ -151,7 +151,7 @@ export default function SearchClient() {
             external
             title={result.meta?.title}
             excerptHtml={result.excerpt}
-            coverImage={result.meta?.cover_image}
+            coverImage={result.meta?.cover_image_thumb ?? result.meta?.cover_image}
             coverImageAlt={result.meta?.cover_image_alt}
             meta={[
               result.filters?.topic?.[0],

@@ -82,18 +82,36 @@ export default async function ArticlePage({ params }) {
         // own, so leaving it un-ignored doesn't pollute search matches.
         <div className="cover-image-wrap">
           {/* Plain <img>, not next/image — output: "export" doesn't run
-              the Next.js image optimizer, and a handful of self-hosted
-              covers doesn't need it.
+              the Next.js image optimizer (see download-covers.mjs for
+              where compression actually happens: hero + a separate
+              -thumb.webp, both pre-sized by that script).
               data-pagefind-meta="key[attr]" pulls the value straight off
               this element's own src/alt attributes — Pagefind's built-in
               syntax for exactly this (see english-learning-cover-image
-              skill / STYLE-SPEC.md §6b for how it's consumed). */}
+              skill / STYLE-SPEC.md §6b for how it's consumed).
+              loading="eager" is the default, set explicitly here because
+              this image is always above the fold — the article-list
+              thumbnails (app/article-summary.js) are the ones that
+              actually benefit from lazy loading. */}
           <img
             className="cover-image"
             src={article.cover_image}
             alt={article.cover_image_alt ?? ""}
+            loading="eager"
+            decoding="async"
             data-pagefind-meta="cover_image[src], cover_image_alt[alt]"
           />
+          {/* cover_image_thumb isn't rendered on the article page itself
+              (only the full hero is) — it still needs to reach Pagefind
+              so search results can use the smaller file, hence the
+              literal key:value form rather than the img[attr] form
+              above, which only works on the element it's read from. */}
+          {article.cover_image_thumb && (
+            <div
+              hidden
+              data-pagefind-meta={`cover_image_thumb:${article.cover_image_thumb}`}
+            />
+          )}
           {article.cover_image_credit && (
             <p className="cover-credit" data-pagefind-ignore>
               {article.cover_image_credit}

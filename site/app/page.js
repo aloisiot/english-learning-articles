@@ -58,7 +58,7 @@ export default function Home() {
             href={`/articles/${article.slug}`}
             title={article.title}
             excerpt={article.summary}
-            coverImage={article.cover_image}
+            coverImage={article.cover_image_thumb ?? article.cover_image}
             coverImageAlt={article.cover_image_alt}
             meta={[
               formatDate(article.date),

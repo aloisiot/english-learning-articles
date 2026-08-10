@@ -16,13 +16,14 @@ summary: >-
   through the relationships and rituals that surround it.
 series: eastern-philosophy-and-the-self
 series_order: 1
-cover_image: /images/covers/2026-08-08-the-self-as-relationship.jpg
+cover_image: /images/covers/2026-08-08-the-self-as-relationship.webp
 cover_image_alt: >-
   Interior of the Hall of Great Accomplishment at the Temple of Confucius in
   Beijing, with altar and memorial tablet, photographed by John Thomson in 1871
 cover_image_credit: >-
   Photo by an unlisted Wikimedia Commons contributor on Wikimedia Commons (CC BY
   4.0, https://creativecommons.org/licenses/by/4.0)
+cover_image_thumb: /images/covers/2026-08-08-the-self-as-relationship-thumb.webp
 ---
 
 ## Grammar Spotlight: Passive Voice

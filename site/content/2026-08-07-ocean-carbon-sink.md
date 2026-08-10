@@ -12,11 +12,12 @@ keywords:
 summary: >-
   For decades the ocean has quietly absorbed a quarter of our carbon emissions.
   New research suggests it may be slowing down.
-cover_image: /images/covers/2026-08-07-ocean-carbon-sink.jpg
+cover_image: /images/covers/2026-08-07-ocean-carbon-sink.webp
 cover_image_alt: 'A large ocean wave curling over, seen from the water level'
 cover_image_credit: >-
   Photo by Unknown author on Wikimedia Commons (CC0,
   http://creativecommons.org/publicdomain/zero/1.0/deed.en)
+cover_image_thumb: /images/covers/2026-08-07-ocean-carbon-sink-thumb.webp
 ---
 
 ## Grammar Spotlight: Reported Speech

@@ -13,11 +13,12 @@ keywords:
 summary: >-
   The conversation about AI usually focuses on models and chips. The real
   bottleneck may turn out to be much more ordinary: power.
-cover_image: /images/covers/2026-08-07-ai-power-hunger.jpg
+cover_image: /images/covers/2026-08-07-ai-power-hunger.webp
 cover_image_alt: High-voltage electricity transmission towers and power lines against the sky
 cover_image_credit: >-
   Photo by Stefan Andrej Shambora (St_A_Sh) on Wikimedia Commons (CC BY 2.0,
   https://creativecommons.org/licenses/by/2.0)
+cover_image_thumb: /images/covers/2026-08-07-ai-power-hunger-thumb.webp
 ---
 
 ## Grammar Spotlight: Third and Mixed Conditionals
