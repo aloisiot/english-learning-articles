@@ -15,7 +15,6 @@ summary: >-
   Buddhism doesn't deny that you exist — it denies that anything fixed and
   permanent is doing the existing.
 series: eastern-philosophy-and-the-self
-series_title: Eastern Philosophy and the Self
 series_order: 2
 cover_image: /images/covers/2026-08-08-the-self-that-isnt-fixed.jpg
 cover_image_alt: >-

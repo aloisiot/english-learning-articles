@@ -5,6 +5,34 @@ import { remark } from "remark";
 import html from "remark-html";
 
 const contentDir = path.join(process.cwd(), "content");
+const seriesRegistryPath = path.join(contentDir, "series.json");
+
+/**
+ * `content/series.json` is the single source of truth for a series'
+ * title and description — `{ "<slug>": { "title": "...", "description":
+ * "..." } }`. Before this file existed, every article in a series
+ * repeated the same `series_title`/`series_description` in its own
+ * front matter, which meant editing a series' title meant editing every
+ * article that carried it. A missing file (no series yet) or a missing
+ * entry (a series slug not yet registered) are both fine — callers fall
+ * back to whatever the article's own front matter says, so this is a
+ * non-breaking addition rather than a hard requirement.
+ */
+function readSeriesRegistry() {
+  try {
+    return JSON.parse(fs.readFileSync(seriesRegistryPath, "utf8"));
+  } catch (err) {
+    if (err.code === "ENOENT") return {};
+    throw err;
+  }
+}
+
+/** Look up one series' registered title/description by slug. Returns
+ * `{}` if the series isn't in the registry — callers still need their
+ * own fallback for a series that predates registration. */
+export function getSeriesMeta(slug) {
+  return readSeriesRegistry()[slug] ?? {};
+}
 
 /** Read every .md file in /content and return its front matter + slug. */
 export function getAllArticles() {
@@ -78,14 +106,21 @@ function splitSections(markdown) {
  * main article list is ordered.
  */
 export function getAllSeries() {
+  const registry = readSeriesRegistry();
   const bySlug = new Map();
 
   for (const article of getAllArticles()) {
     if (!article.series) continue;
     if (!bySlug.has(article.series)) {
+      const meta = registry[article.series] ?? {};
       bySlug.set(article.series, {
         slug: article.series,
-        title: article.series_title ?? article.series,
+        // content/series.json is the source of truth; series_title /
+        // series_description on the article are only a fallback, kept
+        // for series that predate the registry (or haven't been
+        // migrated to it yet).
+        title: meta.title ?? article.series_title ?? article.series,
+        description: meta.description ?? article.series_description ?? null,
         articles: [],
       });
     }

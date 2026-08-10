@@ -15,7 +15,6 @@ summary: >-
   In Confucian thought the self isn't a private, fixed thing — it's built
   through the relationships and rituals that surround it.
 series: eastern-philosophy-and-the-self
-series_title: Eastern Philosophy and the Self
 series_order: 1
 cover_image: /images/covers/2026-08-08-the-self-as-relationship.jpg
 cover_image_alt: >-

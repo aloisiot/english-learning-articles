@@ -34,6 +34,9 @@ export default function Home() {
                     {group.title}
                   </Link>
                 </h3>
+                {group.description && (
+                  <p className="series-description">{group.description}</p>
+                )}
                 <p className="meta">
                   <span>
                     {group.articles.length} article

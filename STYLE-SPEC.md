@@ -442,8 +442,17 @@ above the full article list, using the same small/grey/sans signpost
 language as in-article section headings (`.section-label`: `--text-sm`,
 uppercase, `--muted`, hairline underneath) so the two vocabularies read as
 one system. Each series is one entry — title linking to its
-`series_order: 1` article, plus a `.meta` line ("3 articles · philosophy")
-reusing the existing metadata styling rather than inventing a new one.
+`series_order: 1` article, then (if a `description` is registered for
+that series in `site/content/series.json` — see `PROJECT-PLAN.md`
+"Series") the throughline sentence(s) as a `.series-description`
+paragraph — same register as an article-list excerpt, `--muted`,
+reading content rather than chrome — then the `.meta` line ("3 articles
+· philosophy") reusing the existing metadata styling rather than
+inventing a new one. The
+sidebar (below) deliberately does *not* repeat the description: it's
+compact per-article navigation, not a second place to read the series
+pitch, and the reader has already seen it once on the homepage to get
+there.
 
 **Article page — `.series-nav` sidebar.** Only rendered when the article
 has a `series` field. Two states:

@@ -385,6 +385,17 @@ main {
   text-decoration: underline;
 }
 
+/* The throughline sentence(s) from series_description — same register
+   as an article-list excerpt (muted, not the interface sans-serif),
+   since this is still reading content, not navigation chrome. Optional:
+   a series with no series_description just skips straight from title
+   to the article-count/topic meta line, same as before this existed. */
+.series-description {
+  margin: 0 0 var(--space-3);
+  color: var(--muted);
+  text-wrap: pretty;
+}
+
 .series-list .meta {
   margin: 0;
 }

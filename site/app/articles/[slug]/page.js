@@ -1,5 +1,10 @@
 import Link from "next/link";
-import { getAllArticles, getArticle, getSeriesArticles } from "@/lib/articles";
+import {
+  getAllArticles,
+  getArticle,
+  getSeriesArticles,
+  getSeriesMeta,
+} from "@/lib/articles";
 
 function formatDate(date) {
   return new Date(date).toLocaleDateString("en-GB", {
@@ -33,6 +38,11 @@ export default async function ArticlePage({ params }) {
   // Only articles that carry a `series` field get the sidebar — a plain
   // article has no series-navigation UI at all, not even an empty one.
   const seriesArticles = article.series ? getSeriesArticles(article.series) : [];
+  // content/series.json is the source of truth for the title; the
+  // series_title fallback covers a series that predates the registry.
+  const seriesTitle = article.series
+    ? getSeriesMeta(article.series).title ?? article.series_title ?? article.series
+    : null;
 
   const articleEl = (
     // data-pagefind-body scopes indexing to this element, so site
@@ -60,7 +70,7 @@ export default async function ArticlePage({ params }) {
       {article.series && (
         <div
           hidden
-          data-pagefind-filter={`series:${article.series_title ?? article.series}`}
+          data-pagefind-filter={`series:${seriesTitle}`}
         />
       )}
 
@@ -134,11 +144,11 @@ export default async function ArticlePage({ params }) {
     <div className="series-layout">
       <nav
         className="series-nav"
-        aria-label={`${article.series_title ?? "Series"} articles`}
+        aria-label={`${seriesTitle ?? "Series"} articles`}
         data-pagefind-ignore
       >
         <p className="series-nav-label">Series</p>
-        <p className="series-nav-title">{article.series_title ?? article.series}</p>
+        <p className="series-nav-title">{seriesTitle}</p>
         <ol>
           {seriesArticles.map((entry, index) => {
             const isCurrent = entry.slug === article.slug;

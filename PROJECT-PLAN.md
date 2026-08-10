@@ -166,13 +166,41 @@ Some articles are written as a connected set — a small arc where each class
 builds on the one before, rather than three unrelated topics. This is
 optional: most articles will never carry these fields.
 
-Three front-matter fields drive it:
+Two front-matter fields per article drive it:
 
-| Field          | What it is                                                                                     |
-| -------------- | ----------------------------------------------------------------------------------------------- |
-| `series`       | A stable slug shared by every article in the set, e.g. `eastern-philosophy-and-the-self`.       |
-| `series_title` | The human-readable series name, shown on the homepage and in the sidebar. Same on every article. |
-| `series_order` | The article's position within the series (1, 2, 3, …). Determines reading/teaching order.        |
+| Field          | What it is                                                                                |
+| -------------- | ------------------------------------------------------------------------------------------ |
+| `series`       | A stable slug shared by every article in the set, e.g. `eastern-philosophy-and-the-self`. |
+| `series_order` | The article's position within the series (1, 2, 3, …). Determines reading/teaching order.  |
+
+The series' **title and description live in one place**,
+`site/content/series.json`, rather than being repeated in every
+article's front matter:
+
+```json
+{
+  "eastern-philosophy-and-the-self": {
+    "title": "Eastern Philosophy and the Self",
+    "description": "One or two sentences — the throughline tying the articles together."
+  }
+}
+```
+
+This replaced an earlier version where `series_title` and
+`series_description` were duplicated verbatim across every article in
+the set — editing a series' title meant editing every article that
+carried it, which is exactly the kind of duplication a single source of
+truth avoids. `lib/articles.js` (`getSeriesMeta()`, `getAllSeries()`)
+reads the registry first and falls back to `article.series_title`/
+`article.series_description` only for a series that predates it — new
+series should only ever need an entry here, not per-article fields.
+`description` is optional: a series with none just skips straight from
+the title to the article-count/topic line on the homepage.
+
+`description` is normally the same sentence(s) as the "Theme &
+throughline" already written in `research/<series-slug>.md` during
+planning (see the `english-learning-series` skill) — copy it over rather
+than redrafting, so the two stay in sync.
 
 Site behaviour (implemented in `site/`):
 

@@ -14,7 +14,6 @@ summary: >-
   If the self isn't fixed and relationships shape who we are, Daoism asks a
   practical question next: how, then, should we act?
 series: eastern-philosophy-and-the-self
-series_title: Eastern Philosophy and the Self
 series_order: 3
 cover_image: /images/covers/2026-08-08-acting-without-forcing.jpg
 cover_image_alt: A calm river flowing around rocks and along its natural course
