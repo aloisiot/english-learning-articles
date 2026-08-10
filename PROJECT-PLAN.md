@@ -179,14 +179,15 @@ Site behaviour (implemented in `site/`):
 - The **homepage** shows a "Series" section above the full article list,
   one entry per series, linking to its first (`series_order: 1`) article.
 - Any article carrying a `series` field gets a **left-hand sidebar** on
-  its page (≥1100px viewports), listing every article in that series in
-  order, with the current one bolded. Articles with no `series` field get
-  no sidebar at all — not even an empty one.
+  its page (≥1280px viewports — was 1100px before the 2026-08 measure
+  widening, see `STYLE-SPEC.md` §4/§7), listing every article in that
+  series in order, with the current one bolded. Articles with no
+  `series` field get no sidebar at all — not even an empty one.
 - The article itself always stays centred on the page, exactly as on any
   other article — the sidebar sits in a mirrored two-column layout (an
   invisible spacer balances it on the other side) rather than shifting
   the reading column off-centre.
-- Below 1100px there's no room for a true sidebar alongside the article's
+- Below 1280px there's no room for a true sidebar alongside the article's
   measure, so it collapses to a plain block above the article — the first
   thing on the page, not a sidebar — rather than disappearing.
 - `series` is also wired into the search page as a filter, alongside

@@ -65,17 +65,29 @@ export default async function ArticlePage({ params }) {
       )}
 
       {article.cover_image && (
-        <div className="cover-image-wrap" data-pagefind-ignore>
+        // Not data-pagefind-ignore on this wrapper (unlike the credit
+        // <p> below) — the <img>'s data-pagefind-meta needs to be
+        // captured so article-list thumbnails (home + search) have
+        // something to render. Images carry no indexable text of their
+        // own, so leaving it un-ignored doesn't pollute search matches.
+        <div className="cover-image-wrap">
           {/* Plain <img>, not next/image — output: "export" doesn't run
               the Next.js image optimizer, and a handful of self-hosted
-              covers doesn't need it. */}
+              covers doesn't need it.
+              data-pagefind-meta="key[attr]" pulls the value straight off
+              this element's own src/alt attributes — Pagefind's built-in
+              syntax for exactly this (see english-learning-cover-image
+              skill / STYLE-SPEC.md §6b for how it's consumed). */}
           <img
             className="cover-image"
             src={article.cover_image}
             alt={article.cover_image_alt ?? ""}
+            data-pagefind-meta="cover_image[src], cover_image_alt[alt]"
           />
           {article.cover_image_credit && (
-            <p className="cover-credit">{article.cover_image_credit}</p>
+            <p className="cover-credit" data-pagefind-ignore>
+              {article.cover_image_credit}
+            </p>
           )}
         </div>
       )}

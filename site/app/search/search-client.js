@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { loadPagefind } from "@/lib/pagefind";
+import ArticleSummary from "@/app/article-summary";
 
 const FILTER_LABELS = {
   topic: "Topic",
@@ -144,26 +145,20 @@ export default function SearchClient() {
 
       <ul className="article-list">
         {results.map((result) => (
-          <li key={result.url}>
-            <h2>
-              <a href={result.url}>{result.meta?.title}</a>
-            </h2>
-            <p
-              className="search-excerpt"
-              dangerouslySetInnerHTML={{ __html: result.excerpt }}
-            />
-            <div className="meta">
-              {result.filters?.topic?.[0] && (
-                <span>{result.filters.topic[0]}</span>
-              )}
-              {result.filters?.grammar?.[0] && (
-                <span>{result.filters.grammar[0]}</span>
-              )}
-              {result.filters?.level?.[0] && (
-                <span>{result.filters.level[0]}</span>
-              )}
-            </div>
-          </li>
+          <ArticleSummary
+            key={result.url}
+            href={result.url}
+            external
+            title={result.meta?.title}
+            excerptHtml={result.excerpt}
+            coverImage={result.meta?.cover_image}
+            coverImageAlt={result.meta?.cover_image_alt}
+            meta={[
+              result.filters?.topic?.[0],
+              result.filters?.grammar?.[0],
+              result.filters?.level?.[0],
+            ].filter(Boolean)}
+          />
         ))}
       </ul>
     </div>

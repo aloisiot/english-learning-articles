@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getAllArticles, getAllSeries } from "@/lib/articles";
+import ArticleSummary from "@/app/article-summary";
 
 function formatDate(date) {
   return new Date(date).toLocaleDateString("en-GB", {
@@ -49,18 +50,20 @@ export default function Home() {
       <h2 className="section-label">All Articles</h2>
       <ul className="article-list">
         {articles.map((article) => (
-          <li key={article.slug}>
-            <h2>
-              <Link href={`/articles/${article.slug}`}>{article.title}</Link>
-            </h2>
-            <p>{article.summary}</p>
-            <div className="meta">
-              <span>{formatDate(article.date)}</span>
-              <span>{article.topic}</span>
-              <span>{article.grammar_focus}</span>
-              <span>{article.level}</span>
-            </div>
-          </li>
+          <ArticleSummary
+            key={article.slug}
+            href={`/articles/${article.slug}`}
+            title={article.title}
+            excerpt={article.summary}
+            coverImage={article.cover_image}
+            coverImageAlt={article.cover_image_alt}
+            meta={[
+              formatDate(article.date),
+              article.topic,
+              article.grammar_focus,
+              article.level,
+            ]}
+          />
         ))}
       </ul>
     </>

@@ -155,7 +155,8 @@ Fluid page title, avoiding a hard jump at the breakpoint:
 
 ## 4. Measure and layout
 
-The single highest-impact setting. Target **62–66 characters per line**.
+The single highest-impact setting. Original target: **62–66 characters
+per line**.
 
 ```css
 --measure: 34rem;  /* ≈ 65 characters at 18px Source Serif 4, as implemented */
@@ -167,6 +168,20 @@ measures the digit zero, wider than the average lowercase letter, so a
 `62ch` container yields roughly 66–70 actual characters.
 
 **Retune whenever the typeface changes.**
+
+### 2026-08 width revision
+
+`--measure` was widened ~30% to `44.2rem` (from `34rem`) — pages read as
+too narrow in practice, and the article-list thumbnails added alongside
+this change (§6b) need horizontal room next to the title/excerpt text
+that the original measure didn't leave. This pushes the reading column
+to roughly **84 characters per line**, past the 62–66ch target and the
+80-character WCAG ceiling this document originally argued for (§1). That
+trade-off is deliberate and overrides the earlier reasoning rather than
+extending it — flagged here rather than silently edited into §1's
+rationale, since the two now disagree on purpose. All downstream
+geometry (series-sidebar breakpoint, §7 below) is derived from
+`--measure` and shifts automatically with it.
 
 ```css
 --gutter: var(--space-6); /* 1.5rem; --space-5 (1.25rem) below 480px */
@@ -375,6 +390,48 @@ skill for sourcing). When present:
 
 ---
 
+## 6b. Article-list thumbnails
+
+Cover images (§6a) also appear as a thumbnail on article-list entries —
+the homepage's full list and the search page's results — via the shared
+`app/article-summary.js` component (`<ArticleSummary>`), used by both
+pages so this layout exists in exactly one place.
+
+- Fixed-width column (`9rem`, `4:3`, `object-fit: cover`) to the left of
+  the title/excerpt/meta text, so every row's text starts at the same
+  x-position regardless of the source photo's aspect ratio.
+- Additive, not a reserved slot: entries with no `cover_image` render as
+  a plain single-column row, same as before thumbnails existed — no
+  placeholder box, no reserved gap.
+- Below 480px (the site's one mobile breakpoint, §9) the thumbnail moves
+  above the text instead of shrinking further, at `16:9` full width.
+- Same plain-`<img>` reasoning as §6a: no `next/image`, since the
+  static export doesn't run its optimizer.
+
+**Getting the thumbnail into search results.** Pagefind builds its
+index from the static HTML at build time, so search results can't read
+`content/*.md` front matter directly at request time — only whatever
+was captured into the page as indexable meta. The article page exposes
+`cover_image`/`cover_image_alt` via Pagefind's attribute-value meta
+syntax directly on the `<img>` element:
+
+```jsx
+<img
+  src={article.cover_image}
+  alt={article.cover_image_alt ?? ""}
+  data-pagefind-meta="cover_image[src], cover_image_alt[alt]"
+/>
+```
+
+`key[attr]` pulls the value straight from that element's own attribute
+rather than requiring a literal string — Pagefind's built-in mechanism
+for exactly this case. The credit caption (`.cover-credit`) keeps its
+own `data-pagefind-ignore` so it stays out of the search index/excerpts,
+but that tag moved off the wrapper `<div>` onto just the caption — it
+was blocking meta capture on the image when it sat on a shared ancestor.
+
+---
+
 ## 7. Series navigation
 
 Added after this document's first draft, alongside the homepage's Series
@@ -391,16 +448,17 @@ reusing the existing metadata styling rather than inventing a new one.
 **Article page — `.series-nav` sidebar.** Only rendered when the article
 has a `series` field. Two states:
 
-- **Below 1100px (default/stacked):** a plain block above the article —
+- **Below 1280px (default/stacked):** a plain block above the article —
   the first thing on the page, not a persistent sidebar — with a small
   uppercase "Series" label, the series title, and an ordered list of
   every article in the series. The current article is bold
   (`.series-nav-current`) rather than coloured, consistent with §10's
   "never signal state by colour alone."
-- **From 1100px:** a true two-column layout, sidebar to the left,
+- **From 1280px:** a true two-column layout, sidebar to the left,
   `position: sticky` so it tracks the scroll during a long article. The
   threshold is deliberately higher than the 480px breakpoint used
-  everywhere else on the site — see below for why.
+  everywhere else on the site — see below for why. (Was 1100px before
+  the §4 measure widening; the number moved with it.)
 
 **Keeping the article centred.** The article must stay centred on the
 page exactly as on any page without a sidebar — the sidebar cannot be
@@ -412,13 +470,14 @@ equal to the page's centre. `main:has(.series-layout)` widens just that
 page's centred column to fit the full symmetric row — every other page
 keeps the plain single-column width from §4.
 
-**Why 1100px.** The full row — sidebar (13rem) + gap + `--measure` (34rem)
-+ gap + spacer (13rem) — is 64rem (~1024px). Below roughly that viewport
-width plus the outer gutters, there's nowhere to put a 13rem sidebar
-without either narrowing the article's measure (against §4's rule that the
-measure is retuned deliberately, not squeezed by circumstance) or crowding
-the viewport edge. 1100px keeps a small buffer above the mathematical
-minimum.
+**Why 1280px.** The full row — sidebar (13rem) + gap + `--measure`
+(44.2rem) + gap + spacer (13rem) — is 74.2rem (~1187px). Below roughly
+that viewport width plus the outer gutters, there's nowhere to put a
+13rem sidebar without either narrowing the article's measure (against
+§4's rule that the measure is retuned deliberately, not squeezed by
+circumstance) or crowding the viewport edge. 1280px keeps a small buffer
+above the mathematical minimum, the same role 1100px played against the
+original 34rem measure (64rem/~1024px row) before §4's 2026-08 revision.
 
 ---
 
@@ -471,7 +530,8 @@ more for everything except the series sidebar.
 (Page title uses the fluid `--text-title` clamp from §3 rather than a
 hard breakpoint jump.)
 
-**1100px** — added for the series sidebar only (§7). Below it, a series
+**1280px** — added for the series sidebar only (§7); was 1100px before
+the §4 measure widening moved the threshold. Below it, a series
 article's sidebar is a stacked block above the article; from it, sidebar
 and article sit side by side with the article still centred on the page.
 No other page or element responds to this breakpoint.
