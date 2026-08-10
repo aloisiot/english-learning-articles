@@ -1,14 +1,29 @@
 ---
-title: "You Are Made by Your Relationships, Confucius Said"
-date: "2026-08-08"
-level: "B2-C1"
-topic: "philosophy"
-grammar_focus: "Passive voice"
-keywords: ["confucianism", "ren", "li", "passive voice", "eastern philosophy", "relational self"]
-summary: "In Confucian thought the self isn't a private, fixed thing — it's built through the relationships and rituals that surround it."
-series: "eastern-philosophy-and-the-self"
-series_title: "Eastern Philosophy and the Self"
+title: 'You Are Made by Your Relationships, Confucius Said'
+date: '2026-08-08'
+level: B2-C1
+topic: philosophy
+grammar_focus: Passive voice
+keywords:
+  - confucianism
+  - ren
+  - li
+  - passive voice
+  - eastern philosophy
+  - relational self
+summary: >-
+  In Confucian thought the self isn't a private, fixed thing — it's built
+  through the relationships and rituals that surround it.
+series: eastern-philosophy-and-the-self
+series_title: Eastern Philosophy and the Self
 series_order: 1
+cover_image: /images/covers/2026-08-08-the-self-as-relationship.jpg
+cover_image_alt: >-
+  Interior of the Hall of Great Accomplishment at the Temple of Confucius in
+  Beijing, with altar and memorial tablet, photographed by John Thomson in 1871
+cover_image_credit: >-
+  Photo by an unlisted Wikimedia Commons contributor on Wikimedia Commons (CC BY
+  4.0, https://creativecommons.org/licenses/by/4.0)
 ---
 
 ## Grammar Spotlight: Passive Voice

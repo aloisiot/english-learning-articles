@@ -5,6 +5,7 @@
   "scripts": {
     "predev": "node scripts/ensure-index.mjs",
     "dev": "next dev",
+    "covers": "node scripts/download-covers.mjs",
     "build": "next build && node scripts/postbuild.mjs",
     "search:index": "npm run build",
     "start": "npx serve out"

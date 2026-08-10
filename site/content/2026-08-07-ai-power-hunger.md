@@ -1,11 +1,23 @@
 ---
-title: "What If the Limit on AI Isn't Chips, But Electricity?"
-date: "2026-08-07"
-level: "B2-C1"
-topic: "technology"
-grammar_focus: "Third and mixed conditionals"
-keywords: ["ai", "data centres", "energy", "conditionals", "electricity grid"]
-summary: "The conversation about AI usually focuses on models and chips. The real bottleneck may turn out to be much more ordinary: power."
+title: 'What If the Limit on AI Isn''t Chips, But Electricity?'
+date: '2026-08-07'
+level: B2-C1
+topic: technology
+grammar_focus: Third and mixed conditionals
+keywords:
+  - ai
+  - data centres
+  - energy
+  - conditionals
+  - electricity grid
+summary: >-
+  The conversation about AI usually focuses on models and chips. The real
+  bottleneck may turn out to be much more ordinary: power.
+cover_image: /images/covers/2026-08-07-ai-power-hunger.jpg
+cover_image_alt: High-voltage electricity transmission towers and power lines against the sky
+cover_image_credit: >-
+  Photo by Stefan Andrej Shambora (St_A_Sh) on Wikimedia Commons (CC BY 2.0,
+  https://creativecommons.org/licenses/by/2.0)
 ---
 
 ## Grammar Spotlight: Third and Mixed Conditionals

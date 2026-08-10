@@ -353,6 +353,28 @@ it's reference material rather than content to teach from).
 
 ---
 
+## 6a. Cover images
+
+Optional per article (`cover_image`, `cover_image_alt`,
+`cover_image_credit` front matter — see the `english-learning-cover-image`
+skill for sourcing). When present:
+
+- Renders full-width at the top of the article, above the `<h1>`, capped
+  to the same `--measure` column as the rest of the page — no bleed to
+  the viewport edge, consistent with §4's "no ornament" principle.
+- `aspect-ratio: 16 / 9` with `object-fit: cover`, so mixed source image
+  dimensions from Wikimedia Commons don't cause layout jumps between
+  articles.
+- No border, shadow, or rounded corners — a plain rectangle, matching the
+  no-ornament rule in §1.
+- Credit caption directly beneath the image: `--text-xs`, `--muted`,
+  sans-serif, same visual register as the article metadata row. Not
+  bold, not a link unless the source URL is worth surfacing.
+- Skipped entirely (no placeholder, no empty space) on articles without a
+  `cover_image` field — this is additive, not a required layout element.
+
+---
+
 ## 7. Series navigation
 
 Added after this document's first draft, alongside the homepage's Series
@@ -512,6 +534,12 @@ the row below for what §7 additionally touched)
 homepage Series section), `app/search/search-client.js` (`series` added
 as a filter), and further additions to `app/globals.css` and
 `app/articles/[slug]/page.js` beyond the section-wrapper work below.
+
+**Additionally touched for cover images (§6a):** `app/articles/[slug]/page.js`
+(renders `cover_image`/`cover_image_alt`/`cover_image_credit` above the
+header, conditional on the field existing) and `app/globals.css` (the
+`.cover-image`/`.cover-credit` rules from §6a). Files live in
+`public/images/covers/` — see the `english-learning-cover-image` skill.
 
 **The one real obstacle, as originally framed:** the markdown pipeline
 would otherwise emit a flat sequence of `<h2>` and `<p>` elements, with no

@@ -64,6 +64,22 @@ export default async function ArticlePage({ params }) {
         />
       )}
 
+      {article.cover_image && (
+        <div className="cover-image-wrap" data-pagefind-ignore>
+          {/* Plain <img>, not next/image — output: "export" doesn't run
+              the Next.js image optimizer, and a handful of self-hosted
+              covers doesn't need it. */}
+          <img
+            className="cover-image"
+            src={article.cover_image}
+            alt={article.cover_image_alt ?? ""}
+          />
+          {article.cover_image_credit && (
+            <p className="cover-credit">{article.cover_image_credit}</p>
+          )}
+        </div>
+      )}
+
       <header className="article-header">
         <h1>{article.title}</h1>
         {/* Kept out of the index so it doesn't appear inside excerpts. */}

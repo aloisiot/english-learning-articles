@@ -444,6 +444,29 @@ main {
 
 /* ---------- article page ---------- */
 
+/* Cover image: optional, full-measure width, fixed aspect ratio so mixed
+   source dimensions from Wikimedia Commons never cause layout jumps
+   between articles. No border/shadow/radius — plain rectangle, per the
+   no-ornament rule. See STYLE-SPEC.md §6a. */
+.cover-image-wrap {
+  margin-bottom: var(--space-6);
+}
+
+.cover-image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.cover-credit {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  line-height: var(--leading-ui);
+  color: var(--muted);
+  margin: var(--space-2) 0 0;
+}
+
 .article-header {
   margin-bottom: var(--space-8);
 }

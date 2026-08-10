@@ -1,14 +1,26 @@
 ---
-title: "How to Act Once You Stop Forcing Things"
-date: "2026-08-08"
-level: "B2-C1"
-topic: "philosophy"
-grammar_focus: "Participle clauses"
-keywords: ["daoism", "taoism", "wu wei", "participle clauses", "eastern philosophy"]
-summary: "If the self isn't fixed and relationships shape who we are, Daoism asks a practical question next: how, then, should we act?"
-series: "eastern-philosophy-and-the-self"
-series_title: "Eastern Philosophy and the Self"
+title: How to Act Once You Stop Forcing Things
+date: '2026-08-08'
+level: B2-C1
+topic: philosophy
+grammar_focus: Participle clauses
+keywords:
+  - daoism
+  - taoism
+  - wu wei
+  - participle clauses
+  - eastern philosophy
+summary: >-
+  If the self isn't fixed and relationships shape who we are, Daoism asks a
+  practical question next: how, then, should we act?
+series: eastern-philosophy-and-the-self
+series_title: Eastern Philosophy and the Self
 series_order: 3
+cover_image: /images/covers/2026-08-08-acting-without-forcing.jpg
+cover_image_alt: A calm river flowing around rocks and along its natural course
+cover_image_credit: >-
+  Photo by Romain Guy from San Francisco, USA on Wikimedia Commons (CC0,
+  http://creativecommons.org/publicdomain/zero/1.0/deed.en)
 ---
 
 ## Grammar Spotlight: Participle Clauses

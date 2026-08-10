@@ -58,6 +58,9 @@ keywords: [ai regulation, reported speech, tech policy]
 series: eastern-philosophy-and-the-self   # optional — see "Series" below
 series_title: Eastern Philosophy and the Self
 series_order: 1
+cover_image: "/images/covers/YYYY-MM-DD-slug.jpg"  # optional — see "Cover images" below
+cover_image_alt: "Plain-language description of the photo"
+cover_image_credit: "Photo by <Author> on Wikimedia Commons (<License>)"
 ---
 
 ## Grammar Spotlight: [Grammar Point]
@@ -142,6 +145,20 @@ treatment of its own yet (unlike Key Vocabulary or Quick Recap in
 list styling as the reading section. The five articles published before
 this rule was added (`site/content/2026-08-07-*.md`) predate it and have
 no References section yet.
+
+## Cover images
+
+Optional per article: a license-free photograph, self-hosted in
+`site/public/images/covers/<slug>.<ext>` and referenced via three
+front-matter fields (`cover_image`, `cover_image_alt`,
+`cover_image_credit`). Sourced exclusively from Wikimedia Commons
+(CC0/public domain/CC-BY/CC-BY-SA only), never hotlinked — consistent
+with the site's "no external data at request time" principle (fonts are
+self-hosted the same way, see `STYLE-SPEC.md` §2). Full sourcing and
+attribution workflow lives in the `english-learning-cover-image` skill;
+rendering treatment is in `STYLE-SPEC.md` §6a. This is additive, not a
+requirement like References — articles with no cover image render
+exactly as before.
 
 ## Series
 

@@ -1,0 +1,10 @@
+{
+  "_readme": "Tracking file for site/scripts/download-covers.mjs. Each entry is one article's cover image candidate, found via web search on commons.wikimedia.org (Claude could not reach Commons directly from its sandbox — see chat). Run `node scripts/download-covers.mjs` from inside site/ on a machine with normal internet access. The script re-verifies license/author live against the Wikimedia API before downloading anything (never trusts the fields below blindly), downloads the full-resolution file into public/images/covers/, and writes cover_image / cover_image_alt / cover_image_credit into the matching content/<slug>.md front matter. On success the entry is deleted from this file — the article's own front matter is the record of what was used, so a finished entry has no reason to linger here. Entries only remain when something failed (status: 'failed', with a 'notes' explanation) or hasn't been attempted yet ('pending'); re-run any time to retry them.",
+  "allowed_licenses": [
+    "CC0",
+    "Public Domain",
+    "CC BY",
+    "CC BY-SA"
+  ],
+  "images": []
+}

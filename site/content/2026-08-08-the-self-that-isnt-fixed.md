@@ -1,14 +1,30 @@
 ---
-title: "The Self Buddhism Says You Don't Have"
-date: "2026-08-08"
-level: "B2-C1"
-topic: "philosophy"
-grammar_focus: "Cleft sentences"
-keywords: ["buddhism", "anatta", "no-self", "impermanence", "cleft sentences", "eastern philosophy"]
-summary: "Buddhism doesn't deny that you exist — it denies that anything fixed and permanent is doing the existing."
-series: "eastern-philosophy-and-the-self"
-series_title: "Eastern Philosophy and the Self"
+title: The Self Buddhism Says You Don't Have
+date: '2026-08-08'
+level: B2-C1
+topic: philosophy
+grammar_focus: Cleft sentences
+keywords:
+  - buddhism
+  - anatta
+  - no-self
+  - impermanence
+  - cleft sentences
+  - eastern philosophy
+summary: >-
+  Buddhism doesn't deny that you exist — it denies that anything fixed and
+  permanent is doing the existing.
+series: eastern-philosophy-and-the-self
+series_title: Eastern Philosophy and the Self
 series_order: 2
+cover_image: /images/covers/2026-08-08-the-self-that-isnt-fixed.jpg
+cover_image_alt: >-
+  A Tibetan Buddhist sand mandala, made of coloured sand and traditionally
+  destroyed after completion
+cover_image_credit: >-
+  Photo by The original uploader was Colonel Warden at English Wikipedia . on
+  Wikimedia Commons (CC BY-SA 3.0,
+  http://creativecommons.org/licenses/by-sa/3.0/)
 ---
 
 ## Grammar Spotlight: Cleft Sentences

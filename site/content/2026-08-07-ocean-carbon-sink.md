@@ -1,11 +1,22 @@
 ---
-title: "The Ocean Is Getting Tired of Doing Us Favours"
-date: "2026-08-07"
-level: "B2-C1"
-topic: "science-environment"
-grammar_focus: "Reported speech"
-keywords: ["ocean carbon sink", "climate change", "reported speech", "co2 absorption"]
-summary: "For decades the ocean has quietly absorbed a quarter of our carbon emissions. New research suggests it may be slowing down."
+title: The Ocean Is Getting Tired of Doing Us Favours
+date: '2026-08-07'
+level: B2-C1
+topic: science-environment
+grammar_focus: Reported speech
+keywords:
+  - ocean carbon sink
+  - climate change
+  - reported speech
+  - co2 absorption
+summary: >-
+  For decades the ocean has quietly absorbed a quarter of our carbon emissions.
+  New research suggests it may be slowing down.
+cover_image: /images/covers/2026-08-07-ocean-carbon-sink.jpg
+cover_image_alt: 'A large ocean wave curling over, seen from the water level'
+cover_image_credit: >-
+  Photo by Unknown author on Wikimedia Commons (CC0,
+  http://creativecommons.org/publicdomain/zero/1.0/deed.en)
 ---
 
 ## Grammar Spotlight: Reported Speech
