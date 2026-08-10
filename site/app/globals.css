@@ -1,5 +1,5 @@
 /* ------------------------------------------------------------------
-   Quiet Editorial — the design described in STYLE-SPEC.md.
+   Quiet Editorial — the design described in docs/STYLE-SPEC.md.
 
    Serif for prose, system sans for everything that is not prose.
    Hierarchy comes from size and space, never from colour or ornament:
@@ -86,7 +86,7 @@
   --prose-wght: normal;
 
   /* --- measure --------------------------------------------------- */
-  /* Widened ~30% from the original 34rem (revision: STYLE-SPEC.md §4
+  /* Widened ~30% from the original 34rem (revision: docs/STYLE-SPEC.md §4
      "2026-08 width revision") — pages read as too narrow in practice,
      especially once article-list thumbnails need room beside the text.
      This pushes the reading column past the originally-documented
@@ -422,7 +422,7 @@ main {
    aspect ratio; `object-fit: cover` crops rather than distorts.
    Entries with no cover image render as a single-column row (no gap,
    no reserved image space) — thumbnails are additive, not a fixed slot
-   every entry must fill. See STYLE-SPEC.md §6b. */
+   every entry must fill. See docs/STYLE-SPEC.md §6b. */
 .article-summary.has-cover {
   display: flex;
   gap: var(--space-6);
@@ -506,7 +506,7 @@ main {
 /* Cover image: optional, full-measure width, fixed aspect ratio so mixed
    source dimensions from Wikimedia Commons never cause layout jumps
    between articles. No border/shadow/radius — plain rectangle, per the
-   no-ornament rule. See STYLE-SPEC.md §6a. */
+   no-ornament rule. See docs/STYLE-SPEC.md §6a. */
 .cover-image-wrap {
   margin-bottom: var(--space-6);
 }

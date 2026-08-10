@@ -5,7 +5,7 @@
  * discovered later.
  *
  * Warn-only, always exits 0: cover images are optional per article
- * (see PROJECT-PLAN.md "Cover images"), so outstanding queue entries
+ * (see docs/cover-images.md), so outstanding queue entries
  * mean that image hasn't been sourced yet, not that anything is
  * broken. A push with pending cover-image work is completely valid —
  * this just makes sure it's a visible, intentional state rather than

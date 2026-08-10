@@ -88,7 +88,7 @@ export default async function ArticlePage({ params }) {
               data-pagefind-meta="key[attr]" pulls the value straight off
               this element's own src/alt attributes — Pagefind's built-in
               syntax for exactly this (see english-learning-cover-image
-              skill / STYLE-SPEC.md §6b for how it's consumed).
+              skill / docs/STYLE-SPEC.md §6b for how it's consumed).
               loading="eager" is the default, set explicitly here because
               this image is always above the fold — the article-list
               thumbnails (app/article-summary.js) are the ones that
