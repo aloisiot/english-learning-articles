@@ -51,6 +51,14 @@
   --space-16: 4rem;
   --space-18: 4.5rem;
 
+  /* --- cover-image radius ------------------------------------------ */
+  /* Proportional to the image's own display size, not a single fixed
+     value: the hero (~707px, full --measure) reads a corner radius that
+     a 144px list thumbnail would render as an almost-circular clip.
+     Two steps on the --space scale, not arbitrary numbers. */
+  --radius-cover-sm: var(--space-1); /* 4px  — 9rem list thumbnail */
+  --radius-cover-lg: var(--space-3); /* 12px — full-measure hero / stacked mobile thumbnail */
+
   /* Space above a section heading is roughly three times the space
      below it. That ratio is what makes sections findable at a glance
      while scrolling during a class — the eye reads the gap, not a rule. */
@@ -434,6 +442,7 @@ main {
   width: 9rem;
   aspect-ratio: 4 / 3;
   object-fit: cover;
+  border-radius: var(--radius-cover-sm);
 }
 
 .article-summary-body {
@@ -454,6 +463,9 @@ main {
   .article-summary-cover {
     width: 100%;
     aspect-ratio: 16 / 9;
+    /* Full-width now, same footprint as the article-page hero — steps
+       up to the larger radius rather than staying at the thumbnail's. */
+    border-radius: var(--radius-cover-lg);
   }
 }
 
@@ -505,8 +517,9 @@ main {
 
 /* Cover image: optional, full-measure width, fixed aspect ratio so mixed
    source dimensions from Wikimedia Commons never cause layout jumps
-   between articles. No border/shadow/radius — plain rectangle, per the
-   no-ornament rule. See docs/STYLE-SPEC.md §6a. */
+   between articles. No border or shadow — the one ornament is a corner
+   radius, sized to this image's own footprint (see --radius-cover-lg
+   above). See docs/STYLE-SPEC.md §6a. */
 .cover-image-wrap {
   margin-bottom: var(--space-6);
 }
@@ -516,6 +529,7 @@ main {
   width: 100%;
   aspect-ratio: 16 / 9;
   object-fit: cover;
+  border-radius: var(--radius-cover-lg);
 }
 
 .cover-credit {

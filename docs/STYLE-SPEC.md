@@ -380,8 +380,10 @@ Optional per article (`cover_image`, `cover_image_thumb`,
 - `aspect-ratio: 16 / 9` with `object-fit: cover`, so mixed source image
   dimensions from Wikimedia Commons don't cause layout jumps between
   articles.
-- No border, shadow, or rounded corners — a plain rectangle, matching the
-  no-ornament rule in §1.
+- No border or shadow. A corner radius (`--radius-cover-lg`, `0.75rem`/
+  12px) is the one exception to §1's no-ornament rule — sized to this
+  image's own full-measure footprint, not a fixed value shared with the
+  smaller list thumbnail (§6b uses a proportionally smaller radius).
 - Credit caption directly beneath the image: `--text-xs`, `--muted`,
   sans-serif, same visual register as the article metadata row. Not
   bold, not a link unless the source URL is worth surfacing.
@@ -412,6 +414,10 @@ pages so this layout exists in exactly one place.
 - Fixed-width column (`9rem`, `4:3`, `object-fit: cover`) to the left of
   the title/excerpt/meta text, so every row's text starts at the same
   x-position regardless of the source photo's aspect ratio.
+- Corner radius (`--radius-cover-sm`, `0.25rem`/4px) — smaller than the
+  hero's (§6a), proportional to this thumbnail's smaller footprint. Once
+  it stacks full-width below 480px it steps up to `--radius-cover-lg`,
+  matching the hero radius at the hero's own scale.
 - Additive, not a reserved slot: entries with no `cover_image` render as
   a plain single-column row, same as before thumbnails existed — no
   placeholder box, no reserved gap.
