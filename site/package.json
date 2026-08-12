@@ -16,6 +16,8 @@
     "start": "npx serve out"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
     "gray-matter": "^4.0.3",
     "next": "^16.3.0",
     "react": "^19.2.8",

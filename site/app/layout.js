@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { Source_Serif_4 } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { themeScript } from "@/lib/theme";
 import { SearchIcon } from "./icons";
 import ThemeToggle from "./theme-toggle";
@@ -61,6 +63,9 @@ export default function RootLayout({ children }) {
         <footer className="site-footer" data-pagefind-ignore>
           Articles for 30-minute English conversation classes.
         </footer>
+
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
