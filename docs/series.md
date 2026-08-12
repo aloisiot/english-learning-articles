@@ -68,7 +68,26 @@ order.
 ## Research tracking
 
 Planning a series (picking subjects, researching each one, deciding the
-order) happens in `research/content/<series-slug>.md` before any article is
-drafted — see the `english-learning-series` skill for the full process
-and file format. That file, not chat history, is the source of truth for
-where a series' research stands.
+order) happens under `research/content/` before any article is drafted —
+see the `english-learning-series` skill for the full process and file
+format. Those files, not chat history, are the source of truth.
+
+The material is split across two folders by how long it stays true, using
+**the same filename in both — the series slug, matching the key in
+`site/content/series.json`**:
+
+| File | Holds | Lifetime |
+| --- | --- | --- |
+| `research/content/progress/<slug>.md` | subject statuses, progress log, next step, todo | **deleted when the series ships** |
+| `research/content/decisions/<slug>.md` | throughline, sources, angle per article, "care needed" constraints, coherence notes | **kept permanently** |
+
+Progress goes stale — a leftover "next step" makes a finished series look
+unfinished, and a future session will act on it. The reasoning doesn't
+expire, and it records what was deliberately *avoided*, which nothing
+else does: an article's `## References` lists the sources used, not the
+framings rejected or the overlaps accepted on purpose. Deleting that is
+how a revision quietly reintroduces an error the research existed to
+prevent.
+
+Both are committed, so git recovers either. Full checklist for "shipped"
+is in [`research/content/README.md`](../research/content/README.md).
