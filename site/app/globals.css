@@ -178,10 +178,12 @@ body {
 }
 
 /* The gutter lives in the width calculation rather than in body padding,
-   so the column never touches the viewport edge on a narrow screen. */
-.site-header,
+   so the column never touches the viewport edge on a narrow screen.
+   .site-header/.site-footer are full-bleed (see below) — only their
+   inner wrapper and the article column itself use this constraint. */
 main,
-.site-footer {
+.site-header-inner,
+.site-footer-inner {
   width: min(100% - 2 * var(--gutter), var(--measure));
   margin-inline: auto;
 }
@@ -206,9 +208,14 @@ a:hover {
 
 /* ---------- layout ---------- */
 
+/* Full-bleed: the hairline border reads edge to edge rather than
+   stopping at the article column's width. */
 .site-header {
   padding: var(--space-8) 0 var(--space-4);
   border-bottom: 1px solid var(--rule);
+}
+
+.site-header-inner {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -336,8 +343,80 @@ main {
 
 .intro {
   color: var(--muted);
-  margin: 0 0 var(--space-16);
+  margin: 0 0 var(--space-8);
   text-wrap: pretty;
+}
+
+/* Topic filter — a row of pill buttons, one per topic found across the
+   articles plus "All". Monochrome like the rest of the site (no accent
+   colour): the selected pill is marked by a --text border/label rather
+   than a fill colour. */
+.topic-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-8);
+}
+
+.topic-nav button {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  line-height: var(--leading-ui);
+  color: var(--muted);
+  background: none;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: var(--space-1) var(--space-4);
+  cursor: pointer;
+}
+
+.topic-nav button:hover {
+  color: var(--text);
+  border-color: var(--muted);
+}
+
+.topic-nav button.is-active {
+  color: var(--text);
+  border-color: var(--text);
+}
+
+/* Articles / Series tabs — an underline pair sharing one hairline, same
+   signpost register as .section-label (which this replaces on the
+   homepage: the active tab's own label now carries that role). */
+.home-tabs {
+  display: flex;
+  gap: var(--space-6);
+  margin: 0 0 var(--space-6);
+  border-bottom: 1px solid var(--rule);
+}
+
+.home-tabs button {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: var(--leading-ui);
+  color: var(--muted);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px; /* sit on top of .home-tabs' shared hairline */
+  padding: 0 0 var(--space-2);
+  cursor: pointer;
+}
+
+.home-tabs button:hover {
+  color: var(--text);
+}
+
+.home-tabs button.is-active {
+  color: var(--text);
+  border-bottom-color: var(--text);
+}
+
+.empty-note {
+  color: var(--muted);
 }
 
 /* Small, grey, sans label above a homepage block ("Series", "All

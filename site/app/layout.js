@@ -44,24 +44,31 @@ export default function RootLayout({ children }) {
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body>
-        {/* data-pagefind-ignore keeps site chrome out of the search index. */}
+        {/* data-pagefind-ignore keeps site chrome out of the search index.
+            The header/footer elements themselves are full-bleed (edge to
+            edge); an inner wrapper re-applies the --measure column so the
+            title/nav/footer text still lines up with the page content. */}
         <header className="site-header" data-pagefind-ignore>
-          <Link href="/" className="site-title">
-            English Learning Articles
-          </Link>
-          <nav>
-            <Link href="/search/" className="nav-search">
-              <SearchIcon />
-              <span className="nav-search-label">Search</span>
+          <div className="site-header-inner">
+            <Link href="/" className="site-title">
+              English Learning Articles
             </Link>
-            <ThemeToggle />
-          </nav>
+            <nav>
+              <Link href="/search/" className="nav-search">
+                <SearchIcon />
+                <span className="nav-search-label">Search</span>
+              </Link>
+              <ThemeToggle />
+            </nav>
+          </div>
         </header>
 
         <main>{children}</main>
 
         <footer className="site-footer" data-pagefind-ignore>
-          Articles for 30-minute English conversation classes.
+          <div className="site-footer-inner">
+            Articles for 30-minute English conversation classes.
+          </div>
         </footer>
 
         <Analytics />

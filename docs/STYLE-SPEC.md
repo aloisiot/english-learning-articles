@@ -198,6 +198,15 @@ The gutter is a token (`--gutter`) rather than a fixed value, so the
 is built into the width calculation rather than applied as body padding,
 so the column never touches the viewport edge on small screens.
 
+**Header and footer are full-bleed** (`.site-header`/`.site-footer`
+themselves have no width constraint, so their border-bottom/border-top
+hairline spans the full viewport edge to edge — 2026-08 revision,
+alongside the topic filter/tabs added to the homepage). The title, nav,
+and footer text still line up with `main`'s column: each wraps its
+content in an inner `.site-header-inner`/`.site-footer-inner` div that
+carries the same `width: min(...)` formula as `main` above, rather than
+applying it to the header/footer element itself.
+
 ### Vertical rhythm
 
 Spacing scale, 4px base:
@@ -463,6 +472,42 @@ for exactly this case. The credit caption (`.cover-credit`) keeps its
 own `data-pagefind-ignore` so it stays out of the search index/excerpts,
 but that tag moved off the wrapper `<div>` onto just the caption — it
 was blocking meta capture on the image when it sat on a shared ancestor.
+
+---
+
+## 6c. Homepage: topic filter and tabs
+
+Added 2026-08. Two client-side controls sit between the intro paragraph
+and the article/series content — `app/home-client.js`, a "use client"
+component that receives the already-read `articles`/`series` arrays from
+the server component (`app/page.js`) and filters them in the browser
+(the site is a static export, so there's no server-side route or query
+param to filter through).
+
+**Topic filter (`.topic-nav`).** One pill button per distinct `topic`
+value found across all articles, plus "All". Monochrome like the rest of
+the site — no accent colour: unselected pills are `--rule`-bordered and
+`--muted`; the selected pill switches its border and text to `--text`,
+never a fill colour. Topic values are kebab-case in front matter
+(`science-environment`) and titlecased for display generically (hyphens
+→ spaces, each word capitalised) rather than through a hand-maintained
+label map, so a newly introduced topic needs no code change here.
+
+**Articles / Series tabs (`.home-tabs`).** Replaces the homepage's
+previous always-stacked layout (a "Series" block above an "All Articles"
+list, both permanently visible) with a single active view, defaulting to
+Articles. Styled as an underline-tab pair sharing one hairline border,
+the same small-caps/uppercase signpost register as `.section-label` —
+the active tab's own label now carries the job `.section-label` used to
+do on this page, so the homepage no longer renders separate "Series"/
+"All Articles" headings.
+
+**Interaction between them.** The topic filter applies to whichever tab
+is active: on Articles it filters the list directly; on Series it keeps
+a series if *any* of its member articles matches the selected topic
+(looser than requiring the whole series to share one topic, since
+nothing enforces that). Both empty states render the same muted
+`.empty-note` paragraph rather than an empty list with no explanation.
 
 ---
 
