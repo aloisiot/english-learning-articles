@@ -24,7 +24,8 @@ Two skills drive day-to-day authoring and aren't duplicated here:
 `english-learning-article` (writing a single article) and
 `english-learning-series` (planning a connected set of articles).
 `english-learning-cover-image` handles sourcing and attaching cover
-images.
+images. `english-learning-research` covers how a research strand under
+`research/` is investigated and written up.
 
 ## Repo layout
 
@@ -35,6 +36,8 @@ English Learning/
   research/
     content/                ← per-series research/progress tracking files
     dictionary/             ← research on adding word lookup to the site
+    grammar/                ← research on a grammar practice tool: evidence
+                              base, CEFR inventory, progress model
   site/                     ← the Next.js site
     content/                ← articles (YYYY-MM-DD-slug.md, flat)
     content/series.json     ← series title/description registry
