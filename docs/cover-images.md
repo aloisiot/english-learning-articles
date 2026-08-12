@@ -12,6 +12,41 @@ rendering treatment is in `docs/STYLE-SPEC.md` §6a/§6b. This is additive,
 not a requirement like References — articles with no cover image render
 exactly as before.
 
+## Queue entry format
+
+Candidates are queued in `site/scripts/cover-images.json` and processed
+by `npm run covers`. **All four of these fields are required** — the
+script reads every one of them, and omitting `target_path` in particular
+used to fail with an unrelated-looking `Cannot read properties of
+undefined (reading 'replace')` deep in the download step. The script now
+validates entries up front and names the missing field instead.
+
+```json
+{
+  "slug": "YYYY-MM-DD-article-slug",
+  "commons_file_title": "File:Example.jpg",
+  "target_path": "public/images/covers/YYYY-MM-DD-article-slug.jpg",
+  "suggested_alt": "Plain-language description of what's in the photo",
+  "status": "pending",
+  "notes": "Optional: why this image was chosen, or why it failed"
+}
+```
+
+- `slug` must match `site/content/<slug>.md` exactly.
+- `target_path` is the pre-conversion path; the script derives both
+  `<slug>.webp` and `<slug>-thumb.webp` from it, so the extension here is
+  a placeholder and only the stem matters.
+- `status` starts as `pending`. Successful entries are deleted from the
+  file entirely — the article's front matter becomes the record.
+
+## Rate limiting
+
+Wikimedia rate-limits bursts, and a batch of six was enough to trigger
+`HTTP 429` partway through. The script now pauses one second between
+entries and retries a 429/503 up to four times with a widening delay,
+honouring `Retry-After` when the response provides it. If it still gives
+up, the affected entries stay queued — wait a few minutes and re-run.
+
 ## Compression
 
 `site/scripts/download-covers.mjs` (`npm run covers`) runs every image

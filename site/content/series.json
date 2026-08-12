@@ -2,5 +2,9 @@
   "eastern-philosophy-and-the-self": {
     "title": "Eastern Philosophy and the Self",
     "description": "Three traditions, one question: what is the self? Confucius locates it in relationships, Buddhism denies it has any fixed core, and Daoism asks what that means for how you're supposed to act."
+  },
+  "how-ai-got-here": {
+    "title": "How AI Got Here",
+    "description": "How a 70-year-old question — can a machine think? — turned into ordinary infrastructure, and what that transformation cost along the way."
   }
 }

@@ -87,6 +87,64 @@ const HERO_QUALITY = 80;
 const THUMB_MAX_WIDTH = 500;
 const THUMB_QUALITY = 75;
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/** Pause between entries so a batch doesn't look like a burst to Wikimedia. */
+const BETWEEN_ENTRIES_MS = 1000;
+
+/**
+ * Every field the rest of this script reads off an entry. Checked up
+ * front because a missing one used to surface as an unrelated-looking
+ * TypeError deep in the download step ("Cannot read properties of
+ * undefined (reading 'replace')" when `target_path` was absent), which
+ * says nothing about which key is missing or which entry is at fault.
+ */
+const REQUIRED_ENTRY_FIELDS = [
+  "slug",
+  "commons_file_title",
+  "target_path",
+  "suggested_alt",
+];
+
+function findMissingFields(entry) {
+  return REQUIRED_ENTRY_FIELDS.filter((field) => !entry?.[field]);
+}
+
+/**
+ * Wikimedia rate-limits bursts. A batch processed back to back used to
+ * fail partway through on a bare HTTP 429, losing the remaining entries
+ * for no reason other than going too fast — so retry 429/503 with a
+ * widening pause, honouring `Retry-After` when the response supplies it.
+ *
+ * Both the API lookup and the image download need this: the first pass
+ * over this series retried only the API call, and two entries then died
+ * on the *download* instead, which looks like a different bug but isn't.
+ */
+async function fetchWithRetry(url, label, { maxAttempts = 5 } = {}) {
+  for (let attempt = 1; ; attempt++) {
+    const res = await fetch(url, { headers: { "User-Agent": USER_AGENT } });
+
+    if (res.status !== 429 && res.status !== 503) return res;
+
+    if (attempt >= maxAttempts) {
+      throw new Error(
+        `${label} rate-limited (HTTP ${res.status}) after ${attempt} attempts. Wait a few minutes and re-run — the entry stays queued.`,
+      );
+    }
+
+    const retryAfter = Number(res.headers.get("retry-after"));
+    const waitMs =
+      Number.isFinite(retryAfter) && retryAfter > 0
+        ? retryAfter * 1000
+        : attempt * 2000;
+
+    console.log(
+      `  rate-limited (HTTP ${res.status}) on ${label} — retrying in ${waitMs / 1000}s`,
+    );
+    await sleep(waitMs);
+  }
+}
+
 async function fetchImageInfo(fileTitle) {
   const url = new URL(API);
   url.searchParams.set("action", "query");
@@ -99,7 +157,7 @@ async function fetchImageInfo(fileTitle) {
   url.searchParams.set("format", "json");
   url.searchParams.set("formatversion", "2");
 
-  const res = await fetch(url, { headers: { "User-Agent": USER_AGENT } });
+  const res = await fetchWithRetry(url, "Wikimedia API request");
 
   if (!res.ok) {
     throw new Error(`Wikimedia API request failed: HTTP ${res.status}`);
@@ -147,7 +205,7 @@ function isAllowed(normalized, allowedLicenses) {
 }
 
 async function fetchImageBuffer(url) {
-  const res = await fetch(url, { headers: { "User-Agent": USER_AGENT } });
+  const res = await fetchWithRetry(url, "image download");
   if (!res.ok) {
     throw new Error(`Failed to download image: HTTP ${res.status}`);
   }
@@ -230,8 +288,18 @@ async function main() {
       continue;
     }
 
-    console.log(`\n${entry.slug}`);
-    console.log(`  file: ${entry.commons_file_title}`);
+    console.log(`\n${entry.slug ?? "(entry with no slug)"}`);
+    console.log(`  file: ${entry.commons_file_title ?? "(none given)"}`);
+
+    const missing = findMissingFields(entry);
+    if (missing.length > 0) {
+      entry.status = "failed";
+      entry.notes = `Entry is missing required field(s): ${missing.join(", ")}. Nothing was fetched. Add them and re-run.`;
+      console.log(`  SKIPPED — missing required field(s): ${missing.join(", ")}`);
+      changed = true;
+      remaining.push(entry);
+      continue;
+    }
 
     try {
       const info = await fetchImageInfo(entry.commons_file_title);
@@ -307,6 +375,12 @@ async function main() {
       changed = true;
       remaining.push(entry);
       console.log(`  FAILED — ${err.message}`);
+    }
+
+    // Space out requests so a batch doesn't read as a burst. Skipped
+    // after the final entry, where it would only add dead time.
+    if (entry !== tracking.images[tracking.images.length - 1]) {
+      await sleep(BETWEEN_ENTRIES_MS);
     }
   }
 

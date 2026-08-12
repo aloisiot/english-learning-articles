@@ -94,7 +94,7 @@ References is not part of the 30-minute timing budget (see
 read aloud in class.
 
 For a series article, pull the list from the `Sources` column already
-recorded for that subject in `research/<series-slug>.md` rather than
+recorded for that subject in `research/content/<series-slug>.md` rather than
 re-researching (see [series.md](./series.md) and the
 `english-learning-series` skill).
 

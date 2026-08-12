@@ -24,9 +24,12 @@ English Learning/
   README.md
   docs/                             ← this documentation
   research/
-    <series-slug>.md               ← per-series research/progress tracking
+    content/
+      <series-slug>.md             ← per-series research/progress tracking
                                       files (see docs/series.md and the
                                       english-learning-series skill)
+    dictionary/                    ← research on adding word lookup to the
+                                      site (not article content)
   site/                             ← the Next.js site
     content/
       YYYY-MM-DD-slug.md            ← every article, flat, one file per

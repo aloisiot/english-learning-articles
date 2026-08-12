@@ -10,6 +10,8 @@
     "check:covers": "node scripts/check-cover-queue.mjs",
     "verify": "node scripts/verify.mjs",
     "build": "next build && node scripts/postbuild.mjs",
+    "workflow:dev": "node scripts/workflow.mjs dev",
+    "workflow:content": "node scripts/workflow.mjs content",
     "search:index": "npm run build",
     "start": "npx serve out"
   },

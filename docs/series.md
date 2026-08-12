@@ -36,7 +36,7 @@ series should only ever need an entry here, not per-article fields.
 the title to the article-count/topic line on the homepage.
 
 `description` is normally the same sentence(s) as the "Theme &
-throughline" already written in `research/<series-slug>.md` during
+throughline" already written in `research/content/<series-slug>.md` during
 planning (see the `english-learning-series` skill) — copy it over rather
 than redrafting, so the two stay in sync.
 
@@ -68,7 +68,7 @@ order.
 ## Research tracking
 
 Planning a series (picking subjects, researching each one, deciding the
-order) happens in `research/<series-slug>.md` before any article is
+order) happens in `research/content/<series-slug>.md` before any article is
 drafted — see the `english-learning-series` skill for the full process
 and file format. That file, not chat history, is the source of truth for
 where a series' research stands.

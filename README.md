@@ -32,7 +32,9 @@ images.
 English Learning/
   README.md                 ← you are here
   docs/                     ← full documentation (table above)
-  research/                 ← per-series research/progress tracking files
+  research/
+    content/                ← per-series research/progress tracking files
+    dictionary/             ← research on adding word lookup to the site
   site/                     ← the Next.js site
     content/                ← articles (YYYY-MM-DD-slug.md, flat)
     content/series.json     ← series title/description registry
@@ -43,12 +45,36 @@ English Learning/
 
 ## Working on the site
 
+Two combined commands cover the usual sequences, so you don't have to
+run each step yourself:
+
 ```
 cd site
 npm install
+
+npm run workflow:dev       # covers → build → dev   (start working)
+npm run workflow:content   # covers → build         (after writing articles)
+```
+
+`build` includes the Pagefind index rebuild, so `workflow:content` is what
+makes newly written articles searchable. A cover-image step that can't finish
+(usually Wikimedia rate-limiting a batch) prints a warning and the run
+continues — images are optional, and anything unresolved stays queued in
+`site/scripts/cover-images.json` for a later `npm run covers`.
+
+The individual steps still work on their own:
+
+```
 npm run dev       # local dev server
+npm run covers    # download/attach queued cover images
+npm run build     # production build + search index
 npm run verify    # content checks + npm ci + production build
 ```
+
+Only the `workflow:*` entries may reference `scripts/workflow.mjs`. The
+runner calls `dev`, `covers` and `build` by name, so pointing any of those
+back at the runner turns the sequence into an infinite loop — it now
+detects that and exits with an explanation rather than spinning.
 
 `npm run verify` also runs automatically on `git push` via
 `.git/hooks/pre-push` — see
