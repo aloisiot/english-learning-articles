@@ -495,6 +495,13 @@ main {
 
 .article-list li {
   padding: var(--space-12) 0;
+}
+
+/* Separators go *between* rows, not after the last one. The list is the
+   final element on both the homepage and the search page, and the footer
+   already carries its own border-top — a trailing rule here put two
+   hairlines a few rems apart with nothing between them. */
+.article-list li:not(:last-child) {
   border-bottom: 1px solid var(--rule);
 }
 
