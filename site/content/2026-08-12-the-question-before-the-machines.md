@@ -61,7 +61,7 @@ The workshop went ahead. It was supposed to produce a report. Decades later, McC
 
 ## Quick Recap
 
-In 1950 Turing replaced the question "Can machines think?" with an observable test — the imitation game — and predicted machines would pass it by 2000. In 1955 four scientists named the field "artificial intelligence" in a funding proposal and gave themselves one summer to make serious progress. Both moments founded the field by confidently framing a problem rather than solving it.
+In 1950 Turing replaced the question "Can machines think?" with an observable test — the imitation game — and predicted that by 2000 a machine would fool an average interrogator roughly a third of the time. In 1955 four scientists named the field "artificial intelligence" in a funding proposal and gave themselves one summer to make serious progress. Both moments founded the field by confidently framing a problem rather than solving it.
 
 ## References
 

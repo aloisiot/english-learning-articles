@@ -43,7 +43,9 @@ still cannot verify about it.
   average interrogator will not have more than a 70-percent chance of
   making the right identification (machine or human) after five minutes
   of questioning."
-- Searle's "Chinese room" (1981) is the standard counter-argument: a
+- Searle's "Chinese room" (**1980** — "Minds, Brains, and Programs",
+  *Behavioral and Brain Sciences* 3, pp. 417–424) is the standard
+  counter-argument: a
   person following a rulebook could pass the test in a language they do
   not understand, so passing may show nothing about thinking.
 - The Dartmouth proposal is dated **31 August 1955**, a year before the
@@ -80,6 +82,13 @@ test has been passed or that it hasn't; the honest and more interesting
 line is that the test turned out to measure something other than what
 people expected.
 
+**Do not "re-correct" the Searle date to 1981.** Britannica contradicts
+itself: its *Turing test* article says "In 1981 American philosopher John
+Searle proposed the 'Chinese room' argument", while its own entry on the
+paper gives 1980. The paper is 1980 — *Behavioral and Brain Sciences* 3,
+pp. 417–424 — and 1980 is what this file uses. Anyone re-checking against
+the Turing-test page alone will think it is wrong; it is not.
+
 ### Subject 2 — The winters nobody predicted
 
 **Sources (all verified live):**
@@ -112,9 +121,13 @@ people expected.
   spent looking through the literature", and represents "only the
   personal view of the author". He was a fluid dynamicist, not an AI
   researcher.
-- The report singles out machine translation as "the most notorious
-  disappointment... where enormous sums have been spent with very little
-  useful result."
+- The report singles out machine translation: "The most notorious
+  disappointments... have appeared in the area of machine translation,
+  where enormous sums have been spent with very little useful result."
+  (Note the plural — an earlier draft quoted this as a singular
+  "disappointment", which is a misquote. The articles paraphrase rather
+  than quote this phrase, so they are unaffected, but any future direct
+  quotation must keep the plural.)
 - Aftermath: UK funding cut at all but a couple of universities; US
   funders followed. A second collapse came around 1987 with the failure
   of expert systems and the specialised Lisp-machine market, as ordinary
@@ -327,6 +340,15 @@ organisations report, and do not editorialise in either direction. The
 Authors Guild and AAP are parties' organisations — accurate on their own
 case but not neutral commentators, so attribute rather than assert.
 Also avoid implying the law is settled: it is not.
+
+**Do not collapse "training" and "piracy" into one claim.** The ruling
+separated them: training on lawfully obtained books was fair use;
+downloading them from pirate sites was not. The settlement followed from
+the second, not the first. This distinction is the point of the
+paragraph and of discussion question 2 — and it is easy to lose when
+compressing, which is exactly what happened once in the Quick Recap
+("books used for training in ways that produced a record settlement",
+since corrected). Any summary of this article must keep the two apart.
 
 ### Subject 6 — The part we still cannot check
 

@@ -10,14 +10,14 @@ in [`../decisions/brazil-from-above.md`](../decisions/brazil-from-above.md).
 
 ## Subjects
 
-| #   | Subject                                                            | Status      | Grammar focus                     | Sources |
-| --- | ------------------------------------------------------------------ | ----------- | --------------------------------- | ------- |
-| 1   | Before 1500 — the forest that was never wild                        | drafted     | Reporting passives                | —       |
-| 2   | The colony that received the most enslaved people on earth          | drafted     | Past perfect / narrative tenses   | —       |
-| 3   | The prince who declared independence from his own father            | drafted     | Defining relative clauses         | —       |
-| 4   | Abolition, and who actually ended slavery                           | drafted     | Nominalisation                    | —       |
-| 5   | Vargas and the invention of modern Brazil                           | drafted     | *used to* / *would*               | —       |
-| 6   | Twenty-one years, and the deal that ended them                      | drafted     | Future in the past                | —       |
+| #   | Subject                                                    | Status  | Grammar focus                   | Sources |
+| --- | ---------------------------------------------------------- | ------- | ------------------------------- | ------- |
+| 1   | Before 1500 — the forest that was never wild               | drafted | Reporting passives              | —       |
+| 2   | The colony that received the most enslaved people on earth | drafted | Past perfect / narrative tenses | —       |
+| 3   | The prince who declared independence from his own father   | drafted | Defining relative clauses       | —       |
+| 4   | Abolition, and who actually ended slavery                  | drafted | Nominalisation                  | —       |
+| 5   | Vargas and the invention of modern Brazil                  | drafted | _used to_ / _would_             | —       |
+| 6   | Twenty-one years, and the deal that ended them             | drafted | Future in the past              | —       |
 
 Status values: not started → researching → researched → approved →
 drafted → published.
@@ -31,7 +31,7 @@ drafted → published.
   subjects scouted, grammar points assigned, decisions file created.
 - 2026-08-13: Researched all six subjects. Sources and facts recorded in
   the decisions file, with per-subject "care needed" notes. Two primary
-  sources verified directly (the 2026 *Nature* earthworks paper and the
+  sources verified directly (the 2026 _Nature_ earthworks paper and the
   CNV report portal). One sourcing caveat logged: slavevoyages.org is
   JavaScript-rendered and unreadable from this environment, so the
   slave-trade figures come from sources citing it and need confirming on
@@ -67,6 +67,6 @@ file.
 - [x] Register series in `site/content/series.json`
 - [x] Draft articles 1-6
 - [x] Queue cover images
-- [ ] Run `npm run covers`
-- [ ] Rebuild search index (`npm run workflow:content`)
-- [ ] Delete this file
+- [x] Run `npm run covers`
+- [x] Rebuild search index (`npm run workflow:content`)
+- [ ] Delete this file and `../doublecheck-report/brazil-from-above.md`

@@ -1,12 +1,13 @@
 # Content research
 
-Per-series planning material, split across two folders by **how long it
+Per-series planning material, split across folders by **how long it
 stays true**:
 
 ```
 research/content/
-  decisions/<series-slug>.md   ← why the series is written this way — kept
-  progress/<series-slug>.md    ← where the work stands — deleted when done
+  decisions/<series-slug>.md           ← why the series is written this way — kept
+  progress/<series-slug>.md            ← where the work stands — deleted when done
+  doublecheck-report/<series-slug>.md  ← what a fact-check found — deleted when done
 ```
 
 Planning a series (picking subjects, researching each one, deciding the
@@ -77,25 +78,39 @@ research existed to prevent.
 
 ## File naming
 
-**The same filename in both folders: the series slug, no suffix.**
+**The same filename in every folder: the series slug, no suffix.**
 
 ```
-research/content/decisions/how-ai-got-here.md
-research/content/progress/how-ai-got-here.md
+research/content/decisions/brazil-from-above.md
+research/content/progress/brazil-from-above.md
+research/content/doublecheck-report/brazil-from-above.md
 ```
 
-That slug is already the key in `site/content/series.json` and the value
-of `series:` in every article's front matter, so reusing it avoids
-inventing a fourth identifier for the same thing, and makes the pairing
-checkable by script. A `-progress` suffix would only repeat what the
-folder already says.
+That slug is already the branch name, the key in
+`site/content/series.json` and the value of `series:` in every article's
+front matter, so reusing it avoids inventing another identifier for the
+same thing, and makes the grouping checkable by script. A `-progress` or
+`-report` suffix would only repeat what the folder already says.
 
 Each file opens with a one-line pointer to its counterpart, since
 filename linkage is invisible to someone who opens one file directly.
 
+## Fact-check reports
+
+`doublecheck-report/<series-slug>.md` records an independent
+verification pass over the `decisions/` file — see
+[`doublecheck-report/README.md`](./doublecheck-report/README.md).
+
+It is temporary for the same reason `progress/` is: it describes one
+moment, not a standing truth. The rule that matters is that **anything a
+check finds must be written back into `decisions/`** — a correction or a
+"could not confirm" that lives only in the report disappears with it.
+
 ## When a series ships
 
-Delete `progress/<series-slug>.md`. Keep `decisions/<series-slug>.md`.
+Delete `progress/<series-slug>.md` and
+`doublecheck-report/<series-slug>.md`. Keep
+`decisions/<series-slug>.md`.
 
 A series has shipped when all of these are true:
 
