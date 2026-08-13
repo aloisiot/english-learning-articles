@@ -14,6 +14,30 @@ order) happens here **before** any article is drafted. See
 [`docs/series.md`](../../docs/series.md) and the
 `english-learning-series` skill for the full process.
 
+## Work on a branch
+
+**Content research and article creation happen on a branch named
+`content/<slug>`**, not on `main`:
+
+```
+content/brazil-from-above      a series
+content/how-ai-got-here        a series
+content/<article-slug>         a standalone article
+content/<topic>                a topic-level batch
+```
+
+The slug is the same one used for the files in this folder, for the key
+in `site/content/series.json`, and for the `series:` value in each
+article's front matter — one identifier throughout.
+
+Why bother, for a single-author project: a series takes several sessions
+and touches research files, six or more articles, the cover-image queue,
+`series.json` and sometimes `docs/`. Half-finished, that state is
+confusing on `main` — articles exist but aren't indexed, covers are
+queued but not fetched. A branch keeps `main` in a state where every
+article is complete and searchable, and makes "what did this series
+change?" a single diff.
+
 ## The split
 
 The two halves fail in opposite ways, which is why they are separate
