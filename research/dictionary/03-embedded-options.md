@@ -29,7 +29,7 @@ The only real question is **which corpus** and **how you ship it**.
 ### Licence detail worth knowing
 
 - **WordNet (Princeton):** "Permission to use, copy, modify and distribute this software and database and its documentation for any purpose and without fee or royalty is hereby granted, provided that you agree to comply with the following copyright notice and statements." You must keep the notice; you may not use Princeton's name in advertising. Recognised by the [OSI](https://opensource.org/license/wordnet). **This is the most permissive option and the least legal thinking required.**
-- **Wiktionary-derived data (kaikki / Wordset):** CC BY-SA 4.0. Attribution *and* share-alike. For a site that just displays definitions with a credit line, this is fine. It does mean your dictionary data files inherit BY-SA.
+- **Wiktionary-derived data (kaikki / Wordset):** **dual-licensed CC BY-SA 4.0 *and* GFDL** — take CC BY-SA 4.0 and comply with that. Attribution *and* share-alike. For a site that displays definitions with a credit line this is fine, but note it means your dictionary data files inherit BY-SA. Exact obligations — including the two most commonly missed, the modification notice and the warranty disclaimer — in [`07-caching-and-licensing.md`](07-caching-and-licensing.md) §3.
 - **Open English WordNet:** CC BY 4.0 — attribution only, no share-alike. Cleaner than BY-SA if you care.
 
 ### The Simple English Wiktionary extract — worth a serious look
@@ -51,7 +51,7 @@ senses:    207,272
 
 | Build variant | Headwords | Raw JSON | gzip -9 | brotli q11 | SQLite (4 KB pages) |
 |---|---|---|---|---|---|
-| Full (all senses, incl. multiword phrases) | 147,982 | 22.4 MB | **4.9 MB** | — | 27.3 MB |
+| Full (all senses, incl. multiword phrases) | 147,982 | 22.4 MB | **4.8 MB** | — | 27.3 MB |
 | **Single-word only, ≤3 senses each** | 83,736 | 12.1 MB | **2.9 MB** | **2.1 MB** | 14.5 MB |
 | Same + definitions capped at 120 chars | 83,736 | 11.9 MB | 2.8 MB | **2.0 MB** | — |
 | Same, split into 26 per-letter shards | 83,736 | — | — | **2.7 MB total** | — |
@@ -183,4 +183,4 @@ The trade-off is resolved by the hybrid in [`05-implementation-plan.md`](05-impl
 
 ---
 
-**Sources:** see [`06-sources.md`](06-sources.md).
+**Sources:** see [`08-sources.md`](08-sources.md).
