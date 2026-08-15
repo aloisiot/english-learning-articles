@@ -1,6 +1,35 @@
-# 06 — Sources & references
+# 08 — Sources & references
 
 All URLs verified on **2026-08-11**. Where a figure is quoted, the source it came from is named.
+
+---
+
+## Licensing and caching (added for [`07-caching-and-licensing.md`](07-caching-and-licensing.md))
+
+- [**Merriam-Webster Dictionary API — Terms of Service**](https://dictionaryapi.com/info/terms-of-service) — read in full 2026-08-11. Source for the clause 5 restrictions, quoted verbatim: *"you agree not to: (a) submit any automated or recorded queries to the Service unless otherwise approved in writing by Merriam-Webster and its licensors"*, plus 5(d) duplication/distribution and 5(j) public domain. **This is the source that invalidated the build-time M-W caching recommendation in the original `05-implementation-plan.md`.** Also source for: the three free-tier conditions (non-commercial, ≤1000/day/reference, ≤2 reference works), clause 7 on trademarks, clause 10 on termination.
+- [WordNet — License and Commercial Use](https://wordnet.princeton.edu/license-and-commercial-use) and the `LICENSE` file bundled in `wordnet-db@3.1.14` — source for: free commercial use, redistribution permitted with the notice, no share-alike, the Princeton-name-in-advertising restriction.
+- [WordNet licence at OSI](https://opensource.org/license/wordnet) — source for the claim that it is an OSI-recognised licence.
+- [CC BY-SA 4.0 deed](https://creativecommons.org/licenses/by-sa/4.0/) — source for the share-alike obligation on derived data.
+- [freedictionaryapi.com](https://freedictionaryapi.com/) — source for their specific attribution requirements (link back to the Wiktionary page, visible credit to FreeDictionaryAPI.com) and the 1,000/hour/IP limit used in the 80-hour harvesting calculation.
+- [Merriam-Webster Brand Guidelines](https://dictionaryapi.com/info/branding-guidelines) — logo requirement.
+
+**Confidence note:** the M-W analysis is my reading of their terms, not legal advice. Clause 5(a) is unambiguous on automated queries; whether committing returned *content* (as opposed to "the Software") to a public repo breaches 5(d)/5(j) is my inference and is marked as such in the doc. If M-W ever became important, the correct move is to ask them in writing — clause 5(a) explicitly contemplates approval.
+
+## Multiword expressions and scope (added for [`06-lookup-scope.md`](06-lookup-scope.md))
+
+- **Measured, `wordnet-db@3.1.14`, 2026-08-11** — 147,982 total headwords / 83,736 single-word / **64,246 multiword**; longest entry 9 words; length distribution 2→54,577, 3→7,773, 4→1,461, 5→298, 6+→137; multiword-only index 8.3 MB raw / 1.7 MB gzip. Reproducible with [`prototype/`](prototype/).
+- **Measured coverage probe, 2026-08-11** — WordNet contains `climate change`, `sea level`, `power grid`, `make sense`, `give up`; it does **not** contain `carbon sink` or `carbon footprint`. Both were retrieved live from `https://freedictionaryapi.com/api/v1/entries/en/carbon%20sink` and `.../carbon%20footprint`, with the definitions quoted in the doc.
+- [kaikki.org — raw data downloads](https://kaikki.org/dictionary/rawdata.html) — source for the Wiktextract dump sizes (22.9 GB raw / 2.6 GB gz all-languages; 3.0 GB English postprocessed; Simple English 35.5 MB / 4.4 MB gz) used to cost the Wiktextract pipeline.
+- [tatuylonen/wiktextract](https://github.com/tatuylonen/wiktextract) — source for the claim that freedictionaryapi.com and the kaikki dumps are the same extraction of the same data.
+
+**Confidence note:** the Wiktextract-derived size estimate in `06-lookup-scope.md` §4 (~30–50 MB raw, ~6–10 MB brotli) is **extrapolated from the WordNet measurement, not measured** — the dump could not be downloaded in this environment. It is labelled low-medium confidence in the doc itself.
+
+## Selection and focus behaviour (added for [`04-selection-ui.md`](04-selection-ui.md))
+
+- [MDN — Selection API](https://developer.mozilla.org/en-US/docs/Web/API/Selection) and [Selection.collapse()](https://developer.mozilla.org/en-US/docs/Web/API/Selection/collapse)
+- [Mozilla bug 336936 — window.getSelection() does not reflect form element focus](https://bugzilla.mozilla.org/show_bug.cgi?id=336936) — source for: focusing a **text control** collapses the selection and clears other selections in the document.
+
+**Confidence note: unverified for buttons.** The documented collapse behaviour concerns text controls (`<input>`, `<textarea>`). Whether calling `.focus()` on a `<button>` disturbs an existing document selection is **browser-specific and I could not confirm it** — no authoritative source found, and no browser available here to test in. `04-selection-ui.md` §2 flags this as requiring a real-device test rather than asserting either outcome.
 
 ---
 
@@ -158,7 +187,7 @@ Raw output captured:
 ```
 headwords: 147982
 senses:    207272
-json MB 22.4  gz MB 4.9
+json MB 22.4  gz MB 4.8
 sqlite MB 27.3
 
 A single-word, <=3 senses:  83736 headwords | raw 12.1MB | gzip 2.9MB | brotli 2.1MB

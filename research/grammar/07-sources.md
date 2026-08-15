@@ -114,7 +114,7 @@ The FSRS figures below come from **secondary sources — vendor and comparison b
 
 ## Repository files read (2026-08-12)
 
-`README.md` · `docs/overview.md` · `docs/class-structure.md` · `docs/article-format.md` (via the `english-learning-article` skill) · `research/dictionary/README.md` · `research/dictionary/01-architecture-fit.md` · `research/dictionary/06-sources.md` · `site/lib/articles.js` · `site/content/*.md` (front matter of all 11 articles) · `site/content/2026-08-07-ai-power-hunger.md` (full)
+`README.md` · `docs/overview.md` · `docs/class-structure.md` · `docs/article-format.md` (via the `english-learning-article` skill) · `research/dictionary/README.md` · `research/dictionary/01-architecture-fit.md` · `research/dictionary/08-sources.md` (renumbered from `06-sources.md` on 2026-08-11) · `site/lib/articles.js` · `site/content/*.md` (front matter of all 11 articles) · `site/content/2026-08-07-ai-power-hunger.md` (full)
 
 Claims drawn from these:
 

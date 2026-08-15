@@ -38,7 +38,7 @@ When a sentence begins with a negative or restrictive expression — *never*, *r
 
 ## How to Talk a Field Into a Collapse
 
-In 1958 the psychologist Frank Rosenblatt built the perceptron, a simple learning machine loosely modelled on neurons. It could be trained to recognise patterns, and both the press and Rosenblatt himself suggested that machines like it would soon see, play chess and even reproduce themselves. Rarely has a modest piece of engineering carried such an enormous public promise.
+In 1958 the psychologist Frank Rosenblatt published his model of the perceptron, a simple learning machine loosely modelled on neurons. It could be trained to recognise patterns, and both the press and Rosenblatt himself suggested that machines like it would soon see, play chess and even reproduce themselves. Rarely has a modest piece of engineering carried such an enormous public promise.
 
 The correction came in stages. In 1969 Marvin Minsky and Seymour Papert published *Perceptrons*, proving mathematically that the simple version could not compute certain basic functions. Then, in July 1972, the British Science Research Council received a 49-page report from Sir James Lighthill, a distinguished mathematician who worked on fluid dynamics — not on artificial intelligence. His verdict was blunt: "In no part of the field have the discoveries made so far produced the major impact that was then promised." The underlying cause, he argued, was a failure to recognise the "combinatorial explosion" — the way possibilities multiply so fast that a method working on a toy problem collapses on a real one.
 

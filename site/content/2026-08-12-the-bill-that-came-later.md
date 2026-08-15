@@ -63,7 +63,7 @@ What connects the three is that none of them were accidents. The labelled text, 
 
 ## Quick Recap
 
-The systems that appear automatic were assembled from inputs with real costs: Kenyan workers paid around $2 an hour to label disturbing content, books used for training in ways that produced a record $1.5 billion settlement, and rising electricity demand. These were requirements for building the technology, not accidental side effects.
+The systems that appear automatic were assembled from inputs with real costs: Kenyan workers paid around $2 an hour to label disturbing content, half a million books obtained from pirate sites in a case that settled for a record $1.5 billion, and rising electricity demand. These were requirements for building the technology, not accidental side effects.
 
 ## References
 

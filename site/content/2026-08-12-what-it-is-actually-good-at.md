@@ -45,7 +45,7 @@ Why it matters is concrete rather than abstract. Knowing a protein's shape sugge
 
 The temptation is to read this as machines replacing scientists. Jumper himself tells it differently: "Public data were essential to the development of AlphaFold," he said, describing the carefully curated results of "an entire subfield of biology" as exactly what let the system generalise. The machine learned from sixty years of patient human measurement, which somebody had chosen to share.
 
-The same reversal shows up elsewhere. Machine translation, which Lighthill named in 1972 as the field's most notorious disappointment, is now so ordinary we barely notice it. And speech recognition and captioning are counted by the World Health Organization among assistive products — needed today by more than 2.5 billion people, a number expected to reach 3.5 billion by 2050. Most of those who need them still cannot get them.
+The same reversal shows up elsewhere. Machine translation, which Lighthill wrote off in 1972 as money spent for almost nothing, is now so ordinary we barely notice it. And speech recognition and captioning are counted by the World Health Organization among assistive products — needed today by more than 2.5 billion people, a number expected to reach 3.5 billion by 2050. Most of those who need them still cannot get them.
 
 ## Key Vocabulary
 
