@@ -339,6 +339,14 @@ main {
   line-height: var(--leading-ui);
 }
 
+.site-footer-inner p {
+  margin: 0;
+}
+
+.site-footer-inner p + p {
+  margin-top: var(--space-1);
+}
+
 /* ---------- index ---------- */
 
 .intro {
@@ -968,6 +976,113 @@ main {
   border-radius: 3px;
 }
 
+/* ---------- dictionary popover ---------- */
+
+.dictionary-define-button {
+  position: fixed;
+  z-index: 30;
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  line-height: var(--leading-ui);
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: var(--space-1) var(--space-3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+}
+
+.dictionary-define-button:hover {
+  border-color: var(--muted);
+}
+
+.dictionary-popover {
+  position: fixed;
+  z-index: 30;
+  width: min(320px, calc(100vw - 16px));
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  line-height: var(--leading-ui);
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: var(--space-4);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.16);
+}
+
+.dictionary-popover-header {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
+.dictionary-headword {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 600;
+  flex: 1;
+}
+
+.dictionary-audio,
+.dictionary-close {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  color: var(--muted);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+.dictionary-audio:hover,
+.dictionary-close:hover {
+  color: var(--text);
+}
+
+.dictionary-close {
+  font-size: var(--text-lg);
+  line-height: 1;
+}
+
+.dictionary-status {
+  color: var(--muted);
+  margin: 0;
+}
+
+.dictionary-senses {
+  margin: 0;
+  padding-left: var(--space-5);
+  color: var(--text);
+}
+
+.dictionary-senses li + li {
+  margin-top: var(--space-2);
+}
+
+.dictionary-pos {
+  font-family: var(--font-sans);
+  font-size: var(--text-2xs);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.dictionary-example {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.dictionary-attribution {
+  margin: var(--space-3) 0 0;
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--rule);
+  font-size: var(--text-2xs);
+  color: var(--muted);
+}
+
 /* ---------- responsive ---------- */
 
 /* One breakpoint. A single-column reading layout needs no more.
@@ -1028,6 +1143,30 @@ main {
 
   .search-control select {
     min-height: 2.75rem; /* 44px touch target */
+  }
+
+  /* Full-width sheet pinned to the edge farther from the selected word
+     (see app/dictionary-popover.js), rather than a small card anchored to
+     the selection — there isn't room to float a card near the word on a
+     phone without it running off-screen or sitting under the thumb. */
+  .dictionary-popover--sheet {
+    width: auto;
+    max-width: none;
+    max-height: 60vh;
+    overflow-y: auto;
+    border-left: 0;
+    border-right: 0;
+    border-radius: 0;
+  }
+
+  .dictionary-popover--top {
+    border-top: 0;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.16);
+  }
+
+  .dictionary-popover--bottom {
+    border-bottom: 0;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.16);
   }
 }
 

@@ -3,12 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "predev": "node scripts/ensure-index.mjs",
+    "predev": "node scripts/build-dictionary.mjs && node scripts/ensure-index.mjs",
     "dev": "next dev",
     "covers": "node scripts/download-covers.mjs",
     "check:content": "node scripts/check-content.mjs",
     "check:covers": "node scripts/check-cover-queue.mjs",
     "verify": "node scripts/verify.mjs",
+    "prebuild": "node scripts/build-dictionary.mjs",
     "build": "next build && node scripts/postbuild.mjs",
     "workflow:dev": "node scripts/workflow.mjs dev",
     "workflow:content": "node scripts/workflow.mjs content",
@@ -23,7 +24,9 @@
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "remark": "^15.0.1",
-    "remark-html": "^16.0.1"
+    "remark-html": "^16.0.1",
+    "wink-lemmatizer": "^3.0.4",
+    "wordnet-db": "^3.1.14"
   },
   "devDependencies": {
     "pagefind": "^1.5.2",
