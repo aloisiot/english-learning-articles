@@ -3,12 +3,13 @@ title: Plato's Answer Was to Invent Another World
 date: '2026-08-26'
 level: B2-C1
 topic: philosophy
-grammar_focus: Nominalization
+grammar_focus: Articles with abstract and generic nouns
 keywords:
   - plato
   - theory of forms
   - allegory of the cave
-  - nominalization
+  - articles
+  - abstract nouns
   - western philosophy
   - history of philosophy
 summary: >-
@@ -19,13 +20,13 @@ series: western-philosophy-history
 series_order: 2
 ---
 
-## Grammar Spotlight: Nominalization
+## Grammar Spotlight: Articles with Abstract and Generic Nouns
 
-Nominalization turns a verb or an adjective into a noun, so that an action or a quality can become the subject of a sentence. *Define* becomes *definition*; *just* becomes *justice*; *know* becomes *knowledge*. Academic and philosophical English leans on this heavily, because it lets you talk about a thing rather than describe someone doing it.
+An abstract noun takes no article when you mean the quality in general: *Justice is hard to define.* It takes *the* when you mean one particular instance, or when a phrase after it narrows it down: *the justice of the verdict*. Plural nouns used generically drop the article too — *Forms are eternal*, not *the Forms are eternal*, unless you mean some specific ones already under discussion.
 
-- Verb → noun: They **discussed** it for years. → The **discussion** lasted years.
-- Adjective → noun: The copy was **imperfect**. → The **imperfection** of the copy mattered.
-- Compressed: We **assumed** the world is stable. → That **assumption** collapsed.
+- General: **Beauty** fades. **Knowledge** is difficult.
+- Particular: **The beauty** of the argument is its simplicity.
+- Narrowed by a phrase: **the knowledge** that survives doubt
 
 ## Why a Philosopher Would Believe in Somewhere Else
 

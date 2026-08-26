@@ -279,24 +279,36 @@ knowable order.
 | # | Subject | Grammar focus | Why this point fits |
 |---|---------|----------------|----------------------|
 | 1 | Socrates | Indirect questions | The article is about questioning; indirect questions are what reporting an interrogation actually requires. |
-| 2 | Plato | Nominalization | Forms are abstractions turned into nouns — the grammar mirrors the move. |
+| 2 | Plato | Articles with abstract and generic nouns | The article is saturated with *Justice*, *Beauty*, *the Good* — exactly where article choice is hardest and most meaningful. |
 | 3 | Aristotle | Reduced relative clauses | Dense descriptive prose about things and their properties; distinct from non-defining relative clauses (already used site-wide). |
 | 4 | Descartes | Subjunctive and unreal past | Methodic doubt is sustained hypothesis: *if I were being deceived…* |
 | 5 | Kant | Correlative conjunctions | *Both … and*, *neither … nor* — the grammar of a synthesis of two positions. |
 | 6 | Nietzsche | Result and purpose clauses | *so … that*, *such … that* — stating consequences, which is what the article is about. |
 
-**Grammar rotation check (2026-08-26).** Already used site-wide and
-therefore avoided: third and mixed conditionals, reported speech,
-participle clauses, passive voice, cleft sentences, concessive clauses,
-hedging and modal probability, modal perfect, inversion for emphasis,
-non-defining relative clauses, phrasal verbs. All six points above are
-new to the corpus and sit in the B2-C1 band.
+**Grammar rotation check (re-run 2026-08-26 against `main` at 19d1f38).**
+Seventeen points are now in use across the corpus — the original eleven
+plus six added for "Brazil, From Above": third and mixed conditionals,
+reported speech, participle clauses, passive voice, cleft sentences,
+concessive clauses, hedging and modal probability, modal perfect,
+inversion for emphasis, non-defining relative clauses, phrasal verbs,
+reporting passives, past perfect and narrative tenses, defining relative
+clauses, nominalisation, *used to*/*would*, future in the past. All six
+points above are new to that list and sit in the B2-C1 band.
 
-An earlier draft assigned comparative/superlative structures, defining
-relative clauses, and the first conditional. Those were replaced: they
-are A2-B1 points, below the learner profile in `docs/overview.md`, and
-defining relative clauses sat too close to the non-defining ones already
-used. Do not reintroduce them.
+**Two corrections already applied here — do not undo them:**
+
+1. An earlier draft assigned comparative/superlative structures, defining
+   relative clauses, and the first conditional. Those are A2-B1, below
+   the learner profile in `docs/overview.md`. Replaced.
+2. Article 2 was originally assigned **nominalisation**. While this
+   series was being written, "Brazil, From Above" shipped to `main` and
+   took that point for `2026-08-13-who-actually-ended-slavery.md`.
+   Re-assigned to articles with abstract and generic nouns. Do not
+   restore nominalisation here.
+
+**House spelling is British** (`-ise`/`-isation`) — main uses
+"Nominalisation", "recognised", "organised". Keep new articles
+consistent with that.
 
 ## Coherence notes
 
