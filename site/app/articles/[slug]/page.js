@@ -5,6 +5,7 @@ import {
   getSeriesArticles,
   getSeriesMeta,
 } from "@/lib/articles";
+import DictionaryPopover from "@/app/dictionary-popover";
 
 function formatDate(date) {
   return new Date(date).toLocaleDateString("en-GB", {
@@ -147,6 +148,8 @@ export default async function ArticlePage({ params }) {
           </section>
         ))}
       </div>
+
+      <DictionaryPopover />
 
       <Link href="/" className="back" data-pagefind-ignore>
         ← All articles

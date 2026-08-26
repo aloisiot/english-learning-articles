@@ -67,7 +67,11 @@ export default function RootLayout({ children }) {
 
         <footer className="site-footer" data-pagefind-ignore>
           <div className="site-footer-inner">
-            Articles for 30-minute English conversation classes.
+            <p>Articles for 30-minute English conversation classes.</p>
+            <p>
+              Word definitions from{" "}
+              <a href="https://wordnet.princeton.edu/">Princeton WordNet</a>.
+            </p>
           </div>
         </footer>
 
