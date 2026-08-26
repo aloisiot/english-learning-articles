@@ -1,0 +1,8 @@
+node_modules/
+package-lock.json
+
+# Generated measurement artefacts — regenerate with `npm run all`.
+wordnet.json
+wordnet.json.gz
+wordnet.sqlite
+wn_a.sqlite

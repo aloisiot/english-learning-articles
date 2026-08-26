@@ -72,6 +72,10 @@ order) happens under `research/content/` before any article is drafted —
 see the `english-learning-series` skill for the full process and file
 format. Those files, not chat history, are the source of truth.
 
+Planning and writing a series happens on a branch named
+`content/<series-slug>` — see
+[`research/content/README.md`](../research/content/README.md) for why.
+
 The material is split across two folders by how long it stays true, using
 **the same filename in both — the series slug, matching the key in
 `site/content/series.json`**:

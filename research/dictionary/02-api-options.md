@@ -3,7 +3,7 @@
 > **Question:** What are the best API alternatives to integrate? Are there good free options?
 > **Short answer:** Yes. `freedictionaryapi.com` is the best free general-purpose option; Merriam-Webster's Learner's Dictionary is the best free option for *learner-quality* definitions. Both have real limits worth understanding before you commit.
 
-All facts below were verified against primary sources on **2026-08-11**. Reference list in [`06-sources.md`](06-sources.md).
+All facts below were verified against primary sources on **2026-08-11**. Reference list in [`08-sources.md`](08-sources.md).
 
 ---
 
@@ -13,11 +13,19 @@ On this site's current `output: "export"` config, **where** you call an API deci
 
 | | Runtime (browser) | Build time (`next build`) |
 |---|---|---|
-| Keyed APIs — M-W, Cambridge, Oxford, Wordnik | ✗ **Impossible.** No server to hide the key on; putting it in client JS exposes it | ✅ **Fully available.** A build script or Server Component reads `process.env`, and the key never leaves the build machine |
+| Keyed APIs — M-W, Cambridge, Oxford, Wordnik | ✗ **Impossible.** No server to hide the key on; putting it in client JS exposes it | ⚠️ Technically available — a build script reads `process.env` and the key never leaves the build machine — **but see the licence warning below** |
 | Key-less CORS APIs — freedictionaryapi.com, Wiktionary, Datamuse | ✅ Direct browser call works | ✅ Works |
 | Rate limits | A live constraint, scaling with traffic | A **one-time backfill cost** — your vocabulary is finite |
 
 **Consequence:** the recommended architecture calls these APIs at build time and caches the responses, so "free tier is only 1,000/day" stops being a real limit. See [`01-architecture-fit.md`](01-architecture-fit.md) §2 and [`05-implementation-plan.md`](05-implementation-plan.md).
+
+> ### ⚠️ Correction (2026-08-11): technically possible ≠ permitted
+>
+> Build-time batch-fetching is a *technical* capability. Whether a given API **allows** it is a separate question, and I originally failed to check it.
+>
+> **Merriam-Webster forbids it.** [ToS clause 5(a)](https://dictionaryapi.com/info/terms-of-service): *"you agree not to […] submit any automated or recorded queries to the Service unless otherwise approved in writing by Merriam-Webster and its licensors."* Clause 5(j) additionally forbids actions that place the licensed content in the public domain — which committing it to a public repo would do. Assume the same for Oxford, Cambridge and Wordnik unless their terms say otherwise.
+>
+> **Only openly-licensed sources can be batch-fetched and cached:** Wiktionary/wiktextract (CC BY-SA 4.0) and WordNet (Princeton licence). Full analysis in [`07-caching-and-licensing.md`](07-caching-and-licensing.md).
 
 Read the rest of this document as *"which data source do I want baked into the build"*, not *"which service will my site depend on at runtime"*.
 
@@ -105,9 +113,13 @@ Per their [licence section](https://freedictionaryapi.com/), you must:
 
 ---
 
-## 2. Merriam-Webster Learner's Dictionary — best *quality* free option for learners ⭐
+## 2. Merriam-Webster Learner's Dictionary — best quality, but ⚠️ **not usable for this project**
 
 **Endpoint:** `GET https://dictionaryapi.com/api/v3/references/learners/json/{word}?key={KEY}`
+
+> **⚠️ Superseded 2026-08-11.** This section originally recommended M-W as the top-priority build-time source. Their [ToS clause 5(a)](https://dictionaryapi.com/info/terms-of-service) prohibits *"automated or recorded queries"* without written approval, which rules out both batch-fetching and caching responses. Since the architecture depends on exactly that, **M-W is out** unless you either get written approval or use it strictly for live, per-user, uncached lookups — which a static export can't do anyway, because the key can't be hidden. See [`07-caching-and-licensing.md`](07-caching-and-licensing.md) §1.
+>
+> The section is kept because the *quality* analysis is still accurate and explains what you're giving up — largely nothing, since each article's hand-written `## Key Vocabulary` already supplies learner-grade glosses for the words that matter most.
 
 This is the one that best matches your "best definition quality" priority, and specifically for a **B2–C1 learner audience**.
 
@@ -245,4 +257,4 @@ The practical consequence: **WordNet alone is a good safety net but a mediocre p
 
 ---
 
-**Sources:** see [`06-sources.md`](06-sources.md).
+**Sources:** see [`08-sources.md`](08-sources.md).
