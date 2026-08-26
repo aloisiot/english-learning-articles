@@ -47,6 +47,22 @@ extended with three further B2-C1 points: non-defining relative clauses,
 concessive clauses (although / despite / whereas), and hedging with modal
 verbs of probability (may / might / is likely to).
 
+Those eleven were in turn fully used by the "How AI Got Here" series, so
+six more were added for "Brazil, From Above". Each was chosen to fit the
+kind of writing it appears in, rather than assigned arbitrarily:
+
+- **Reporting passives** — *it is thought that*, *is believed to have
+  been*. The grammar of claims resting on contested evidence.
+- **Past perfect and narrative tenses** — *had already been*. Keeping
+  order clear across long stretches of time.
+- **Defining relative clauses** — *the prince who…*, *the decree that…*
+  Identifying which one, as opposed to adding an aside.
+- **Nominalisation** — *the abolition of*, *the granting of*. Worth
+  teaching alongside the fact that it hides who did what.
+- ***used to* / *would*** — how things once were and no longer are.
+- **Future in the past** — *what was going to be brief lasted years*.
+  The gap between what was promised and what happened.
+
 ## Decisions
 
 - Article length: flexible (not fixed to a strict word count), while still

@@ -57,18 +57,62 @@ Reject early and silently — a popover appearing on every stray drag is worse t
 - Inside `<code>`, `<pre>`, or a heading
 - No letters (pure punctuation or digits)
 
-### Affordance — two schools
+### Affordance — two-step, decided
 
 | Approach | Behaviour | Trade-off |
 |---|---|---|
-| **Immediate popover** | Selection resolves → definition appears | Fastest. Can feel intrusive; fires on copy-paste |
-| **⭐ Small "Define" button, then popover** | A compact button appears near the selection; the definition shows on click | One extra tap, but no surprise UI and no false positives when copying. Recommended |
+| Immediate popover | Selection resolves → definition appears | Fastest. Can feel intrusive; fires on copy-paste |
+| **✅ Small "Define" button, then panel** | A compact button appears near the selection; the definition shows on activation | One extra tap, but no surprise UI and no false positives when copying |
 
-The two-step version also gives you a clean place to put "no entry found" without flashing a failure popover at someone who was only copying a quote.
+**Decided 2026-08-11.** The two-step version also gives a clean place to put "no entry found" without flashing a failure panel at someone who was only copying a quote.
 
-### Mobile
+---
 
-Native text selection on iOS and Android already shows a system menu (Copy / Look Up / Share) that will overlap yours. Options: position your control *below* the selection rather than above, or use a bottom sheet anchored to the viewport rather than the selection. Test on a real device — this is the part most likely to feel broken.
+## 2a. The decided interaction spec
+
+Everything below was agreed on 2026-08-11 and supersedes the earlier proposals in [`research-considerations.md`](research-considerations.md). Written as a spec so it can be implemented directly.
+
+### Panel, not popover — on every device
+
+A **full-width panel**, pinned to the **opposite half of the viewport from the selection**: selection in the top half → panel at the bottom, and vice versa. This is what Kindle and most readers converge on, because it guarantees the panel never covers the word being defined.
+
+| Rule | Detail |
+|---|---|
+| **Hysteresis on the flip** | Latch the position when the panel opens; only re-evaluate on a *new* selection. Or use a dead zone — flip only past 40%/60%, never a hard midline. Without this, adjusting a selection near the middle makes the panel jump top-to-bottom |
+| **Measure with `visualViewport`** | Not `window.innerHeight`. On iOS Safari the URL bar and the native selection callout both change the usable area |
+| **Expect the native menu** | iOS and Android show their own Copy / Look Up / Share callout over the selection. The panel sits away from the selection, so it doesn't collide — but the **Define button** can. Test on a real device |
+| **Desktop too** | Same panel, same logic. One behaviour to learn, one code path to maintain |
+
+### "Define" button placement
+
+Anchor to the **end point of the selection**. Flip horizontally only when within ~80 px of the viewport edge, then clamp to the viewport.
+
+Horizontal flipping matters much less than vertical — a small button rarely covers meaningful text — so consistency beats optimal placement here.
+
+### ✅ Focus: do not auto-focus the button
+
+The original proposal was to auto-focus the Define button on appearance so a keyboard user could press Space or Enter. **The goal is right and worth solving** — keyboard selection via Shift+Arrow must lead somewhere, which most implementations get wrong. **Auto-focus is the wrong mechanism**, for three reasons:
+
+1. **It may destroy the selection it's meant to act on.** Moving focus can collapse the document selection — [documented for text controls](https://bugzilla.mozilla.org/show_bug.cgi?id=336936), where focusing collapses the selection and clears others in the document. Whether a `<button>` behaves the same is **browser-specific and unverified** — no authoritative source found, and no browser available to test in during this research.
+2. **It hijacks focus for mouse users.** Someone selecting with the mouse hasn't asked for focus to move. Once the button holds focus, Space stops scrolling the page — a classic and very irritating scroll-jack.
+3. **Unrequested focus movement is itself an accessibility problem.** Screen-reader users get yanked to a control they didn't invoke, losing their reading position.
+
+**The decided behaviour:**
+
+| Input | Behaviour |
+|---|---|
+| Mouse / touch selection | Button appears. **No focus change.** Click or tap to define |
+| Keyboard selection (Shift+Arrow) | Button appears, **focusable but not focused** — inserted next in tab order, so a single Tab reaches it |
+| Any input | A **keyboard shortcut** defines the current selection with no pointer at all. `d` is the cheapest; use `Ctrl`/`Cmd`+`D` only if you're willing to override bookmark |
+| Screen readers | `aria-live="polite"` announces availability — *"Definition available for 'ubiquitous'"* — without stealing focus |
+| Panel opens | *Then* move focus into the panel, and trap it there. Focus moves on user action, which is correct |
+| `Esc` | Closes the panel and returns focus to where it was |
+
+The keyboard shortcut is what actually solves the accessibility case, and it's simpler and more robust than auto-focus.
+
+### Implementation note that follows from all of this
+
+**Capture the selected string the moment the selection settles, and work from that captured value** — never from a re-read of `window.getSelection()` at activation time. Between selection and activation the user may have tapped the button, dismissed a native menu, or triggered a focus change, any of which can collapse the live selection. Capturing once removes the entire class of bug, and makes the unverified button-focus behaviour in point 1 irrelevant either way.
 
 ### Popover content, in priority order for B2–C1
 
@@ -195,4 +239,4 @@ Noted only so it's clear it was considered and dropped deliberately, not overloo
 
 ---
 
-**Sources:** see [`06-sources.md`](06-sources.md).
+**Sources:** see [`08-sources.md`](08-sources.md).

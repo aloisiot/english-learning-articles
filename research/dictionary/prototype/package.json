@@ -1,0 +1,19 @@
+{
+  "name": "dictionary-prototype",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Measurement scripts backing the numbers quoted in the dictionary research strand.",
+  "scripts": {
+    "build": "node build-wordnet-index.mjs",
+    "variants": "node measure-variants.mjs",
+    "multiword": "node measure-multiword.mjs",
+    "all": "npm run build && npm run variants && npm run multiword"
+  },
+  "dependencies": {
+    "wordnet-db": "^3.1.14"
+  },
+  "engines": {
+    "node": ">=22.5.0"
+  }
+}

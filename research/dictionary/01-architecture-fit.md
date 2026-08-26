@@ -59,15 +59,23 @@ Route Handlers that read `Request` · `cookies()` · `headers()` · rewrites · 
 
 | Option | At **runtime** on static export | At **build time** on static export |
 |---|---|---|
-| Merriam-Webster (key) | ✗ Impossible — no server to hide the key | ✅ **Works.** Build script/Server Component reads `process.env.MW_KEY`, bakes results into static output |
-| Cambridge / Oxford / Wordnik (key) | ✗ Same | ✅ Same |
-| freedictionaryapi.com (no key, CORS) | ✅ Works — direct browser call | ✅ Works |
-| Wiktionary / Wikimedia (no key, CORS) | ✅ Works | ✅ Works |
-| Embedded WordNet / local corpus | ✅ Works | ✅ Works |
+| Merriam-Webster (key) | ✗ Impossible — no server to hide the key | ⚠️ *Technically* works — but **forbidden by their licence**, see below |
+| Cambridge / Oxford / Wordnik (key) | ✗ Same | ⚠️ Same — assume forbidden unless their terms say otherwise |
+| freedictionaryapi.com (no key, CORS) | ✅ Works — direct browser call | ✅ Works, and the data is cacheable (CC BY-SA 4.0) |
+| Wiktionary / Wikimedia / kaikki dumps | ✅ Works | ✅ Works, and the data is cacheable (CC BY-SA 4.0) |
+| Embedded WordNet / local corpus | ✅ Works | ✅ Works (Princeton licence) |
 
-**This is the finding that resolves the whole question.** "Static export can't use keyed APIs" is true only at *runtime*. At *build time*, every keyed API in [`02-api-options.md`](02-api-options.md) is fully available, and the key stays on the build machine. Since your vocabulary is a finite, slowly-growing set, build time is where you want those calls anyway — as argued in [`05-implementation-plan.md`](05-implementation-plan.md).
+**This is the finding that resolves the whole question.** "Static export can't use keyed APIs" is true only at *runtime*. At *build time* the technical obstacle disappears entirely — a build script reads the key from `process.env` and it never leaves the build machine. Since your vocabulary is a finite, slowly-growing set, build time is where you want those calls anyway.
 
 **Static export does not block a single thing this feature needs.**
+
+> ### ⚠️ Correction (2026-08-11): the technical answer isn't the whole answer
+>
+> This section originally concluded that *"every keyed API is fully available at build time"*. That is true technically and **false legally**, which I did not check when writing it.
+>
+> Merriam-Webster's [ToS clause 5(a)](https://dictionaryapi.com/info/terms-of-service) forbids *"automated or recorded queries […] unless otherwise approved in writing"* — which is exactly what build-time batch-fetching and caching are. **M-W has been removed from the design.** Only openly-licensed corpora (Wiktionary/wiktextract under CC BY-SA 4.0, WordNet under the Princeton licence) can be fetched in bulk and committed.
+>
+> The architectural conclusion is unchanged — build time is still the right place, and static export still blocks nothing. What changed is *which sources are eligible*. See [`07-caching-and-licensing.md`](07-caching-and-licensing.md) §1.
 
 ---
 
@@ -115,7 +123,7 @@ You asked for both options priced out rather than a verdict handed down. Here it
 
 | Capability | Worth it for the dictionary? |
 |---|---|
-| Runtime calls to keyed APIs (M-W, Cambridge) with the key hidden | **No.** Build-time caching gets the same data with better latency, zero rate-limit exposure, and works offline |
+| Runtime calls to keyed APIs (M-W, Cambridge) with the key hidden | **No** — and this is now the *only* way to use them at all, since their terms forbid caching. Even so: live per-request lookups would be slower, rate-limited, offline-broken, and would make the site non-commercial-only. The openly-licensed corpora are better on every axis that matters here |
 | **ISR** — refresh dictionary data without a full rebuild | **Marginal.** Dictionary data changes on the order of months. A rebuild already happens on every article |
 | Lookup analytics — which words learners actually check | **The one genuinely valuable unlock.** It would tell you which words to write Key Vocabulary entries for. But a static site can get ~80% of this from a privacy-respecting analytics event, no migration needed |
 | Cross-device saved-word sync | **You've said you don't want this feature.** This was the strongest argument for a backend, and it's off the table |
@@ -184,8 +192,8 @@ Things that will bite during implementation, all specific to this repo:
 | [`03-embedded-options.md`](03-embedded-options.md) | Unchanged and now more clearly the right base layer. Option 1 (build-time subset) is the fit |
 | [`04-selection-ui.md`](04-selection-ui.md) | Rewritten for **selection-based** lookup; saved-words feature removed per your decision |
 | [`05-implementation-plan.md`](05-implementation-plan.md) | Rewritten against this repo's actual files and scripts |
-| [`06-sources.md`](06-sources.md) | Extended with the Next.js docs |
+| [`08-sources.md`](08-sources.md) | Extended with the Next.js docs |
 
 ---
 
-**Sources:** [Next.js — Static Exports guide](https://nextjs.org/docs/app/guides/static-exports) · [Route Handlers](https://nextjs.org/docs/app/api-reference/file-conventions/route) · [API Routes in Static Export warning](https://nextjs.org/docs/messages/api-routes-static-export) · plus repo files `site/next.config.mjs`, `site/package.json`, `site/lib/articles.js`, `site/app/articles/[slug]/page.js`, `site/scripts/postbuild.mjs`, `site/scripts/verify.mjs`, `docs/tech-stack-decisions.md`. Full list in [`06-sources.md`](06-sources.md).
+**Sources:** [Next.js — Static Exports guide](https://nextjs.org/docs/app/guides/static-exports) · [Route Handlers](https://nextjs.org/docs/app/api-reference/file-conventions/route) · [API Routes in Static Export warning](https://nextjs.org/docs/messages/api-routes-static-export) · plus repo files `site/next.config.mjs`, `site/package.json`, `site/lib/articles.js`, `site/app/articles/[slug]/page.js`, `site/scripts/postbuild.mjs`, `site/scripts/verify.mjs`, `docs/tech-stack-decisions.md`. Full list in [`08-sources.md`](08-sources.md).
