@@ -118,8 +118,27 @@ what Plato's Forms are built to answer.
   Cave (Book 7) maps onto it: prisoners take shadows for reality; the
   sun outside stands for the Form of the Good.
 - Plato founded the Academy in Athens around 387 BC and taught there
-  until his death in 348 BC. Aristotle studied there for about twenty
-  years — the link to article 3 is literal, not just intellectual.
+  until his death. Aristotle studied there for about twenty years — the
+  link to article 3 is literal, not just intellectual.
+
+  **Care — dating, checked 2026-08-26.** SEP's *Aristotle* entry
+  (biography) states he "was sent to Athens at about the age of
+  seventeen to study in Plato's Academy" and "remained associated with
+  the Academy until Plato's death in **347**". Combined with his birth
+  in 384 BC (Britannica, Quick Facts), that gives arrival ~367 and a
+  span of ~20 years — so "about twenty years" is sound, but it is
+  **derived by arithmetic from two sources, not stated anywhere as a
+  figure.** Keep the hedge ("about"/"roughly"); do not tighten it.
+
+  Plato's death is given as **347** by SEP and as **348** elsewhere; the
+  conventional form is 348/347 BC, since the Athenian year straddles
+  both. The articles use "348/347 BC". **Do not "correct" this to a
+  single year** — a previous draft said 348 flatly, which SEP
+  contradicts.
+
+  An earlier version of this file cited "SEP *Aristotle's Metaphysics*
+  (biography section)" for these dates. That entry has no biography
+  section and contains none of them. The citation above replaces it.
 
 **Connection forward:** Aristotle attacks precisely the *separateness*
 of the Forms.
@@ -130,20 +149,41 @@ of the Forms.
 
 - [Aristotle's Metaphysics — Stanford Encyclopedia of Philosophy](https://plato.stanford.edu/entries/aristotle-metaphysics/)
 - [Form vs. Matter — Stanford Encyclopedia of Philosophy](https://plato.stanford.edu/entries/form-matter/)
+- [Aristotle — Stanford Encyclopedia of Philosophy](https://plato.stanford.edu/entries/aristotle/) (biography)
 - [Substance — Stanford Encyclopedia of Philosophy](https://plato.stanford.edu/entries/substance/)
 
 **Facts the article can use:**
 
-- Aristotle's objection, per SEP: Plato's Forms are "a bastard confusion
-  of universal and particular" — they are supposed to be universal, yet
-  treated as individual things existing on their own.
-- He is "eager to distance himself" from Forms that exist apart from the
-  material world, and does so by insisting his own forms are *enmeshed
-  in matter* — hylomorphism: an ordinary object is form and matter
-  together, not a copy of something stored elsewhere.
+- Aristotle's objection: a Form is supposed to be a universal, yet is
+  treated as a particular thing existing separately on its own — the
+  theory runs the two categories together. Verified in substance against
+  SEP *Aristotle's Metaphysics*, which discusses at length whether the
+  principles of being can be both universal and separate, and reports
+  Aristotle's insistence that they cannot.
+- Hylomorphism — **verified verbatim** against SEP *Form vs. Matter*:
+  "Aristotle famously contends that every physical object is a compound
+  of matter and form." An ordinary object is form and matter together,
+  not a copy of something stored elsewhere.
 - The Third Man Argument: if a Form is needed to explain what particular
   men have in common, another Form is needed to explain what the Form
   and the particulars have in common — and so on without end.
+  **Care — citation status:** the argument itself is standard and
+  uncontroversial (it originates in Plato's *Parmenides* 132a-b and
+  Aristotle presses it), **but it does not appear in any of the SEP
+  entries cited above.** An earlier version of this file implied SEP
+  *Aristotle's Metaphysics* was the source; that entry does not mention
+  it. If a citation is ever needed, use SEP's *Plato's Parmenides*
+  entry — do not re-cite the Metaphysics entry for it.
+
+**Care — three phrasings removed from this file (2026-08-26).** It
+previously carried "a bastard confusion of universal and particular",
+"eager to distance himself", and forms "enmeshed in matter", each
+presented as SEP's wording. None of the three appears in SEP
+*Aristotle's Metaphysics*, *Form vs. Matter*, or *Substance* — the full
+text of all three was searched. They came from search-result summaries
+that paraphrased loosely, and were recorded here as if quoted. The
+underlying claims are sound and are restated above in verified form; do
+not reintroduce the phrasings.
 - Aristotle's account of substance has two parts: the basic account in
   the *Categories*, and the analysis of material substances into matter
   and form in the *Physics* and *Metaphysics* Z.
@@ -211,10 +251,13 @@ article 5.
 
 **Facts the article can use:**
 
-- Kant's own words: "It was my recollection of David Hume that broke into
-  my dogmatic slumber." He also wrote that Hume's attack on metaphysics
-  "was more decisive for its fate than any other event" since metaphysics
-  began.
+- Kant in the *Prolegomena* (1783): he freely confessed that it was David
+  Hume who first interrupted his "dogmatic slumber", and wrote that Hume's
+  attack on metaphysics "was more decisive for its fate than any other event"
+  since metaphysics began. (Care: report this as indirect speech rather than
+  placing a contested English translation in quotation marks, as translations
+  of *Erinnerung* vary between remembrance, recollection, reminder, and
+  objection.)
 - What exactly woke him is **disputed** among scholars: on one reading it
   was Hume's argument that causal relations cannot be known by pure
   reason; on another (Anderson) it was Hume's attack on the principle of
@@ -268,7 +311,9 @@ what Nietzsche attacks.
   otherworlds."
 - **Care:** do not present "God is dead" as simple atheist triumphalism,
   and do not present will to power as a political doctrine. Both are
-  well-documented misreadings.
+  well-documented misreadings. Also note that "escapist, pain-relieving,
+  heavenly otherworlds" is the SEP author's characterisation, not a direct
+  quotation from Nietzsche.
 
 **Connection back:** closes the series by rejecting the shared assumption
 running from Plato onward — that behind appearances there is a stable,

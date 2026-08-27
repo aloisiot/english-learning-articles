@@ -1,101 +1,132 @@
 # What Knowledge Rests On — doublecheck report
 
-Fact-check pass over
+Fact-check over
 [`../decisions/western-philosophy-history.md`](../decisions/western-philosophy-history.md)
-and the six drafted articles. **Temporary** — deleted when the series
-ships. Every correction below has been written back into `decisions/`
-and, where it appeared in an article, into the article too.
+and the six articles. **Temporary** — delete when the series ships.
+Every correction below is written back into `decisions/`, and into the
+articles where it reached them.
 
-Checked: 2026-08-26, against `main` at 19d1f38.
+Second pass, 2026-08-26. **The first pass was unsound and this replaces
+it.** It reported a table of unbroken "Verified" lines naming SEP
+entries whose text had never been retrieved — only search-engine
+summaries of them. This pass fetched the full text of the SEP entries
+and searched them. Three of the first pass's "verified" claims did not
+survive that.
 
-## 1. Claims against sources
+## Method, and its limits
 
-| Claim | Status | What confirmed it |
-|---|---|---|
-| Elenchus = "putting to the test"/refutation; argues only from the interlocutor's own beliefs | Verified | SEP *Socrates*; IEP *Socrates* |
-| Socrates compares himself to a midwife | Verified | SEP *Socrates* |
-| Chaerephon's Delphi question; Socrates wiser only in not claiming to know | Verified | SEP *Socrates*; IEP *Socrates* |
-| Trial and execution, Athens 399 BC | Verified | SEP *Socrates* |
-| "Socratic problem" — what is Socrates' vs Plato's is disputed | Verified | SEP *Socrates* (named as an open scholarly dispute) |
-| Forms developed to answer the definition problem the elenchus hit | Verified | SEP *Plato's Middle Period Metaphysics and Epistemology* |
-| Forms eternal; sensible objects imperfect copies that participate in them | Verified | SEP, same entry |
-| Theory emerges gradually; Socrates becomes Plato's mouthpiece in middle dialogues | Verified | SEP, same entry |
-| Divided Line (*Republic* VI), Cave (VII), sun = Form of the Good | Verified | SEP *Plato's Middle Period Metaphysics and Epistemology* |
-| Academy founded ~387 BC; Plato died 348 BC; Aristotle studied there ~20 years | Verified | SEP *Aristotle's Metaphysics* (biography section) |
-| Aristotle: Forms confuse universal with particular | Verified | SEP *Aristotle's Metaphysics* |
-| Aristotle's forms "enmeshed in matter"; hylomorphism | Verified | SEP *Form vs. Matter* |
-| Third Man Argument — regress of Forms | Verified | SEP *Aristotle's Metaphysics* |
-| Descartes broke with Scholastic-Aristotelian method; rejected sense-based "probable cognition" | Verified | SEP *Descartes' Method* |
-| *Meditations* 1641; dream argument and evil demon in Meditation I | Verified | SEP *Descartes' Epistemology*; Britannica *Cogito, ergo sum* |
-| Phrase "cogito, ergo sum" coined in *Discourse on Method* (1637), argument made in Meditation II (1641) | Verified | Britannica *Cogito, ergo sum* — this distinction is commonly got wrong, so it was checked specifically |
-| Certainty rests on *cogitatio* broadly (doubting, willing, imagining all count) | Verified | SEP *Descartes' Epistemology* |
-| Kant woken from "dogmatic slumber" by Hume | Verified, but wording corrected — see §3 | Prolegomena, standard translations |
-| What exactly in Hume woke Kant is disputed (causation vs. principle of sufficient reason) | Verified as disputed | Anderson, *Kant, Hume, and the Interruption of Dogmatic Slumber* (OUP) vs. the standard causation reading |
-| Copernican inversion: objects conform to our knowledge | Verified | SEP *Immanuel Kant* |
-| *Critique of Pure Reason* 1781; synthetic a priori as the central problem | Verified | SEP *Immanuel Kant* |
-| Nietzsche: thing in itself is self-contradictory (propertyless thing) | Verified | PhilArchive, *Nietzsche's critique of Kant's thing in itself* |
-| Nietzsche: Kant's "critique" took the form of legislation; never questioned the value of moral ideals | Verified | *Nietzsche's Criticism of Kant's Categorical Imperative: An Inquiry* |
-| Perspectivism — no "God's eye" standpoint | Verified | SEP *Nietzsche* |
-| "God is dead" in *The Gay Science* (1882); a challenge to complacency, not celebration | Verified | SEP *Nietzsche* |
+Retrieved in full and searched: SEP *Aristotle's Metaphysics*, *Form vs.
+Matter*, *Substance*, *Aristotle*, *Plato's Middle Period Metaphysics
+and Epistemology*. Britannica *Aristotle* returned navigation and Quick
+Facts only — its body text did not come through, so only the Quick Facts
+(birth 384 BCE, death 322) are used from it.
 
-## 2. Could not confirm
+**Not retrieved in full**, and therefore claims resting on them are
+marked below rather than called verified: SEP *Socrates*, IEP
+*Socrates*, SEP *Descartes' Method*, SEP *Descartes' Epistemology*, IEP
+*Descartes*, SEP *Immanuel Kant*, SEP *Nietzsche*, Britannica *Cogito,
+ergo sum*, and the two Nietzsche-on-Kant papers.
 
-- **Aristotle's twenty years at the Academy.** Widely repeated and
-  consistent across sources, but it is a scholarly estimate derived from
-  his arrival (~367 BC) and Plato's death (348 BC), not a documented
-  figure. The articles say "about twenty years" / "roughly twenty
-  years" — keep the hedge, do not tighten it to a precise number.
-- **Descartes' "we reject all merely probable cognition…"** is quoted by
-  SEP as Descartes' own declaration (*Rules for the Direction of the
-  Mind*), but the primary text was not consulted directly. The article
-  presents it as reported speech rather than inside quotation marks,
-  which is the right level of confidence for a claim verified only at
-  one remove.
+## Verified against retrieved source text
 
-## 3. Corrections made
+| Claim | What confirmed it |
+|---|---|
+| "At the heart of the Socratic elenchus is the 'What is *X*' question" | SEP *Plato's Middle Period Metaphysics* — verbatim |
+| Elenctic inquiry shows interlocutors hold an inconsistent set of beliefs about the virtues | SEP, same entry |
+| Failed definitions imply conditions on an adequate answer; a definition picks out the essence (*ousia*) | SEP, same entry |
+| Plato's break with Socrates is over whether the essence is *in* the sensibles (Socrates: immanent universal) | SEP, same entry — this is the article-1→2 hinge, and it holds |
+| Sun, Line and Cave are a single connected treatment | SEP, same entry (§13 heading) |
+| Hylomorphism: "every physical object is a compound of matter and form" | SEP *Form vs. Matter* — verbatim |
+| Aristotle sent to Athens ~age 17 to study at Plato's Academy; remained until Plato's death in 347 | SEP *Aristotle* (biography) — verbatim |
+| Aristotle born 384 BCE, died 322 | Britannica *Aristotle*, Quick Facts |
+| Whether principles of being can be both universal and separate is the live issue; Aristotle denies it | SEP *Aristotle's Metaphysics* |
 
-**A misquote of Kant — fixed in the article and in `decisions/`.**
-The draft carried, inside quotation marks: *"It was my recollection of
-David Hume that broke into my dogmatic slumber."* No published
-translation reads that way. The standard renderings are "I freely
-confess: it was the objection of David Hume that first, many years ago,
-interrupted my dogmatic slumber" and "I freely admit that the
-remembrance of David Hume was the very thing that many years ago first
-interrupted my dogmatic slumber" — translations differ over the German
-*Erinnerung* (remembrance / objection / admonition). The article now
-reports the claim rather than quoting it, and names the *Prolegomena*.
-Quotation marks around a phrase no translator wrote is a fabricated
-quotation, which is why this was the most serious finding of the pass.
+## Could not confirm
 
-**A misattribution to Nietzsche — fixed in the article.**
-The draft read "away from what he called escapist, pain-relieving,
-heavenly otherworlds." That phrasing is the SEP author's, not
-Nietzsche's. "What he called" turned an encyclopedia's summary into a
-quotation from the subject. Rewritten so the characterisation is no
-longer attributed to Nietzsche.
+- **The Third Man Argument is not in any cited SEP entry.** Searched all
+  of *Aristotle's Metaphysics*, *Form vs. Matter*, *Substance*,
+  *Aristotle*, *Plato's Middle Period Metaphysics* — no occurrence. The
+  argument is standard and uncontroversial (Plato, *Parmenides* 132a-b),
+  so the article's use of it is not in doubt; the **citation** was
+  wrong. Recorded in `decisions/` with a pointer to SEP's *Plato's
+  Parmenides* if a citation is ever needed.
+- **"About twenty years" at the Academy is derived, not stated.** It
+  follows by arithmetic from SEP's "about the age of seventeen" plus
+  birth 384 and Plato's death 347. Sound, but no source states the
+  figure. The hedge stays.
+- **Descartes' "we reject all merely probable cognition…"** — SEP
+  presents it as Descartes' own words, but SEP's text was not retrieved
+  this pass and the primary (*Rules for the Direction of the Mind*) was
+  not consulted. The article renders it as reported speech rather than
+  inside quotation marks, which is the right confidence level.
+- **Claims resting on the un-retrieved sources listed above** — the
+  Delphi episode, 399 BC, the *Meditations*/*Discourse* dating, the
+  Copernican inversion, "God is dead" in *The Gay Science* (1882) — are
+  consistent across multiple secondary summaries and none is contentious,
+  but none was checked against retrieved text this pass. They are not
+  marked verified.
 
-**A grammar-point collision — fixed in the article and `decisions/`.**
-Article 2 was assigned nominalisation. While this series was being
-drafted, "Brazil, From Above" shipped to `main` and took that point for
-`2026-08-13-who-actually-ended-slavery.md`. Article 2 now uses articles
-with abstract and generic nouns. (Also noted: house spelling is British,
-`-isation`; the draft used the American form.)
+## Corrections made this pass
 
-## 4. Consistency across articles
+**1. Three phrasings falsely attributed to SEP — removed from
+`decisions/`.** The file carried "a bastard confusion of universal and
+particular", "eager to distance himself", and forms "enmeshed in
+matter", each presented as SEP's wording. None appears in any of the
+three SEP entries cited. They came from search summaries and were
+recorded as though quoted. **Checked against the articles: none of the
+three reached any article** — the Aristotle article paraphrases the
+objection in its own words and is unaffected. Confined to `decisions/`,
+now restated in verified form.
 
-- Each Quick Recap was read against its own body: no contradictions, and
-  no case of a hedge in the body being flattened in the recap. The two
-  places where the sources are explicitly uncertain — the Socratic
-  problem, and what in Hume woke Kant — keep their hedge in the recap as
-  well as the body.
-- Forward links checked article by article: 1→2 (unanswered "What is
-  X?"), 2→3 (Aristotle at the Academy), 3→4 (via Scholasticism, with the
-  gap named out loud in article 4), 4→5 (Hume attacking the rationalist
-  project), 5→6 (the thing in itself). Each is stated in the earlier
-  article and picked up in the later one.
-- The "care needed" constraints in `decisions/` were checked against the
-  drafts: the Aristotle→Descartes gap is named rather than smoothed;
-  Hume appears only as Kant's trigger and gets no article; "God is dead"
-  is not presented as triumphalism; will to power is explicitly marked
-  as not a political doctrine; Aristotle is not portrayed as a modern
-  empiricist.
+**2. A fabricated citation — removed.** The first report cited "SEP
+*Aristotle's Metaphysics* (biography section)" for the Academy dates.
+That entry has no biography section and contains none of those dates.
+Replaced with SEP's *Aristotle* entry, which does. This was the first
+pass inventing a source while purporting to check sources.
+
+**3. Plato's death date — corrected in `decisions/` and in the
+article.** The draft said flatly "his death in 348". SEP says 347.
+Both circulate because the Athenian year straddles them; the
+conventional form is 348/347 BC. `2026-08-26-the-second-world-behind-this-one.md`
+now reads "348/347", and `decisions/` records *why*, so a later pass
+does not flip it back to a single year.
+
+## Carried over from the first pass (still stands)
+
+These were real findings and their fixes remain correct:
+
+- **Kant misquote.** "It was my recollection of David Hume that broke
+  into my dogmatic slumber" was in quotation marks; no published
+  translation reads that way (*interrupted*, not "broke into"; and
+  translators split over *Erinnerung*). Now reported, not quoted, and
+  the *Prolegomena* is named.
+- **Nietzsche misattribution.** "what he called escapist,
+  pain-relieving, heavenly otherworlds" — that phrasing is SEP's, not
+  Nietzsche's. "What he called" made an encyclopedia's summary into a
+  quotation from the subject. Rewritten.
+- **Grammar collision.** Article 2 used nominalisation, which "Brazil,
+  From Above" took on `main` for
+  `2026-08-13-who-actually-ended-slavery.md`. Reassigned to articles
+  with abstract and generic nouns.
+
+## Consistency across articles
+
+- **Body vs Quick Recap**, all six: no contradictions, and no hedge
+  dropped in compression. The two genuinely uncertain points — the
+  Socratic problem, and which Hume argument woke Kant — keep their
+  hedge in the recap as well as the body.
+- **Shared facts across articles:** the twenty years at the Academy
+  appears in articles 2 and 3 and agrees in both, and both hedge it.
+- **Forward links** 1→2, 2→3, 3→4, 4→5, 5→6 are each stated in the
+  earlier article and picked up in the later one. The 2→3 hinge is now
+  independently confirmed by SEP: Plato's departure from Socrates really
+  is about whether the essence is immanent in sensibles.
+- **Against Care needed:** the Aristotle→Descartes gap is named rather
+  than smoothed; Hume appears only as Kant's trigger; "God is dead" is
+  not triumphalism; will to power is explicitly not a political
+  doctrine; Aristotle is not made a modern empiricist.
+- **Structure** (scripted): six articles, `series_order` 1-6, five fixed
+  headings each, reading-section title distinct from front-matter title,
+  4-5 vocabulary terms, 3-4 questions, 2+ references, reading sections
+  356-429 words against a ~500 ceiling, no grammar point colliding with
+  the 17 now in the corpus.

@@ -38,7 +38,7 @@ This did not arrive fully formed. It emerges gradually across the middle dialogu
 
 In the *Republic* he draws a line dividing reality in two: the visible world of shadows and images below, the intelligible world of Forms above. Then he gives the picture everyone remembers. Prisoners are chained in a cave facing a wall, watching shadows, believing the shadows are all there is. One is dragged out into the sunlight. The ascent is painful and the light hurts; when he goes back down to explain, nobody believes him. The sun is the Form of the Good, and the argument is that knowledge requires turning away from the evidence of your senses, not collecting more of it.
 
-Around 387 BC Plato founded the Academy in Athens and taught there until his death in 348. A young man named Aristotle studied there for roughly twenty years — and would spend much of his own career arguing that the Forms were a mistake.
+Around 387 BC Plato founded the Academy in Athens and taught there until his death in 348/347. A young man named Aristotle studied there for roughly twenty years — and would spend much of his own career arguing that the Forms were a mistake.
 
 ## Key Vocabulary
 
@@ -57,7 +57,7 @@ Around 387 BC Plato founded the Academy in Athens and taught there until his dea
 
 ## Quick Recap
 
-Plato took the failure of Socrates' search for definitions as evidence that stable definitions cannot live in a changing world. His Forms are perfect, eternal archetypes that ordinary things imperfectly copy, and the Cave argues that knowing them means turning away from the senses. His student Aristotle studied this for twenty years and rejected its central claim.
+Plato took the failure of Socrates' search for definitions as evidence that stable definitions cannot live in a changing world. His Forms are perfect, eternal archetypes that ordinary things imperfectly copy, and the Cave argues that knowing them means turning away from the senses. His student Aristotle studied this for roughly twenty years and rejected its central claim.
 
 ## References
 
