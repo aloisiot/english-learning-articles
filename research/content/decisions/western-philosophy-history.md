@@ -51,9 +51,21 @@ blogs or SEO content"). Do not reintroduce them.
 
 **Sources:**
 
-- [Socrates — Stanford Encyclopedia of Philosophy](https://plato.stanford.edu/entries/socrates/)
-- [Socrates — Internet Encyclopedia of Philosophy](https://iep.utm.edu/socrates/)
-- [Plato's Shorter Ethical Works — Stanford Encyclopedia of Philosophy](https://plato.stanford.edu/entries/plato-ethics-shorter/)
+- [Socrates — Stanford Encyclopedia of Philosophy](https://plato.stanford.edu/entries/socrates/) — **full text retrieved and searched, 2026-08-26**
+- [Socrates — Internet Encyclopedia of Philosophy](https://iep.utm.edu/socrates/) — **full text retrieved**
+- [Plato's Middle Period Metaphysics and Epistemology — Stanford Encyclopedia of Philosophy](https://plato.stanford.edu/entries/plato-metaphysics/) — **full text retrieved**; this, not the *Socrates* entry, is where the elenchus mechanics are actually set out
+- [Plato's Shorter Ethical Works — Stanford Encyclopedia of Philosophy](https://plato.stanford.edu/entries/plato-ethics-shorter/) — not retrieved
+
+**Verified verbatim in retrieved text:** dates "469–399 B.C.E." (SEP);
+the Delphi episode via Chaerephon, cited to *Apology* 20e–23b (SEP);
+Socrates "likening his work to midwifery" (SEP); "Because he wrote
+nothing, what we know of his ideas and methods comes to us mainly from
+his contemporaries and disciples" (IEP); the Socratic problem as a
+standing dispute — "There is, and always will be, a 'Socratic
+problem'" (Guthrie, quoted in SEP); trial year 399. From SEP *Plato's
+Middle Period Metaphysics*: "At the heart of the Socratic elenchus is
+the 'What is *X*' question", and that interlocutors "turn out to have
+an inconsistent set of beliefs about the virtues".
 
 **Facts the article can use:**
 
@@ -203,9 +215,21 @@ tradition, not directly.
 **Sources:**
 
 - [Descartes' Method — Stanford Encyclopedia of Philosophy](https://plato.stanford.edu/entries/descartes-method/)
-- [Descartes' Epistemology — Stanford Encyclopedia of Philosophy](https://plato.stanford.edu/entries/descartes-epistemology/)
-- [Descartes, René — Internet Encyclopedia of Philosophy](https://iep.utm.edu/rene-descartes/)
-- [Cogito, ergo sum — Encyclopaedia Britannica](https://www.britannica.com/topic/cogito-ergo-sum)
+- [Descartes' Epistemology — Stanford Encyclopedia of Philosophy](https://plato.stanford.edu/entries/descartes-epistemology/) — **full text retrieved and searched, 2026-08-26**
+- [Descartes' Method — Stanford Encyclopedia of Philosophy](https://plato.stanford.edu/entries/descartes-method/) — **full text retrieved**
+- [Descartes, René — Internet Encyclopedia of Philosophy](https://iep.utm.edu/rene-descartes/) — not retrieved
+- [Cogito, ergo sum — Encyclopaedia Britannica](https://www.britannica.com/topic/cogito-ergo-sum) — not retrieved; Britannica pages return navigation chrome rather than body text through the fetch tool, so the 1637/1641 split below rests on this source at one remove
+
+**Verified verbatim in retrieved text:** *Meditations* first edition
+**1641**, second edition 1642 (SEP *Descartes' Epistemology*); the
+meditator "adopts the methodological assumption that all his thoughts
+and experiences are occurring in a dream"; methodical doubt is
+*universal* and *hyperbolic*, and "the more hyperbolic the doubt, the
+better"; the Evil Genius Doubt as the most powerful doubt available;
+and Descartes' own statement of aim — "to reach certainty – to
+cast aside the loose earth and sand so as to come upon rock or clay"
+(*Discourse* 3, AT 6:29, CSM 1:125), which is the source of the
+"clearing the ground" framing the article uses.
 
 **Facts the article can use:**
 
@@ -213,10 +237,24 @@ tradition, not directly.
   he thought its method was vulnerable to doubt because it relied on
   sensation, and he wanted to replace its final-causal model with a
   mechanistic one.
-- The sharpest contrast, per SEP: Aristotelians make room for "probable
-  cognition," especially in natural philosophy. Descartes: "we reject all
-  merely probable cognition and resolve to believe only what is perfectly
-  known and incapable of being doubted."
+- The sharpest contrast — **verified verbatim in SEP *Descartes' Method*,
+  which locates it precisely**: "Aristotelians consistently make room for
+  what Descartes terms 'probable cognition', especially in natural
+  philosophy (Rule 2, AT 10: 362, CSM 1: 10). In Rule 2, Descartes boldly
+  declares that 'we reject all […] merely probable cognition and resolve
+  to believe only what is perfectly known and incapable of being
+  doubted'."
+
+  **Care — the quotation contains an ellipsis in the original.** The
+  exact form is "we reject all […] merely probable cognition". Do not
+  print it inside quotation marks without the ellipsis. The article
+  renders it as reported speech instead, which sidesteps the problem;
+  keep it that way. Source is *Rules for the Direction of the Mind*,
+  Rule 2 — not the *Meditations*.
+- Also verified in SEP *Descartes' Method*: Descartes rejects
+  Aristotelian definitions as objects of intuition and Aristotelian
+  syllogisms as forms of deduction. This is the concrete content of "the
+  break with Scholasticism".
 - Method of doubt: treat as false any belief open to even the slightest
   doubt — not destructive scepticism but a clearing operation.
 - *Meditations on First Philosophy*, 1641. Meditation I raises the dream
@@ -245,9 +283,31 @@ article 5.
 
 **Sources:**
 
-- [Immanuel Kant — Stanford Encyclopedia of Philosophy](https://plato.stanford.edu/entries/kant/)
-- [Descartes' Epistemology — Stanford Encyclopedia of Philosophy](https://plato.stanford.edu/entries/descartes-epistemology/)
-- [Abraham Anderson, *Kant, Hume, and the Interruption of Dogmatic Slumber* — Oxford University Press](https://global.oup.com/academic/product/kant-hume-and-the-interruption-of-dogmatic-slumber-9780190096748)
+- [Immanuel Kant — Stanford Encyclopedia of Philosophy](https://plato.stanford.edu/entries/kant/) — **full text retrieved and searched, 2026-08-26**
+- [Descartes' Epistemology — Stanford Encyclopedia of Philosophy](https://plato.stanford.edu/entries/descartes-epistemology/) — full text retrieved
+- [Abraham Anderson, *Kant, Hume, and the Interruption of Dogmatic Slumber* — Oxford University Press](https://global.oup.com/academic/product/kant-hume-and-the-interruption-of-dogmatic-slumber-9780190096748) — publisher page only
+
+**Verified verbatim in retrieved SEP text:** *Critique of Pure Reason*
+**1781**, second edition 1787; "Kant's Copernican revolution in
+philosophy" is SEP's own section title; and the core doctrine — in the
+*Critique of Pure Reason* "the understanding (like sensibility) supplies
+forms that structure our experience of the sensible world, to which
+human knowledge is limited". Kant published nothing else of significance
+between 1770 and 1781.
+
+**Care — "dogmatic slumber" is NOT in SEP's Kant entry.** The full text
+was searched; the phrase does not occur. It is genuinely Kant's, from
+the *Prolegomena*, but the primary text was not retrieved and
+translations differ over *Erinnerung* (remembrance / objection /
+admonition). The article therefore **reports** the claim and names the
+*Prolegomena* rather than quoting it — see the correction log below.
+Do not restore a quotation here.
+
+**Supports the "what woke him is disputed" hedge:** SEP notes Kant's
+actual opponents in the Transcendental Deduction "may have been Lockean
+and Humean positions as represented by Tetens, as well as rationalist
+views… in texts by Leibniz, Wolff" — i.e. the target is genuinely
+unsettled, which is what the article says.
 
 **Facts the article can use:**
 
@@ -286,10 +346,29 @@ what Nietzsche attacks.
 
 **Sources:**
 
-- [Friedrich Nietzsche — Stanford Encyclopedia of Philosophy](https://plato.stanford.edu/entries/nietzsche/)
-- [Nietzsche, Friedrich — Internet Encyclopedia of Philosophy](https://iep.utm.edu/nietzsch/)
-- [Nietzsche's critique of Kant's thing in itself — PhilArchive](https://philarchive.org/archive/RICNCO)
-- [Nietzsche's Criticism of Kant's Categorical Imperative: An Inquiry](https://pfk.qom.ac.ir/article_2369.html?lang=en)
+- [Friedrich Nietzsche — Stanford Encyclopedia of Philosophy](https://plato.stanford.edu/entries/nietzsche/) — **full text retrieved and searched, 2026-08-26**
+- [Nietzsche, Friedrich — Internet Encyclopedia of Philosophy](https://iep.utm.edu/nietzsch/) — not retrieved
+- [Nietzsche's critique of Kant's thing in itself — PhilArchive](https://philarchive.org/archive/RICNCO) — not retrieved
+- [Nietzsche's Criticism of Kant's Categorical Imperative: An Inquiry](https://pfk.qom.ac.ir/article_2369.html?lang=en) — not retrieved
+
+**Verified verbatim in retrieved SEP text:** *The Gay Science* **1882**,
+second expanded edition 1887 — so the article's date is right. Will to
+power, quoted by SEP from *The Antichrist*: "What is good? Everything
+that heightens the feeling of power in man, the will to power, power
+itself." SEP frames the doctrine as replacing "Schopenhauer's will to
+life", understood as "a drive to overcome resistance" — a psychological
+claim, which is exactly why the article's insistence that it is not a
+political programme is correct and should stay. On values: "Whatever has
+*value* in our world now does not have value in itself, according to its
+nature—nature is always value-less."
+
+**Care — not confirmed against retrieved text:** the "God is dead"
+passage itself, the term *perspectivism*, and the thing-in-itself
+critique were not located in the portion of the SEP entry searched, and
+the two papers on Nietzsche-contra-Kant were not retrieved at all. None
+of these is contentious and all are standard, but they are **not**
+verified here. If a future pass wants them nailed down, go to *The Gay
+Science* §125 and §108 directly rather than to a summary.
 
 **Facts the article can use:**
 
