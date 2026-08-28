@@ -6,54 +6,5 @@
     "CC BY",
     "CC BY-SA"
   ],
-  "images": [
-    {
-      "slug": "2026-08-26-the-man-who-only-asked-questions",
-      "commons_file_title": "File:Socrates Louvre.jpg",
-      "target_path": "public/images/covers/2026-08-26-the-man-who-only-asked-questions.jpg",
-      "suggested_alt": "Weathered marble bust of Socrates with a broad nose and full beard, photographed against a plain dark background",
-      "status": "pending",
-      "notes": "Roman 1st-century marble, Louvre; search snippet reports CC Public Domain Mark 1.0. Series article 1 of 6. Chosen for tonal consistency with the Plato and Aristotle busts queued below."
-    },
-    {
-      "slug": "2026-08-26-the-second-world-behind-this-one",
-      "commons_file_title": "File:Plato Pio-Clemetino Inv305.jpg",
-      "target_path": "public/images/covers/2026-08-26-the-second-world-behind-this-one.jpg",
-      "suggested_alt": "Marble portrait bust of Plato, bearded and looking slightly downward, photographed against a plain background",
-      "status": "pending",
-      "notes": "Vatican Museums (Pio-Clementino), Roman copy after a 4th-century BCE Greek original. Series article 2 of 6."
-    },
-    {
-      "slug": "2026-08-26-bringing-the-forms-back-down",
-      "commons_file_title": "File:Aristotle Altemps Inv8575.jpg",
-      "target_path": "public/images/covers/2026-08-26-bringing-the-forms-back-down.jpg",
-      "suggested_alt": "Marble bust of Aristotle with short curled hair and a trimmed beard, photographed against a plain background",
-      "status": "pending",
-      "notes": "Palazzo Altemps; Roman marble copy of a lost bronze by Lysippos, c. 330 BCE. Note the alabaster cloak is a modern addition, so avoid describing it as ancient in the alt text. Series article 3 of 6."
-    },
-    {
-      "slug": "2026-08-26-doubting-everything-on-purpose",
-      "commons_file_title": "File:Frans Hals, Portrait of René Descartes (cleaned up).jpg",
-      "target_path": "public/images/covers/2026-08-26-doubting-everything-on-purpose.jpg",
-      "suggested_alt": "Painted head-and-shoulders portrait of Rene Descartes in dark clothing with a white collar, turned slightly toward the viewer",
-      "status": "pending",
-      "notes": "Frans Hals, c. 1649. PD (author died 1666; published before 1931). Filename carries the accent in 'René' exactly as on Commons. If the API lookup fails, the same painting is also at 'File:Frans Hals - Portret van René Descartes.jpg'. Series article 4 of 6."
-    },
-    {
-      "slug": "2026-08-26-the-mind-that-shapes-what-it-sees",
-      "commons_file_title": "File:Immanuel Kant portrait c1790.jpg",
-      "target_path": "public/images/covers/2026-08-26-the-mind-that-shapes-what-it-sees.jpg",
-      "suggested_alt": "Painted portrait of Immanuel Kant in eighteenth-century dress, seated and facing slightly to one side",
-      "status": "pending",
-      "notes": "Anonymous painter, c. 1790 -- so the script's author extraction will probably fall back to 'an unlisted Wikimedia Commons contributor'; a hand-edited credit naming the anonymous c.1790 portrait may read better. Series article 5 of 6."
-    },
-    {
-      "slug": "2026-08-26-no-view-from-nowhere",
-      "commons_file_title": "File:Nietzsche1882.jpg",
-      "target_path": "public/images/covers/2026-08-26-no-view-from-nowhere.jpg",
-      "suggested_alt": "Black-and-white studio photograph of Friedrich Nietzsche in 1882, seated in a dark suit with a heavy moustache, looking away from the camera",
-      "status": "pending",
-      "notes": "Gustav Adolf Schultze, Naumburg, early September 1882 -- one of five from that sitting. Same year as The Gay Science, which the article discusses. PD (photographer died over 100 years ago). Series article 6 of 6."
-    }
-  ]
+  "images": []
 }
