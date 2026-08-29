@@ -39,6 +39,13 @@ realtime video call on this site, and where should it start?
 - **Link creation:** an admin page behind a shared secret.
 - **Push gate:** one root `npm ci` always, then build only what changed.
 - **Accounts:** deferred, not abandoned.
+- **`lib/` extraction:** only once a second consumer exists, not up front.
+- **Unit tests:** **mandatory**, every phase, with pure logic extracted
+  into its own modules and the coverage threshold applied to those
+  rather than to the repo. Runner: Vitest.
+- **Deliverable (revised):** documents **and a phased plan** —
+  [`08-implementation-plan.md`](08-implementation-plan.md). Still no
+  code, no prototype.
 
 ---
 
@@ -53,7 +60,8 @@ realtime video call on this site, and where should it start?
 | [`05-accounts-and-access.md`](05-accounts-and-access.md) | What accounts cost, the signed-link alternative costed in full, and the GDPR surface. Links-first was taken. |
 | [`06-shared-article-view.md`](06-shared-article-view.md) | The part that isn't commodity: syncing section identity, not scroll position. |
 | [`07-two-app-architecture.md`](07-two-app-architecture.md) | The two-app split: what it buys, the two seams, the routing correction, and the shape of phase 1. |
-| [`08-sources.md`](08-sources.md) | Claim-to-source map, repository files read, and the **unverified register**. |
+| [`08-implementation-plan.md`](08-implementation-plan.md) | Six phases with deliverables, tests and stop conditions. The realtime milestone is Phase 3. |
+| [`09-sources.md`](09-sources.md) | Claim-to-source map, repository files read, and the **unverified register**. |
 
 ---
 
@@ -163,23 +171,30 @@ scrolling article page with video attached.
 
 ### Recommended order
 
-1. Ask Vercel about commercial use. *(free, blocking, five minutes)*
-2. Set up the workspace: `site/`, `class/`, `lib/`; root lockfile; fix
-   `installCommand` on both Vercel projects; extend the push gate to one
-   root `npm ci` plus changed-package builds.
-3. Publish `/articles/<slug>.json` from the site, and wire the
-   `vercel.json` rewrite plus `basePath`.
-4. Get a 1:1 Daily call running at `/class`, reachable by a signed link
-   from the admin page. **This is the milestone that tests realtime.**
-5. Build the shared article view, screen share, and ephemeral chat.
-6. Add accounts — after answering what they will carry a year from now.
+Expanded, with deliverables, tests and stop conditions, in
+[`08-implementation-plan.md`](08-implementation-plan.md). In brief:
+
+| Phase | What exists at the end |
+|---|---|
+| **0** | Four register items answered. No code. Blocking on Vercel's reply. |
+| **1** | The workspace and the test harness. The live site is unchanged. |
+| **2** | An empty class app reachable at `/class`. Proves the routing. |
+| **3** | **A call connects.** Signed link → Daily room → two people talking. Nothing else. |
+| **4** | The article rendered beside the call, over the JSON seam. No sync yet. |
+| **5** | Section sync, screen share, ephemeral chat. `lib/` extracted. |
+| **6** | Accounts. |
+
+The first two phases ship nothing visible on purpose: Phase 0 because
+two unverified items could invalidate the architecture, Phase 1 because
+it touches the machinery that has broken a production deploy before and
+deserves exactly one suspect.
 
 ---
 
 ## What this strand did not establish
 
 Fifteen items are listed in the register at the end of
-[`08-sources.md`](08-sources.md), sorted with the most load-bearing
+[`09-sources.md`](09-sources.md), sorted with the most load-bearing
 first. The four that could change a recommendation:
 
 1. Whether Vercel would call the class app commercial, and whether that

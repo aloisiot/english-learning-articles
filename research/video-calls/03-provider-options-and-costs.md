@@ -47,7 +47,7 @@ students — the figure is **~9,600 participant-minutes/month**.
 ## 2. The managed options, priced
 
 All figures read from each vendor's own pricing page on **2026-08-29**;
-per-source detail in [`08-sources.md`](08-sources.md).
+per-source detail in [`09-sources.md`](09-sources.md).
 
 | | Free tier | Rate after | At 1,920 min | At 9,600 min |
 |---|---|---|---|---|
