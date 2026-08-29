@@ -1,6 +1,8 @@
 /**
- * `npm run verify` — the single gate for the whole content pipeline
- * before pushing to origin.
+ * `npm run verify` — the site's part of the whole-repo push gate. The
+ * repo root now owns the workspace install (one root `npm ci`, since
+ * `package-lock.json` moved there — see root `scripts/verify.mjs`) and
+ * calls this script via `npm run verify --workspace=site`.
  *
  * Why this exists: cover-image processing (download-covers.mjs) and
  * the site build (next build + Pagefind indexing) used to be two
@@ -11,11 +13,9 @@
  * `package-lock.json` was never fully regenerated, so it drifted out
  * of sync — invisible locally (an ordinary `npm install` will paper
  * over an inconsistent lockfile) and only surfaced when Vercel ran
- * `npm ci`, which refuses to. This script reproduces every step Vercel
- * actually takes, locally, so that kind of drift is caught before a
- * push rather than after.
+ * `npm ci`, which refuses to.
  *
- * Runs four checks in order, stopping at the first failure:
+ * Runs three checks in order, stopping at the first failure:
  *
  *   1. Content/asset integrity (check-content.mjs) — every
  *      cover_image/cover_image_thumb front-matter path must resolve to
@@ -24,13 +24,7 @@
  *   2. Cover-image queue (check-cover-queue.mjs) — reports any
  *      pending/failed cover-images.json entries. Warning only: cover
  *      images are optional, so this never blocks anything.
- *   3. `npm ci` — the exact install command Vercel runs (see
- *      vercel.json). Deletes and reinstalls node_modules from
- *      package-lock.json alone; if the lockfile doesn't match
- *      package.json, this fails here instead of on Vercel. Slower than
- *      `npm install` and touches node_modules — that's the point, it's
- *      the only way to actually reproduce what production does.
- *   4. `npm run build` — the real static export (next build) plus
+ *   3. `npm run build` — the real static export (next build) plus
  *      Pagefind indexing (postbuild.mjs), i.e. exactly what Vercel
  *      produces and deploys.
  *
@@ -52,7 +46,6 @@ function run(label, command, args) {
 
 run("Content/asset integrity", "node", ["scripts/check-content.mjs"]);
 run("Cover-image queue", "node", ["scripts/check-cover-queue.mjs"]);
-run("Lockfile consistency (npm ci)", "npm", ["ci"]);
 run("Production build (next build + Pagefind)", "npm", ["run", "build"]);
 
 console.log("\nAll checks passed. Safe to push.");
