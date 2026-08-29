@@ -38,6 +38,9 @@ English Learning/
     dictionary/             ← research on adding word lookup to the site
     grammar/                ← research on a grammar practice tool: evidence
                               base, CEFR inventory, progress model
+    video-calls/            ← research on running a class as a realtime
+                              video call: provider costs, the two-app
+                              split, and what /class costs the export
   site/                     ← the Next.js site
     content/                ← articles (YYYY-MM-DD-slug.md, flat)
     content/series.json     ← series title/description registry
