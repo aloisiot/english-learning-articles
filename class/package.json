@@ -1,6 +1,17 @@
 {
   "name": "@english-learning/class",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
-  "description": "Placeholder workspace for the class app (see research/video-calls). Populated starting Phase 2."
+  "description": "The class app — real-time video classes, reachable at /class (see research/video-calls). Phase 2: empty shell that proves the routing.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "verify": "npm run build"
+  },
+  "dependencies": {
+    "next": "^16.3.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  }
 }
