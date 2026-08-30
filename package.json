@@ -1,0 +1,23 @@
+{
+  "name": "english-learning-articles-workspace",
+  "private": true,
+  "workspaces": [
+    "site",
+    "class",
+    "lib"
+  ],
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:class": "vitest run --project class",
+    "test:site": "vitest run --project site",
+    "test:lib": "vitest run --project lib",
+    "test:coverage": "vitest run --coverage",
+    "test:coverage:open": "node scripts/coverage.mjs",
+    "verify": "node scripts/verify.mjs"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^3.2.7",
+    "vitest": "^3.2.4"
+  }
+}

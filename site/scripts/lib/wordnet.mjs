@@ -1,10 +1,13 @@
 import fs from "node:fs";
+import { createRequire } from "node:module";
 import path from "node:path";
 
+// Resolved via Node's module resolution, not a `node_modules` path relative
+// to cwd, so this keeps working whether wordnet-db is nested under site/ or
+// hoisted to a workspace root (see the npm-workspaces migration).
+const require = createRequire(import.meta.url);
 const DICT_DIR = path.join(
-  process.cwd(),
-  "node_modules",
-  "wordnet-db",
+  path.dirname(require.resolve("wordnet-db/package.json")),
   "dict",
 );
 

@@ -1,8 +1,14 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
-  "installCommand": "npm ci",
+  "installCommand": "cd .. && npm ci",
   "buildCommand": "npm run build",
   "outputDirectory": "out",
-  "trailingSlash": true
+  "trailingSlash": true,
+  "rewrites": [
+    {
+      "source": "/class/:path*",
+      "destination": "https://<CLASS_APP_PRODUCTION_DOMAIN>/class/:path*"
+    }
+  ]
 }
