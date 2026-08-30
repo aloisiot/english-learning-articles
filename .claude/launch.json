@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "class",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "-w", "class"],
+      "port": 3000
+    }
+  ]
+}
