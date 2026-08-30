@@ -31,6 +31,7 @@
     "wordnet-db": "^3.1.14"
   },
   "devDependencies": {
+    "@vercel/config": "^0.7.0",
     "pagefind": "^1.5.2",
     "sharp": "^0.35.3"
   }
