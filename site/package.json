@@ -8,6 +8,8 @@
     "covers": "node scripts/download-covers.mjs",
     "check:content": "node scripts/check-content.mjs",
     "check:covers": "node scripts/check-cover-queue.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "verify": "node scripts/verify.mjs",
     "prebuild": "node scripts/build-dictionary.mjs",
     "build": "next build && node scripts/postbuild.mjs",

@@ -50,3 +50,49 @@ automatically on every `git push`, blocking the push if any step fails.
 Hooks under `.git/hooks/` are local to a clone and not committed to the
 repository — if this repo is ever cloned fresh elsewhere, that file
 needs to be recreated there too.
+
+## Running the tests
+
+`npm run verify` runs the whole suite once, which is the right thing
+before a push and the wrong thing while actually writing a test. These
+are the scripts for the latter, all from the repo root:
+
+| Script | What it does |
+|---|---|
+| `npm test` | Every workspace, once. |
+| `npm run test:watch` | Every workspace, re-running on change. |
+| `npm run test:class` | Just `class/` — likewise `test:site`, `test:lib`. |
+| `npm run test:coverage` | Adds the coverage table and the thresholds. |
+| `npm run test:coverage:open` | The same, then opens the HTML report. |
+
+Each workspace also has its own `test` and `test:watch`, so
+`npm test -w class` works from inside a package. That path uses the
+workspace's own `vitest.config.ts` rather than the root one, so it runs
+the tests but **not** the coverage thresholds — those are configured
+once, at the root.
+
+## What the coverage threshold covers
+
+**100% of lines, branches, functions and statements — on the pure
+modules only**, currently `class/lib/**` and `lib/**` (see
+`vitest.config.mjs`). This is deliberate, and the reasoning is in
+[08-implementation-plan.md](../research/video-calls/08-implementation-plan.md):
+a repo-wide percentage would be satisfied by testing the easy half and
+would say nothing, whereas 100% on the modules that hold the rules is
+both achievable and meaningful. It fails loudly when logic is added in
+the wrong place, which is the actual thing being enforced.
+
+Two consequences worth knowing:
+
+- **Route handlers, components and the `fetch` wrapper are not
+  counted.** They are the I/O edges, and asserting them with mocks
+  would prove only that the mock behaves as written.
+- **The include globs must track file extensions.** When `class/` moved
+  to TypeScript the globs had to gain `ts,tsx`; had they not, they
+  would have matched no files and a 100% threshold over nothing passes
+  silently — the exact failure the threshold exists to catch.
+
+`test:coverage:open` opens the report **even when the run fails**,
+because a threshold failure is usually the moment you most want to see
+which branch went uncovered. The exit code is still Vitest's, so it
+remains usable in a gate.

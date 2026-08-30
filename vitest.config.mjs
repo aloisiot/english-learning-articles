@@ -14,6 +14,9 @@ export default defineConfig({
         "class/lib/**/*.{js,mjs,ts,tsx}",
         "lib/**/*.{js,mjs,ts,tsx}",
       ],
+      // `text` for the terminal, `html` for `npm run test:coverage:open`.
+      // Vitest also defaults to clover and json, which nothing here reads.
+      reporter: ["text", "html"],
       thresholds: {
         100: true,
       },
