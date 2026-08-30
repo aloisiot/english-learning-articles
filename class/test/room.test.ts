@@ -135,12 +135,26 @@ describe("deriveRoomName", () => {
     Links already handed out carry their room name inside the signed
     token, so changing this derivation would not break them — but it
     would split a class whose teacher regenerated the link, sending the
-    two students to different rooms. This pins the output for an article
-    class so that cannot happen silently.
+    two students to different rooms.
+
+    This value is the one the original implementation produced, and it is
+    pinned because that exact regression has already happened once: the
+    NUL separating slug from start time is invisible when the file is
+    read, was mistaken for a space, and every article class silently
+    moved to a different room. A golden value is the only check that
+    catches an invisible character.
   */
   it("derives the same name for an article class as it always has", () => {
     expect(deriveRoomName({ slug: SLUG, startsAt: STARTS_AT })).toBe(
-      "2026-08-13-the-deal-that-ende-ab9054103b",
+      "2026-08-13-the-deal-that-ende-9a2806270d",
+    );
+  });
+
+  it("separates slug from start time with a character no slug contains", () => {
+    // A space would not do: it is a character a slug can hold, so the
+    // two halves could in principle be rearranged into each other.
+    expect(deriveRoomName({ slug: "a b", startsAt: 1 })).not.toBe(
+      deriveRoomName({ slug: "a", startsAt: 1 }),
     );
   });
 

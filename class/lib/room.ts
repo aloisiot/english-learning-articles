@@ -117,21 +117,27 @@ function articleSlug(slug: unknown): string {
  * no database in phase 1, so the same class must always produce the same
  * name and two different classes must never collide.
  *
- * The digest is taken over the slug and start time separated by a space.
- * A space *can* appear in a slug, so that separator is unambiguous only
- * because `startsAt` is a validated finite number by the time it is
- * interpolated: no slug/startsAt pair can rearrange into another one,
- * because the second half can never contain a space.
+ * The digest is taken over the slug and start time separated by a NUL,
+ * which no slug can contain, so `{slug: "a-b", startsAt: 1}` cannot
+ * collide with `{slug: "a", startsAt: "b-1"}`.
  *
- * A class with no article digests the empty string. No real slug reduces
- * to that, so article and non-article classes cannot collide either.
+ * The separator is written as the escape `\0` rather than as a literal
+ * NUL byte in this file. They are the same character at run time, and
+ * they have to be: changing it would move every existing class to a
+ * different room. The escape is preferable only because a raw NUL makes
+ * git treat this source file as binary, so it stops showing diffs for
+ * it — which is how an earlier change to this line went unreviewed.
+ *
+ * A class with no article digests the empty string before the NUL. No
+ * real slug reduces to that, so article and non-article classes cannot
+ * collide either.
  */
 export function deriveRoomName({ slug, startsAt }: DeriveRoomNameInput): string {
   const article = articleSlug(slug);
   assertFinite("startsAt", startsAt);
 
   const digest = createHash("sha256")
-    .update(`${article} ${startsAt}`, "utf8")
+    .update(`${article}\0${startsAt}`, "utf8")
     .digest("hex")
     .slice(0, DIGEST_LENGTH);
 
