@@ -81,9 +81,17 @@ export function buildRoomUrl(domain: unknown, roomName: string): string {
  * able to close itself. `eject_at_room_exp` makes that binding on
  * participants rather than advisory.
  *
- * Everything else is off. Phase 3 is a call that connects and nothing
- * more — chat and screen sharing arrive in phase 5, and turning them on
- * early would mean shipping UI this phase deliberately excludes.
+ * `enable_screenshare` is a *room* property, and it is the reason a
+ * screen share can fail before the browser is ever asked: daily-js
+ * checks it locally and refuses with "not starting screenshare:
+ * enable_screenshare is false", so no picker opens and no permission is
+ * requested. The browser's own permission prompt is a second, later gate
+ * — this one has to pass first.
+ *
+ * `enable_chat` stays off. It configures Daily's own chat feature, and
+ * this app does not use it: chat here is `sendAppMessage`, which is a
+ * separate API that this property does not govern. Leaving it off keeps
+ * the room from carrying a feature nothing here reads.
  */
 export function buildCreateRoomRequest({
   roomName,
@@ -102,7 +110,7 @@ export function buildCreateRoomRequest({
         eject_at_room_exp: true,
         max_participants: 2,
         enable_chat: false,
-        enable_screenshare: false,
+        enable_screenshare: true,
       },
     }),
   };

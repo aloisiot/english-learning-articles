@@ -20,6 +20,9 @@
  * - **Chat holds no history.** Messages ride on `sendAppMessage`, which
  *   reaches whoever is in the room at the time; there is no database in
  *   phase 1 to keep anything in. See class/lib/chat.ts.
+ * - **Screen sharing is offered only where the browser can do it.** See
+ *   `useCanScreenShare` — the check is a capability, not a guess at the
+ *   device.
  * - **Every tile is the shape of what is inside it**, so no video is
  *   ever cropped. See class/lib/video-fit.ts.
  */
@@ -34,6 +37,7 @@ import {
   useMeetingState,
   useParticipantIds,
   useParticipantProperty,
+  useScreenShare,
   useVideoTrack,
 } from "@daily-co/daily-react";
 import {
@@ -47,6 +51,7 @@ import {
 
 import { MAX_CHAT_TEXT, buildChatPayload, parseChatPayload } from "@/lib/chat";
 import { initial } from "@/lib/initials";
+import { describeScreenShareError } from "@/lib/screen-share";
 import { tileRatio } from "@/lib/video-fit";
 
 /**
@@ -227,6 +232,20 @@ function Stage({ onLeave }: { onLeave: () => void }) {
   const daily = useDaily();
   const localSessionId = useLocalSessionId();
   const remoteIds = useParticipantIds({ filter: "remote" });
+  const canScreenShare = useCanScreenShare();
+  const [shareError, setShareError] = useState<string | null>(null);
+
+  const { isSharingScreen, screens, startScreenShare, stopScreenShare } =
+    useScreenShare({
+      // Silent on a cancelled picker, loud on anything else — see
+      // class/lib/screen-share.ts for why that is the right way round.
+      onError: (event) => setShareError(describeScreenShareError(event.errorMsg)),
+      onLocalScreenShareStarted: () => setShareError(null),
+    });
+
+  // At most two people are in the room, so at most one shared screen is
+  // worth showing; if both somehow share, the first is the one on stage.
+  const screen = screens[0];
   const remoteId = remoteIds[0];
 
   const [chatOpen, setChatOpen] = useState(false);
@@ -296,7 +315,9 @@ function Stage({ onLeave }: { onLeave: () => void }) {
           hold two tiles rather than only the self view.
         */}
         <div className="videos">
-          {remoteId ? (
+          {screen ? (
+            <ScreenTile sessionId={screen.session_id} local={screen.local} />
+          ) : remoteId ? (
             <VideoTile sessionId={remoteId} showName main />
           ) : (
             <div className="tile tile-main tile-empty">
@@ -304,9 +325,18 @@ function Stage({ onLeave }: { onLeave: () => void }) {
             </div>
           )}
 
+          {/*
+            Self first, which `column-reverse` puts at the bottom: the
+            self view then stays exactly where it was when a screen share
+            starts, and the remote camera appears above it rather than
+            shunting it upward.
+          */}
           <div className="insets">
             {localSessionId ? (
               <VideoTile sessionId={localSessionId} self inset />
+            ) : null}
+            {screen && remoteId ? (
+              <VideoTile sessionId={remoteId} showName inset />
             ) : null}
           </div>
         </div>
@@ -319,9 +349,39 @@ function Stage({ onLeave }: { onLeave: () => void }) {
         />
       </div>
 
+      {shareError ? (
+        <p className="stage-error" role="status">
+          {shareError}
+          <button
+            type="button"
+            className="stage-error-dismiss"
+            onClick={() => setShareError(null)}
+            aria-label="Dismiss"
+          >
+            <CloseIcon />
+          </button>
+        </p>
+      ) : null}
+
       <div className="controls">
         <MediaToggle kind="audio" />
         <MediaToggle kind="video" />
+        {canScreenShare ? (
+          <button
+            type="button"
+            className={isSharingScreen ? "icon-button off" : "icon-button"}
+            onClick={() => {
+              setShareError(null);
+              if (isSharingScreen) stopScreenShare();
+              else startScreenShare();
+            }}
+            aria-label={isSharingScreen ? "Stop sharing screen" : "Share screen"}
+            aria-pressed={isSharingScreen}
+            title={isSharingScreen ? "Stop sharing screen" : "Share screen"}
+          >
+            <ScreenIcon on={!isSharingScreen} />
+          </button>
+        ) : null}
         <button
           type="button"
           className="icon-button leave"
@@ -354,6 +414,36 @@ function Stage({ onLeave }: { onLeave: () => void }) {
       <DailyAudio />
     </main>
   );
+}
+
+/**
+ * Whether this browser can share a screen at all.
+ *
+ * A capability, deliberately, rather than a guess at the device: no
+ * mobile or tablet browser implements `getDisplayMedia` — not iOS
+ * Safari, not Chrome on Android — so asking the browser what it can do
+ * answers "is this a computer?" as ground truth instead of by sniffing a
+ * user agent or a viewport width. A desktop browser in a narrow window
+ * keeps the feature, and a touchscreen laptop keeps it too, because both
+ * of those really can share a screen.
+ *
+ * Read in an effect rather than during render: `navigator` does not
+ * exist while this is being server-rendered, and a value that differs
+ * between the server and the first client render is a hydration
+ * mismatch. Starting false means the button appears a frame late on a
+ * computer, which is the harmless direction to be wrong in.
+ */
+function useCanScreenShare(): boolean {
+  const [canShare, setCanShare] = useState(false);
+
+  useEffect(() => {
+    setCanShare(
+      typeof navigator !== "undefined" &&
+        typeof navigator.mediaDevices?.getDisplayMedia === "function",
+    );
+  }, []);
+
+  return canShare;
 }
 
 /**
@@ -425,6 +515,51 @@ function VideoTile({
       ) : null}
 
       {showName ? <span className="tile-name">{name}</span> : null}
+    </div>
+  );
+}
+
+/**
+ * Somebody's shared screen.
+ *
+ * Always `contain`, unlike a camera: cropping a face loses a chin, and
+ * cropping a screen loses whatever was in the corner that was cut off —
+ * a line of code, a slide's title. There is no version of this where
+ * filling the tile is worth hiding content the sharer meant to show.
+ */
+function ScreenTile({
+  sessionId,
+  local,
+}: {
+  sessionId: string;
+  local: boolean;
+}) {
+  const userName = useParticipantProperty(sessionId, "user_name");
+  const name = userName?.trim() || UNNAMED;
+  const [aspectRatio, setAspectRatio] = useState<number | null>(null);
+
+  // A screen has a shape too, and it is rarely 16:9 — a window on a
+  // tall monitor is nothing like a webcam. Taking the shared surface's
+  // own ratio is what keeps the corner of a slide or a line of code from
+  // being cut off.
+  const ratio = tileRatio(aspectRatio);
+
+  return (
+    <div
+      className="tile tile-main tile-screen"
+      style={
+        { aspectRatio: String(ratio), "--tile-ratio": String(ratio) } as CSSProperties
+      }
+    >
+      <DailyVideo
+        sessionId={sessionId}
+        type="screenVideo"
+        fit="contain"
+        onResize={({ aspectRatio: reported }) => setAspectRatio(reported)}
+      />
+      <span className="tile-name">
+        {local ? "Your screen" : `${name}'s screen`}
+      </span>
     </div>
   );
 }
@@ -600,6 +735,17 @@ function CameraIcon({ on }: { on: boolean }) {
     <svg {...SVG}>
       <rect x="2" y="6" width="13" height="12" rx="2.5" />
       <path d="M15 10.5 22 7v10l-7-3.5z" />
+      {on ? null : <Slash />}
+    </svg>
+  );
+}
+
+function ScreenIcon({ on }: { on: boolean }) {
+  return (
+    <svg {...SVG}>
+      <rect x="2" y="4" width="20" height="13" rx="2" />
+      <line x1="8" y1="21" x2="16" y2="21" />
+      <line x1="12" y1="17" x2="12" y2="21" />
       {on ? null : <Slash />}
     </svg>
   );
