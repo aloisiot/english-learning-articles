@@ -1,3 +1,5 @@
+import "./globals.css";
+
 // Kept out of search engines wholesale, at every phase — this app is
 // reached only via a signed link (later, a session), never crawled.
 export const metadata = {

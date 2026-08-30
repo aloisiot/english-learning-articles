@@ -2,7 +2,7 @@
   "name": "@english-learning/class",
   "version": "0.1.0",
   "private": true,
-  "description": "The class app — real-time video classes, reachable at /class (see research/video-calls). Phase 2: empty shell that proves the routing.",
+  "description": "The class app — real-time video classes, reachable at /class (see research/video-calls). Signed links admit two people to a Daily room.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -10,6 +10,9 @@
     "verify": "npm run build"
   },
   "dependencies": {
+    "@daily-co/daily-js": "^0.92.2",
+    "@daily-co/daily-react": "^0.26.0",
+    "jotai": "^2.20.3",
     "next": "^16.3.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
