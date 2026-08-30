@@ -461,6 +461,106 @@ button.leave {
   padding: 0.45rem 0.9rem;
 }
 
+/*
+  Breakpoints. Two, and each exists because the chat has to behave
+  differently rather than because a number looked round:
+
+    < 48rem   phone — no room for a panel beside the video at all
+    < 64rem   tablet — room for a narrower one
+    otherwise desktop
+
+  Screen sharing is absent from all of this on purpose. It is gated on
+  whether the browser implements getDisplayMedia, not on width, so a
+  desktop window dragged narrow keeps the button. See useCanScreenShare.
+*/
+
+/* Tablet: still a sidebar, just a narrower one. */
+@media (max-width: 63.9375rem) {
+  .chat {
+    --chat-width: 17rem;
+  }
+
+  .insets {
+    right: 1rem;
+    bottom: 1rem;
+  }
+}
+
+/*
+  Phone: the panel becomes the screen. There is no width at which a
+  sidebar and a video both work here, so the chat covers everything —
+  controls included — and its own X is the way back out.
+*/
+@media (max-width: 47.9375rem) {
+  .videos {
+    padding: 0.5rem;
+  }
+
+  .tile,
+  .tile-inset {
+    border-radius: 12px;
+  }
+
+  .tile-inset {
+    width: min(30vw, 132px, calc(36cqh * var(--tile-ratio)));
+  }
+
+  .insets {
+    right: 0.75rem;
+    bottom: 0.75rem;
+    gap: 0.4rem;
+  }
+
+  .controls {
+    gap: 0.5rem;
+    padding: 0.7rem 0.5rem;
+  }
+
+  .icon-button {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .chat {
+    position: fixed;
+    inset: 0;
+    width: auto;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    z-index: 10;
+    /* Only the slide remains; there is no layout width to animate when
+       the panel is the whole screen. */
+    transition: transform 240ms ease;
+  }
+
+  .chat[data-open="true"] {
+    margin: 0;
+  }
+
+  .chat-header {
+    /* The one control that gets the panel closed again, so it is given
+       room to be hit rather than tucked into a corner. */
+    padding: 0.75rem 0.75rem 0.75rem 1rem;
+  }
+
+  .icon-button.chat-close {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-color: #3a4048;
+  }
+
+  .chat-messages {
+    padding: 1rem;
+  }
+
+  .chat-form {
+    padding: 0.75rem;
+    /* Clear of a phone's home indicator. */
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+  }
+}
+
 /* Join form, on the notice screen. */
 .join-form {
   display: flex;
