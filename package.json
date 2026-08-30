@@ -7,6 +7,7 @@
     "lib"
   ],
   "scripts": {
+    "prepare": "node scripts/wire-hooks.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:class": "vitest run --project class",
@@ -14,6 +15,7 @@
     "test:lib": "vitest run --project lib",
     "test:coverage": "vitest run --coverage",
     "test:coverage:open": "node scripts/coverage.mjs",
+    "check:env": "node scripts/check-env-files.mjs --tracked",
     "verify": "node scripts/verify.mjs"
   },
   "devDependencies": {
