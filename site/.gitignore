@@ -6,3 +6,10 @@ out/
 public/pagefind/
 .DS_Store
 *.log
+
+# .env.example is the committed template. Nothing the site reads is
+# secret today — CLASS_APP_DOMAIN is a public hostname — but the file
+# these rules cover is the one that would hold it if that changed.
+.env
+.env.local
+.env*.local
