@@ -2,8 +2,9 @@
  * Signed class links — the security boundary of phase 1.
  *
  * There is no database and no account system yet, so a link *is* the
- * authorisation: it carries the article slug, the Daily room name and an
- * expiry, and an HMAC over all three proves the class app minted it.
+ * authorisation: it carries the Daily room name, an expiry and — when
+ * the class is about one — an article slug, and an HMAC over all of them
+ * proves the class app minted it.
  * See research/video-calls/07-two-app-architecture.md §7.
  *
  * The whole module is pure — no I/O, no clock of its own beyond a
@@ -28,8 +29,14 @@ import { secretsMatch } from "./secret";
 
 /** What a class link carries, and all it carries. */
 export interface ClassLinkPayload {
-  /** Article the class is about, as its `site/content` filename stem. */
-  slug: string;
+  /**
+   * Article the class is about, as its `site/content` filename stem.
+   *
+   * Optional: a class does not have to be about an article. The field is
+   * left out of the payload entirely rather than set to an empty string,
+   * so "no article" has one representation on the wire and not two.
+   */
+  slug?: string;
   /** Daily room name, derived rather than stored — see ./room.ts. */
   room: string;
   /** Expiry, epoch seconds. The link is dead *at* this second. */
@@ -71,7 +78,15 @@ function isValidPayload(value: unknown): value is ClassLinkPayload {
     return false;
   }
   const candidate = value as Record<string, unknown>;
-  if (typeof candidate.slug !== "string" || candidate.slug === "") return false;
+  // An absent slug is a class with no article. A present one still has
+  // to be a non-empty string: an empty slug would be a third spelling of
+  // "no article", and the whole point of omitting the field is that
+  // there is only one.
+  if (candidate.slug !== undefined) {
+    if (typeof candidate.slug !== "string" || candidate.slug === "") {
+      return false;
+    }
+  }
   if (typeof candidate.room !== "string" || candidate.room === "") return false;
   // Number.isFinite is false for non-numbers too, so this one check
   // covers a missing exp, a string exp, and the Infinity that

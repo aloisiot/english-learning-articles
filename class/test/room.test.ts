@@ -87,14 +87,61 @@ describe("deriveRoomName", () => {
     expect(name).toMatch(/^class-[0-9a-f]{10}$/);
   });
 
-  const badSlugs: Array<[string, DeriveRoomNameInput]> = [
+  /*
+    A class does not have to be about an article, so an absent slug is an
+    ordinary input. The cases below are the ones that would quietly give
+    two students different rooms if they were ever treated as distinct.
+  */
+  const noArticle: Array<[string, DeriveRoomNameInput]> = [
     ["a missing slug", { startsAt: STARTS_AT }],
-    ["a non-string slug", { slug: 7, startsAt: STARTS_AT }],
+    ["an undefined slug", { slug: undefined, startsAt: STARTS_AT }],
+    ["a null slug", { slug: null, startsAt: STARTS_AT }],
     ["an empty slug", { slug: "", startsAt: STARTS_AT }],
+  ];
+
+  it.each(noArticle)("yields a legal name for %s", (_label, input) => {
+    expect(deriveRoomName(input)).toMatch(/^class-[0-9a-f]{10}$/);
+  });
+
+  it("derives one room however the absent article is spelled", () => {
+    const names = noArticle.map(([, input]) => deriveRoomName(input));
+
+    expect(new Set(names).size).toBe(1);
+  });
+
+  it("differs from an article class starting at the same time", () => {
+    expect(deriveRoomName({ startsAt: STARTS_AT })).not.toBe(
+      deriveRoomName({ slug: SLUG, startsAt: STARTS_AT }),
+    );
+  });
+
+  it("still separates two article-less classes at different times", () => {
+    expect(deriveRoomName({ startsAt: STARTS_AT })).not.toBe(
+      deriveRoomName({ startsAt: STARTS_AT + 1 }),
+    );
+  });
+
+  const badSlugs: Array<[string, DeriveRoomNameInput]> = [
+    ["a non-string slug", { slug: 7, startsAt: STARTS_AT }],
+    ["a boolean slug", { slug: true, startsAt: STARTS_AT }],
+    ["an object slug", { slug: { toString: () => "x" }, startsAt: STARTS_AT }],
   ];
 
   it.each(badSlugs)("throws for %s", (_label, input) => {
     expect(() => deriveRoomName(input)).toThrow(TypeError);
+  });
+
+  /*
+    Links already handed out carry their room name inside the signed
+    token, so changing this derivation would not break them — but it
+    would split a class whose teacher regenerated the link, sending the
+    two students to different rooms. This pins the output for an article
+    class so that cannot happen silently.
+  */
+  it("derives the same name for an article class as it always has", () => {
+    expect(deriveRoomName({ slug: SLUG, startsAt: STARTS_AT })).toBe(
+      "2026-08-13-the-deal-that-ende-ab9054103b",
+    );
   });
 
   const badStarts: Array<[string, DeriveRoomNameInput]> = [

@@ -100,14 +100,16 @@ export default function LinkForm() {
         </label>
 
         <label>
-          Article slug
+          Article slug <span className="optional">optional</span>
           <input
             type="text"
             value={slug}
             onChange={(event) => setSlug(event.target.value)}
             placeholder="2026-08-13-the-deal-that-ended-it"
-            required
           />
+          <span className="hint">
+            Leave blank for a class that is not about an article.
+          </span>
         </label>
 
         <label>

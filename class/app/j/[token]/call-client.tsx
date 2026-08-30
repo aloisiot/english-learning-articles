@@ -46,7 +46,8 @@ export default function CallClient({
   slug,
 }: {
   token: string;
-  slug: string;
+  /** Absent when the class is not about an article. */
+  slug?: string;
 }) {
   const callObject = useCallObject({});
 
@@ -57,7 +58,7 @@ export default function CallClient({
   );
 }
 
-function Call({ token, slug }: { token: string; slug: string }) {
+function Call({ token, slug }: { token: string; slug?: string }) {
   const daily = useDaily();
   const meetingState = useMeetingState();
   const [pending, setPending] = useState(false);
@@ -115,7 +116,7 @@ function Call({ token, slug }: { token: string; slug: string }) {
   return (
     <main className="notice">
       <h1>Ready to join</h1>
-      <p className="muted">{slug}</p>
+      {slug ? <p className="muted">{slug}</p> : null}
       {error ? <p className="error">{error}</p> : null}
       <button
         type="button"

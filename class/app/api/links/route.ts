@@ -28,6 +28,7 @@ let attempts: RateLimitState | undefined;
 
 interface LinkRequestBody {
   secret?: unknown;
+  /** Optional: a class need not be about an article. */
   slug?: unknown;
   startsAt?: unknown;
   durationMinutes?: unknown;
@@ -61,11 +62,17 @@ export async function POST(request: Request): Promise<Response> {
 
   const { slug, startsAt, durationMinutes } = input ?? {};
 
+  // The article is optional — not every class is about one. A blank
+  // field posts an empty string, which is normalised away here so that
+  // everything downstream sees either a real slug or nothing at all.
+  const article =
+    typeof slug === "string" && slug.trim() !== "" ? slug.trim() : undefined;
+
   let window;
   let room: string;
   try {
     window = classWindow({ startsAt, durationMinutes });
-    room = deriveRoomName({ slug, startsAt });
+    room = deriveRoomName({ slug: article, startsAt });
   } catch (error) {
     // classWindow and deriveRoomName throw on anything unusable, which
     // here is a form-validation failure rather than a server fault.
@@ -75,7 +82,11 @@ export async function POST(request: Request): Promise<Response> {
   }
 
   const token = signPayload(
-    { slug: slug as string, room, exp: window.expiresAt },
+    // Spread rather than `slug: article`: an explicit `undefined` would
+    // survive into JSON.stringify as a missing key anyway, but writing
+    // it this way makes the "absent, not empty" rule visible at the one
+    // place the payload is built.
+    { ...(article === undefined ? {} : { slug: article }), room, exp: window.expiresAt },
     linkSecret(),
   );
 
