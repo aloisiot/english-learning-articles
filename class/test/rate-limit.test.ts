@@ -4,15 +4,25 @@ import {
   DEFAULT_LIMIT,
   DEFAULT_WINDOW_SECONDS,
   rateLimit,
-} from "../lib/rate-limit.js";
+  type RateLimitOptions,
+  type RateLimitResult,
+  type RateLimitState,
+} from "../lib/rate-limit";
 
 const NOW = 1_800_000_000;
 const KEY = "203.0.113.7";
 
 /** Run `count` attempts at the same instant, returning the last result. */
-function attempts(count, { key = KEY, now = NOW, options } = {}) {
-  let state;
-  let result;
+function attempts(
+  count: number,
+  {
+    key = KEY,
+    now = NOW,
+    options,
+  }: { key?: string; now?: number; options?: RateLimitOptions } = {},
+): RateLimitResult {
+  let state: RateLimitState | undefined;
+  let result!: RateLimitResult;
   for (let i = 0; i < count; i++) {
     result = rateLimit(state, key, now, options);
     state = result.state;
@@ -76,7 +86,7 @@ describe("rateLimit", () => {
   });
 
   it("honours a custom limit and window", () => {
-    const options = { limit: 2, windowSeconds: 10 };
+    const options: RateLimitOptions = { limit: 2, windowSeconds: 10 };
 
     expect(attempts(2, { options }).allowed).toBe(true);
     expect(attempts(3, { options }).allowed).toBe(false);

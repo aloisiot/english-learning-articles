@@ -23,18 +23,31 @@ import {
 import { useCallback, useState } from "react";
 
 /**
- * Must match `basePath` in next.config.mjs: fetch does not know about it,
+ * Must match `basePath` in next.config.ts: fetch does not know about it,
  * so the one place a URL is written by hand is here.
  */
 const JOIN_ENDPOINT = "/class/api/join";
 
-const MESSAGES = {
+const MESSAGES: Record<string, string> = {
   "not-valid": "This link is not valid any more. Ask for a new one.",
-  "room-unavailable": "The class room could not be opened. Try again in a moment.",
-  "token-unavailable": "Could not get permission to join. Try again in a moment.",
+  "room-unavailable":
+    "The class room could not be opened. Try again in a moment.",
+  "token-unavailable":
+    "Could not get permission to join. Try again in a moment.",
 };
 
-export default function CallClient({ token, slug }) {
+interface JoinResponse {
+  roomUrl: string;
+  meetingToken: string;
+}
+
+export default function CallClient({
+  token,
+  slug,
+}: {
+  token: string;
+  slug: string;
+}) {
   const callObject = useCallObject({});
 
   return (
@@ -44,13 +57,15 @@ export default function CallClient({ token, slug }) {
   );
 }
 
-function Call({ token, slug }) {
+function Call({ token, slug }: { token: string; slug: string }) {
   const daily = useDaily();
   const meetingState = useMeetingState();
   const [pending, setPending] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   const join = useCallback(async () => {
+    if (!daily) return;
+
     setPending(true);
     setError(null);
 
@@ -62,21 +77,27 @@ function Call({ token, slug }) {
       });
 
       if (!response.ok) {
-        const body = await response.json().catch(() => ({}));
-        throw new Error(MESSAGES[body.error] ?? "Could not start the class.");
+        const body = (await response.json().catch(() => ({}))) as {
+          error?: string;
+        };
+        throw new Error(
+          (body.error && MESSAGES[body.error]) ?? "Could not start the class.",
+        );
       }
 
-      const { roomUrl, meetingToken } = await response.json();
+      const { roomUrl, meetingToken } = (await response.json()) as JoinResponse;
       await daily.join({ url: roomUrl, token: meetingToken });
     } catch (cause) {
-      setError(cause.message ?? "Could not start the class.");
+      setError(
+        cause instanceof Error ? cause.message : "Could not start the class.",
+      );
     } finally {
       setPending(false);
     }
   }, [daily, token]);
 
   if (meetingState === "joined-meeting") {
-    return <Stage onLeave={() => daily.leave()} />;
+    return <Stage onLeave={() => void daily?.leave()} />;
   }
 
   if (meetingState === "left-meeting") {
@@ -84,7 +105,7 @@ function Call({ token, slug }) {
       <main className="notice">
         <h1>You have left the class</h1>
         <p>You can rejoin with the same link while the class is running.</p>
-        <button type="button" onClick={join} disabled={pending}>
+        <button type="button" onClick={() => void join()} disabled={pending}>
           Rejoin
         </button>
       </main>
@@ -96,14 +117,18 @@ function Call({ token, slug }) {
       <h1>Ready to join</h1>
       <p className="muted">{slug}</p>
       {error ? <p className="error">{error}</p> : null}
-      <button type="button" onClick={join} disabled={pending || !daily}>
+      <button
+        type="button"
+        onClick={() => void join()}
+        disabled={pending || !daily}
+      >
         {pending ? "Joining…" : "Join class"}
       </button>
     </main>
   );
 }
 
-function Stage({ onLeave }) {
+function Stage({ onLeave }: { onLeave: () => void }) {
   const localSessionId = useLocalSessionId();
   const remoteIds = useParticipantIds({ filter: "remote" });
 
@@ -114,7 +139,12 @@ function Stage({ onLeave }) {
           <p className="waiting">Waiting for the other person to join…</p>
         ) : (
           remoteIds.map((id) => (
-            <DailyVideo key={id} sessionId={id} type="video" automirror={false} />
+            <DailyVideo
+              key={id}
+              sessionId={id}
+              type="video"
+              automirror={false}
+            />
           ))
         )}
       </div>
@@ -142,16 +172,20 @@ function Stage({ onLeave }) {
   );
 }
 
-const LABELS = {
+type MediaKind = "audio" | "video";
+
+const LABELS: Record<MediaKind, { on: string; off: string }> = {
   audio: { on: "Mute", off: "Unmute" },
   video: { on: "Stop video", off: "Start video" },
 };
 
-function MediaToggle({ kind }) {
+function MediaToggle({ kind }: { kind: MediaKind }) {
   const daily = useDaily();
   const [on, setOn] = useState(true);
 
   const toggle = useCallback(() => {
+    if (!daily) return;
+
     const next = !on;
     if (kind === "audio") {
       daily.setLocalAudio(next);

@@ -8,24 +8,33 @@
  * it, which is the intended cost of not having one
  * (research/video-calls/07-two-app-architecture.md §7).
  */
-import { useCallback, useState } from "react";
+import { useCallback, useState, type FormEvent } from "react";
 
-/** Must match `basePath` in next.config.mjs — see call-client.js. */
+/** Must match `basePath` in next.config.ts — see call-client.tsx. */
 const LINKS_ENDPOINT = "/class/api/links";
 
 const DEFAULT_DURATION = 30;
+
+interface LinkResult {
+  url: string;
+  room: string;
+  endsAt: number;
+  expiresAt: number;
+}
 
 export default function LinkForm() {
   const [secret, setSecret] = useState("");
   const [slug, setSlug] = useState("");
   const [startsAtLocal, setStartsAtLocal] = useState("");
-  const [durationMinutes, setDurationMinutes] = useState(DEFAULT_DURATION);
-  const [result, setResult] = useState(null);
-  const [error, setError] = useState(null);
+  const [durationMinutes, setDurationMinutes] = useState(
+    String(DEFAULT_DURATION),
+  );
+  const [result, setResult] = useState<LinkResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
   const submit = useCallback(
-    async (event) => {
+    async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
       setPending(true);
       setError(null);
@@ -48,7 +57,10 @@ export default function LinkForm() {
           }),
         });
 
-        const body = await response.json().catch(() => ({}));
+        const body = (await response.json().catch(() => ({}))) as Partial<
+          LinkResult & { error: string }
+        >;
+
         if (!response.ok) {
           throw new Error(
             response.status === 401
@@ -59,9 +71,11 @@ export default function LinkForm() {
           );
         }
 
-        setResult(body);
+        setResult(body as LinkResult);
       } catch (cause) {
-        setError(cause.message ?? "Could not generate a link.");
+        setError(
+          cause instanceof Error ? cause.message : "Could not generate a link.",
+        );
       } finally {
         setPending(false);
       }
@@ -73,7 +87,7 @@ export default function LinkForm() {
     <main className="admin">
       <h1>Generate a class link</h1>
 
-      <form onSubmit={submit}>
+      <form onSubmit={(event) => void submit(event)}>
         <label>
           Admin secret
           <input

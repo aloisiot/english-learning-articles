@@ -5,17 +5,25 @@ import {
   DEFAULT_GRACE_MINUTES,
   classWindow,
   deriveRoomName,
-} from "../lib/room.js";
+  type ClassWindowInput,
+  type DeriveRoomNameInput,
+} from "../lib/room";
 
 const SLUG = "2026-08-13-the-deal-that-ended-it";
 const STARTS_AT = 1_800_000_000;
 
 /** Epoch seconds for a UTC wall time, so the tests state instants plainly. */
-function utc(year, month, day, hour, minute) {
+function utc(
+  year: number,
+  month: number,
+  day: number,
+  hour: number,
+  minute: number,
+): number {
   return Date.UTC(year, month - 1, day, hour, minute, 0) / 1000;
 }
 
-function inZone(epochSeconds, timeZone) {
+function inZone(epochSeconds: number, timeZone: string): string {
   return new Intl.DateTimeFormat("en-GB", {
     timeZone,
     hour: "2-digit",
@@ -79,19 +87,23 @@ describe("deriveRoomName", () => {
     expect(name).toMatch(/^class-[0-9a-f]{10}$/);
   });
 
-  it.each([
+  const badSlugs: Array<[string, DeriveRoomNameInput]> = [
     ["a missing slug", { startsAt: STARTS_AT }],
     ["a non-string slug", { slug: 7, startsAt: STARTS_AT }],
     ["an empty slug", { slug: "", startsAt: STARTS_AT }],
-  ])("throws for %s", (_label, input) => {
+  ];
+
+  it.each(badSlugs)("throws for %s", (_label, input) => {
     expect(() => deriveRoomName(input)).toThrow(TypeError);
   });
 
-  it.each([
+  const badStarts: Array<[string, DeriveRoomNameInput]> = [
     ["a missing startsAt", { slug: SLUG }],
     ["a non-numeric startsAt", { slug: SLUG, startsAt: "soon" }],
     ["an infinite startsAt", { slug: SLUG, startsAt: Infinity }],
-  ])("throws for %s", (_label, input) => {
+  ];
+
+  it.each(badStarts)("throws for %s", (_label, input) => {
     expect(() => deriveRoomName(input)).toThrow(TypeError);
   });
 });
@@ -99,7 +111,11 @@ describe("deriveRoomName", () => {
 describe("classWindow", () => {
   it("adds the class length and the grace period", () => {
     expect(
-      classWindow({ startsAt: STARTS_AT, durationMinutes: 30, graceMinutes: 10 }),
+      classWindow({
+        startsAt: STARTS_AT,
+        durationMinutes: 30,
+        graceMinutes: 10,
+      }),
     ).toEqual({
       startsAt: STARTS_AT,
       endsAt: STARTS_AT + 30 * 60,
@@ -151,20 +167,24 @@ describe("classWindow", () => {
     expect(inZone(endsAt, "America/New_York")).toBe("03:15");
   });
 
-  it.each([
+  const badStarts: Array<[string, ClassWindowInput]> = [
     ["a missing startsAt", {}],
     ["a non-numeric startsAt", { startsAt: "soon" }],
-  ])("throws a TypeError for %s", (_label, input) => {
+  ];
+
+  it.each(badStarts)("throws a TypeError for %s", (_label, input) => {
     expect(() => classWindow(input)).toThrow(TypeError);
   });
 
-  it.each([
+  const badMinutes: Array<[string, ClassWindowInput]> = [
     ["a zero-length class", { startsAt: STARTS_AT, durationMinutes: 0 }],
     ["a negative class", { startsAt: STARTS_AT, durationMinutes: -30 }],
     ["a non-numeric length", { startsAt: STARTS_AT, durationMinutes: "half" }],
     ["a negative grace", { startsAt: STARTS_AT, graceMinutes: -1 }],
     ["a non-numeric grace", { startsAt: STARTS_AT, graceMinutes: "a bit" }],
-  ])("throws a RangeError for %s", (_label, input) => {
+  ];
+
+  it.each(badMinutes)("throws a RangeError for %s", (_label, input) => {
     expect(() => classWindow(input)).toThrow(RangeError);
   });
 });

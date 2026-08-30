@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
-import { adminPath } from "@/server/config.js";
-import { secretsMatch } from "@/lib/secret.js";
+import { secretsMatch } from "@/lib/secret";
+import { adminPath } from "@/server/config";
 
 import LinkForm from "./link-form";
 
@@ -16,7 +16,11 @@ export const dynamic = "force-dynamic";
  * `noindex` comes from the root layout and covers this page with the
  * rest of the app.
  */
-export default async function AdminPage({ params }) {
+export default async function AdminPage({
+  params,
+}: {
+  params: Promise<{ key: string }>;
+}) {
   const { key } = await params;
 
   if (!secretsMatch(key, adminPath())) {

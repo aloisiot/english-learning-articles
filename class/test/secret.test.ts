@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { secretsMatch } from "../lib/secret.js";
+import { secretsMatch } from "../lib/secret";
 
 describe("secretsMatch", () => {
   it("matches a secret against itself", () => {
@@ -24,7 +24,7 @@ describe("secretsMatch", () => {
   // field are both `undefined`, and a `String()`-coercing implementation
   // would call that a match — leaving a misconfigured deploy with no
   // admin auth at all.
-  it.each([
+  const nonMatching: Array<[string, unknown, unknown]> = [
     ["both undefined", undefined, undefined],
     ["both null", null, null],
     ["undefined against a real secret", undefined, "real-secret"],
@@ -34,7 +34,9 @@ describe("secretsMatch", () => {
     ["a real secret against an empty string", "real-secret", ""],
     ["numbers that would coerce alike", 1234, "1234"],
     ["objects", {}, {}],
-  ])("never matches %s", (_label, a, b) => {
+  ];
+
+  it.each(nonMatching)("never matches %s", (_label, a, b) => {
     expect(secretsMatch(a, b)).toBe(false);
   });
 });

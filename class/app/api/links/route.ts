@@ -8,11 +8,11 @@
  * nothing to steal from this endpoint but the secret itself, and nothing
  * it issues that outlives the request.
  */
-import { signPayload } from "@/lib/link.js";
-import { rateLimit } from "@/lib/rate-limit.js";
-import { classWindow, deriveRoomName } from "@/lib/room.js";
-import { secretsMatch } from "@/lib/secret.js";
-import { adminSecret, linkSecret, publicOrigin } from "@/server/config.js";
+import { signPayload } from "@/lib/link";
+import { rateLimit, type RateLimitState } from "@/lib/rate-limit";
+import { classWindow, deriveRoomName } from "@/lib/room";
+import { secretsMatch } from "@/lib/secret";
+import { adminSecret, linkSecret, publicOrigin } from "@/server/config";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -20,18 +20,25 @@ export const dynamic = "force-dynamic";
 /**
  * Per-instance, and therefore partial: a serverless platform may run
  * several of these at once, and each counts on its own. See the note in
- * class/lib/rate-limit.js — this is adequate against a script pointed at
+ * class/lib/rate-limit.ts — this is adequate against a script pointed at
  * one URL and weak against a distributed attacker, which is the trade
  * phase 1 accepts for having nowhere shared to count.
  */
-let attempts;
+let attempts: RateLimitState | undefined;
 
-function clientKey(request) {
-  const forwarded = request.headers.get("x-forwarded-for");
-  return forwarded?.split(",")[0].trim() || "unknown";
+interface LinkRequestBody {
+  secret?: unknown;
+  slug?: unknown;
+  startsAt?: unknown;
+  durationMinutes?: unknown;
 }
 
-export async function POST(request) {
+function clientKey(request: Request): string {
+  const forwarded = request.headers.get("x-forwarded-for");
+  return forwarded?.split(",")[0]?.trim() || "unknown";
+}
+
+export async function POST(request: Request): Promise<Response> {
   const limited = rateLimit(attempts, clientKey(request), Date.now() / 1000);
   attempts = limited.state;
   if (!limited.allowed) {
@@ -41,9 +48,9 @@ export async function POST(request) {
     );
   }
 
-  let input;
+  let input: LinkRequestBody;
   try {
-    input = await request.json();
+    input = (await request.json()) as LinkRequestBody;
   } catch {
     return Response.json({ error: "malformed" }, { status: 400 });
   }
@@ -55,18 +62,20 @@ export async function POST(request) {
   const { slug, startsAt, durationMinutes } = input ?? {};
 
   let window;
-  let room;
+  let room: string;
   try {
     window = classWindow({ startsAt, durationMinutes });
     room = deriveRoomName({ slug, startsAt });
   } catch (error) {
     // classWindow and deriveRoomName throw on anything unusable, which
     // here is a form-validation failure rather than a server fault.
-    return Response.json({ error: error.message }, { status: 400 });
+    const message =
+      error instanceof Error ? error.message : "invalid class details";
+    return Response.json({ error: message }, { status: 400 });
   }
 
   const token = signPayload(
-    { slug, room, exp: window.expiresAt },
+    { slug: slug as string, room, exp: window.expiresAt },
     linkSecret(),
   );
 

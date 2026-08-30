@@ -1,7 +1,7 @@
 import Link from "next/link";
 
-import { REASON, verifyToken } from "@/lib/link.js";
-import { linkSecret } from "@/server/config.js";
+import { REASON, verifyToken, type VerifyFailureReason } from "@/lib/link";
+import { linkSecret } from "@/server/config";
 
 import CallClient from "./call-client";
 
@@ -9,7 +9,11 @@ import CallClient from "./call-client";
 // is nothing here to prerender.
 export const dynamic = "force-dynamic";
 
-export default async function JoinPage({ params }) {
+export default async function JoinPage({
+  params,
+}: {
+  params: Promise<{ token: string }>;
+}) {
   const { token } = await params;
   const verified = verifyToken(token, linkSecret());
 
@@ -28,7 +32,7 @@ export default async function JoinPage({ params }) {
  * nothing, and it saves a student who is simply late from thinking the
  * link was mistyped.
  */
-function LinkProblem({ reason }) {
+function LinkProblem({ reason }: { reason: VerifyFailureReason }) {
   const expired = reason === REASON.EXPIRED;
 
   return (

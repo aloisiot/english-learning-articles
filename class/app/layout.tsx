@@ -1,8 +1,11 @@
+import type { Metadata } from "next";
+import type { ReactNode } from "react";
+
 import "./globals.css";
 
 // Kept out of search engines wholesale, at every phase — this app is
 // reached only via a signed link (later, a session), never crawled.
-export const metadata = {
+export const metadata: Metadata = {
   title: "Class",
   robots: {
     index: false,
@@ -10,7 +13,7 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body>{children}</body>

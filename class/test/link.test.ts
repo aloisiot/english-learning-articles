@@ -8,7 +8,8 @@ import {
   signEncoded,
   signPayload,
   verifyToken,
-} from "../lib/link.js";
+  type ClassLinkPayload,
+} from "../lib/link";
 
 const SECRET = "a-signing-secret-for-tests";
 const OTHER_SECRET = "a-different-signing-secret";
@@ -16,7 +17,7 @@ const OTHER_SECRET = "a-different-signing-secret";
 /** An arbitrary fixed instant, so nothing here depends on the real clock. */
 const NOW = 1_800_000_000;
 
-function payload(overrides = {}) {
+function payload(overrides: Partial<ClassLinkPayload> = {}): ClassLinkPayload {
   return {
     slug: "2026-08-13-the-deal-that-ended-it",
     room: "the-deal-that-ended-4f2a9c1b83",
@@ -59,8 +60,12 @@ describe("tampering", () => {
   });
 
   it("rejects an edited signature", () => {
-    const [encoded, signature] = signPayload(payload(), SECRET).split(".");
-    const flipped = signature.slice(0, -1) + (signature.endsWith("A") ? "B" : "A");
+    const [encoded, signature] = signPayload(payload(), SECRET).split(".") as [
+      string,
+      string,
+    ];
+    const flipped =
+      signature.slice(0, -1) + (signature.endsWith("A") ? "B" : "A");
 
     expect(verifyToken(`${encoded}.${flipped}`, SECRET, { now: NOW })).toEqual({
       ok: false,
@@ -128,7 +133,7 @@ describe("room binding", () => {
 });
 
 describe("failing closed", () => {
-  it.each([
+  const malformed: Array<[string, unknown]> = [
     ["undefined", undefined],
     ["null", null],
     ["a number", 12345],
@@ -139,7 +144,9 @@ describe("failing closed", () => {
     ["an empty payload half", ".c2lnbmF0dXJl"],
     ["an empty signature half", "cGF5bG9hZA=="],
     ["an oversized token", `${"a".repeat(MAX_TOKEN_LENGTH + 1)}.sig`],
-  ])("rejects %s without throwing", (_label, token) => {
+  ];
+
+  it.each(malformed)("rejects %s without throwing", (_label, token) => {
     expect(verifyToken(token, SECRET, { now: NOW })).toEqual({
       ok: false,
       reason: REASON.MALFORMED,
@@ -165,7 +172,7 @@ describe("decodePayload", () => {
     expect(decodePayload(encodePayload(payload()))).toEqual(payload());
   });
 
-  it.each([
+  const invalid: Array<[string, string]> = [
     ["undecodable bytes", "!!!!not-base64!!!!"],
     ["valid JSON that is not an object", encodePayload(42)],
     ["null", encodePayload(null)],
@@ -178,7 +185,9 @@ describe("decodePayload", () => {
     ["an empty room", encodePayload({ slug: "s", room: "", exp: NOW })],
     ["a missing exp", encodePayload({ slug: "s", room: "r" })],
     ["a non-numeric exp", encodePayload({ slug: "s", room: "r", exp: "soon" })],
-  ])("returns null for %s", (_label, encoded) => {
+  ];
+
+  it.each(invalid)("returns null for %s", (_label, encoded) => {
     expect(decodePayload(encoded)).toBeNull();
   });
 

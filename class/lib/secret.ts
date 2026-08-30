@@ -22,10 +22,14 @@
  *    throws on unequal lengths, and the length check needed to avoid
  *    that would leak the secret's length through timing. Hashing first
  *    makes every comparison exactly 32 bytes whatever the inputs were.
+ *
+ * The parameters are `unknown` rather than `string` on purpose: every
+ * caller is handing over something off the wire or out of the
+ * environment, and a type annotation is not a runtime guarantee.
  */
 import { createHash, timingSafeEqual } from "node:crypto";
 
-function digest(value) {
+function digest(value: string): Buffer {
   return createHash("sha256").update(value, "utf8").digest();
 }
 
@@ -33,7 +37,7 @@ function digest(value) {
  * True when `a` and `b` are the same non-empty string, compared in
  * constant time with respect to their contents.
  */
-export function secretsMatch(a, b) {
+export function secretsMatch(a: unknown, b: unknown): boolean {
   if (typeof a !== "string" || typeof b !== "string") return false;
   if (a === "" || b === "") return false;
   return timingSafeEqual(digest(a), digest(b));

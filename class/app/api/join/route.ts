@@ -6,18 +6,18 @@
  * this one decides what they are given, and only the second is a
  * security boundary.
  */
-import { verifyToken } from "@/lib/link.js";
-import { buildRoomUrl } from "@/lib/daily-request.js";
-import { dailyApiKey, dailyDomain, linkSecret } from "@/server/config.js";
-import { ensureRoom, mintMeetingToken } from "@/server/daily.js";
+import { buildRoomUrl } from "@/lib/daily-request";
+import { verifyToken } from "@/lib/link";
+import { dailyApiKey, dailyDomain, linkSecret } from "@/server/config";
+import { ensureRoom, mintMeetingToken } from "@/server/daily";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export async function POST(request) {
-  let token;
+export async function POST(request: Request): Promise<Response> {
+  let token: unknown;
   try {
-    ({ token } = await request.json());
+    ({ token } = (await request.json()) as { token?: unknown });
   } catch {
     return Response.json({ error: "malformed" }, { status: 400 });
   }

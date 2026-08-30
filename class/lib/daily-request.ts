@@ -2,7 +2,7 @@
  * The Daily REST calls phase 3 makes, as data rather than as requests.
  *
  * Building the request and interpreting the response are pure functions
- * here; the module that actually calls `fetch` (class/server/daily.js)
+ * here; the module that actually calls `fetch` (class/server/daily.ts)
  * holds nothing but the I/O. That split is what lets the interesting
  * parts — which room properties are set, and what counts as success —
  * be asserted without a network or a mock of one.
@@ -21,9 +21,37 @@ export const DAILY_ERROR = {
   ALREADY_EXISTS: "already-exists",
   UNAUTHORIZED: "unauthorized",
   UNEXPECTED: "unexpected",
-};
+} as const;
 
-function authHeaders(apiKey) {
+export type DailyErrorReason = (typeof DAILY_ERROR)[keyof typeof DAILY_ERROR];
+
+/** A request described as data, for class/server/daily.ts to send. */
+export interface DailyRequest {
+  url: string;
+  method: "POST";
+  headers: Record<string, string>;
+  body: string;
+}
+
+export type CreateRoomResult =
+  | { ok: true; created: boolean }
+  | { ok: false; reason: DailyErrorReason };
+
+export type MeetingTokenResult =
+  | { ok: true; token: string }
+  | { ok: false; reason: DailyErrorReason };
+
+export interface CreateRoomInput {
+  roomName: string;
+  expiresAt: number;
+  apiKey: unknown;
+}
+
+export interface MeetingTokenInput extends CreateRoomInput {
+  isOwner?: boolean;
+}
+
+function authHeaders(apiKey: unknown): Record<string, string> {
   if (typeof apiKey !== "string" || apiKey === "") {
     throw new TypeError("a Daily API key is required");
   }
@@ -38,7 +66,7 @@ function authHeaders(apiKey) {
  * create and so has no `url` from. Daily serves every room of a domain
  * at `https://<domain>.daily.co/<room>`.
  */
-export function buildRoomUrl(domain, roomName) {
+export function buildRoomUrl(domain: unknown, roomName: string): string {
   if (typeof domain !== "string" || domain === "") {
     throw new TypeError("a Daily domain is required");
   }
@@ -57,7 +85,11 @@ export function buildRoomUrl(domain, roomName) {
  * more — chat and screen sharing arrive in phase 5, and turning them on
  * early would mean shipping UI this phase deliberately excludes.
  */
-export function buildCreateRoomRequest({ roomName, expiresAt, apiKey }) {
+export function buildCreateRoomRequest({
+  roomName,
+  expiresAt,
+  apiKey,
+}: CreateRoomInput): DailyRequest {
   return {
     url: `${DAILY_API_BASE}/rooms`,
     method: "POST",
@@ -87,7 +119,7 @@ export function buildMeetingTokenRequest({
   expiresAt,
   apiKey,
   isOwner = false,
-}) {
+}: MeetingTokenInput): DailyRequest {
   return {
     url: `${DAILY_API_BASE}/meeting-tokens`,
     method: "POST",
@@ -108,14 +140,16 @@ export function buildMeetingTokenRequest({
  * A room that already exists is a success, not a failure: rooms are
  * derived from the link rather than stored, so the second person to join
  * a class necessarily finds the first person's room already there.
- *
- * @returns `{ ok: true, created }` or `{ ok: false, reason }`
  */
-export function interpretCreateRoomResponse(status, body) {
+export function interpretCreateRoomResponse(
+  status: number,
+  body: unknown,
+): CreateRoomResult {
   if (status === 200) return { ok: true, created: true };
 
-  if (status === 400 && typeof body?.info === "string") {
-    if (/already exists/i.test(body.info)) {
+  const info = (body as { info?: unknown } | null | undefined)?.info;
+  if (status === 400 && typeof info === "string") {
+    if (/already exists/i.test(info)) {
       return { ok: true, created: false };
     }
   }
@@ -127,14 +161,14 @@ export function interpretCreateRoomResponse(status, body) {
   return { ok: false, reason: DAILY_ERROR.UNEXPECTED };
 }
 
-/**
- * Pull the token out of a meeting-token response, or say why not.
- *
- * @returns `{ ok: true, token }` or `{ ok: false, reason }`
- */
-export function interpretMeetingTokenResponse(status, body) {
-  if (status === 200 && typeof body?.token === "string" && body.token !== "") {
-    return { ok: true, token: body.token };
+/** Pull the token out of a meeting-token response, or say why not. */
+export function interpretMeetingTokenResponse(
+  status: number,
+  body: unknown,
+): MeetingTokenResult {
+  const token = (body as { token?: unknown } | null | undefined)?.token;
+  if (status === 200 && typeof token === "string" && token !== "") {
+    return { ok: true, token };
   }
 
   if (status === 401 || status === 403) {

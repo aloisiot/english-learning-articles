@@ -8,7 +8,7 @@ import {
   buildRoomUrl,
   interpretCreateRoomResponse,
   interpretMeetingTokenResponse,
-} from "../lib/daily-request.js";
+} from "../lib/daily-request";
 
 const API_KEY = "daily-api-key-for-tests";
 const ROOM = "the-deal-that-ended-4f2a9c1b83";
@@ -20,7 +20,11 @@ describe("buildCreateRoomRequest", () => {
     expiresAt: EXPIRES_AT,
     apiKey: API_KEY,
   });
-  const body = JSON.parse(request.body);
+  const body = JSON.parse(request.body) as {
+    name: string;
+    privacy: string;
+    properties: Record<string, unknown>;
+  };
 
   it("posts to the rooms endpoint with the API key", () => {
     expect(request.url).toBe(`${DAILY_API_BASE}/rooms`);
@@ -47,29 +51,44 @@ describe("buildCreateRoomRequest", () => {
     expect(body.properties.max_participants).toBe(2);
   });
 
-  it.each([
+  const badKeys: Array<[string, unknown]> = [
     ["a missing key", undefined],
     ["an empty key", ""],
     ["a non-string key", 1234],
-  ])("throws for %s rather than sending an unauthenticated request", (_l, key) => {
-    expect(() =>
-      buildCreateRoomRequest({
-        roomName: ROOM,
-        expiresAt: EXPIRES_AT,
-        apiKey: key,
-      }),
-    ).toThrow(TypeError);
-  });
+  ];
+
+  it.each(badKeys)(
+    "throws for %s rather than sending an unauthenticated request",
+    (_label, apiKey) => {
+      expect(() =>
+        buildCreateRoomRequest({
+          roomName: ROOM,
+          expiresAt: EXPIRES_AT,
+          apiKey,
+        }),
+      ).toThrow(TypeError);
+    },
+  );
 });
 
 describe("buildMeetingTokenRequest", () => {
-  it("scopes the token to one room and one expiry", () => {
+  function properties(isOwner?: boolean) {
     const request = buildMeetingTokenRequest({
       roomName: ROOM,
       expiresAt: EXPIRES_AT,
       apiKey: API_KEY,
+      ...(isOwner === undefined ? {} : { isOwner }),
     });
-    const body = JSON.parse(request.body);
+    return {
+      request,
+      body: JSON.parse(request.body) as {
+        properties: Record<string, unknown>;
+      },
+    };
+  }
+
+  it("scopes the token to one room and one expiry", () => {
+    const { request, body } = properties();
 
     expect(request.url).toBe(`${DAILY_API_BASE}/meeting-tokens`);
     expect(request.method).toBe("POST");
@@ -78,33 +97,20 @@ describe("buildMeetingTokenRequest", () => {
   });
 
   it("mints a non-owner token by default", () => {
-    const body = JSON.parse(
-      buildMeetingTokenRequest({
-        roomName: ROOM,
-        expiresAt: EXPIRES_AT,
-        apiKey: API_KEY,
-      }).body,
-    );
-
-    expect(body.properties.is_owner).toBe(false);
+    expect(properties().body.properties.is_owner).toBe(false);
   });
 
   it("mints an owner token when asked", () => {
-    const body = JSON.parse(
-      buildMeetingTokenRequest({
-        roomName: ROOM,
-        expiresAt: EXPIRES_AT,
-        apiKey: API_KEY,
-        isOwner: true,
-      }).body,
-    );
-
-    expect(body.properties.is_owner).toBe(true);
+    expect(properties(true).body.properties.is_owner).toBe(true);
   });
 
   it("throws without an API key", () => {
     expect(() =>
-      buildMeetingTokenRequest({ roomName: ROOM, expiresAt: EXPIRES_AT }),
+      buildMeetingTokenRequest({
+        roomName: ROOM,
+        expiresAt: EXPIRES_AT,
+        apiKey: undefined,
+      }),
     ).toThrow(TypeError);
   });
 });
@@ -116,11 +122,13 @@ describe("buildRoomUrl", () => {
     );
   });
 
-  it.each([
+  const badDomains: Array<[string, unknown]> = [
     ["a missing domain", undefined],
     ["an empty domain", ""],
     ["a non-string domain", 42],
-  ])("throws for %s", (_label, domain) => {
+  ];
+
+  it.each(badDomains)("throws for %s", (_label, domain) => {
     expect(() => buildRoomUrl(domain, ROOM)).toThrow(TypeError);
   });
 });
@@ -145,23 +153,28 @@ describe("interpretCreateRoomResponse", () => {
     ).toEqual({ ok: true, created: false });
   });
 
-  it.each([
+  const unauthorized: Array<[string, number, unknown]> = [
     ["a 401", 401, {}],
     ["a 403", 403, {}],
-  ])("reports %s as unauthorized", (_label, status, body) => {
+  ];
+
+  it.each(unauthorized)("reports %s as unauthorized", (_label, status, body) => {
     expect(interpretCreateRoomResponse(status, body)).toEqual({
       ok: false,
       reason: DAILY_ERROR.UNAUTHORIZED,
     });
   });
 
-  it.each([
+  const unexpected: Array<[string, number, unknown]> = [
     ["a 400 with an unrelated message", 400, { info: "name is too long" }],
     ["a 400 with no info at all", 400, {}],
     ["a 400 with a non-string info", 400, { info: 5 }],
     ["a 500", 500, {}],
     ["a missing body", 500, undefined],
-  ])("fails closed on %s", (_label, status, body) => {
+    ["a null body", 500, null],
+  ];
+
+  it.each(unexpected)("fails closed on %s", (_label, status, body) => {
     expect(interpretCreateRoomResponse(status, body)).toEqual({
       ok: false,
       reason: DAILY_ERROR.UNEXPECTED,
@@ -176,23 +189,28 @@ describe("interpretMeetingTokenResponse", () => {
     );
   });
 
-  it.each([
+  const unauthorized: Array<[string, number, unknown]> = [
     ["a 401", 401, {}],
     ["a 403", 403, {}],
-  ])("reports %s as unauthorized", (_label, status, body) => {
+  ];
+
+  it.each(unauthorized)("reports %s as unauthorized", (_label, status, body) => {
     expect(interpretMeetingTokenResponse(status, body)).toEqual({
       ok: false,
       reason: DAILY_ERROR.UNAUTHORIZED,
     });
   });
 
-  it.each([
+  const unexpected: Array<[string, number, unknown]> = [
     ["a 200 with no token", 200, {}],
     ["a 200 with an empty token", 200, { token: "" }],
     ["a 200 with a non-string token", 200, { token: 5 }],
     ["a 200 with no body", 200, undefined],
+    ["a 200 with a null body", 200, null],
     ["a 500", 500, {}],
-  ])("fails closed on %s", (_label, status, body) => {
+  ];
+
+  it.each(unexpected)("fails closed on %s", (_label, status, body) => {
     expect(interpretMeetingTokenResponse(status, body)).toEqual({
       ok: false,
       reason: DAILY_ERROR.UNEXPECTED,

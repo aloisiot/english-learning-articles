@@ -9,7 +9,7 @@
  * silently becoming the string "undefined" inside an HMAC.
  */
 
-function required(name) {
+function required(name: string): string {
   const value = process.env[name];
   if (typeof value !== "string" || value === "") {
     throw new Error(`${name} is not set`);
@@ -18,19 +18,19 @@ function required(name) {
 }
 
 /** HMAC key for signing and verifying class links. */
-export const linkSecret = () => required("CLASS_LINK_SECRET");
+export const linkSecret = (): string => required("CLASS_LINK_SECRET");
 
 /** Shared secret the admin page re-checks on every submission. */
-export const adminSecret = () => required("CLASS_ADMIN_SECRET");
+export const adminSecret = (): string => required("CLASS_ADMIN_SECRET");
 
 /** The unguessable path segment the admin page lives behind. */
-export const adminPath = () => required("CLASS_ADMIN_PATH");
+export const adminPath = (): string => required("CLASS_ADMIN_PATH");
 
 /** Daily REST API key. Server-side only — never sent to a browser. */
-export const dailyApiKey = () => required("DAILY_API_KEY");
+export const dailyApiKey = (): string => required("DAILY_API_KEY");
 
 /** Daily subdomain, i.e. the `x` in `https://x.daily.co/<room>`. */
-export const dailyDomain = () => required("DAILY_DOMAIN");
+export const dailyDomain = (): string => required("DAILY_DOMAIN");
 
 /**
  * The origin students actually visit — the articles site's domain, not
@@ -41,5 +41,5 @@ export const dailyDomain = () => required("DAILY_DOMAIN");
  * project's deployment URL and bypass the arrangement entirely. It has
  * to be stated rather than inferred.
  */
-export const publicOrigin = () =>
+export const publicOrigin = (): string =>
   required("CLASS_PUBLIC_ORIGIN").replace(/\/+$/, "");

@@ -23,7 +23,18 @@
  *   closed on anything at all.
  */
 import { createHmac } from "node:crypto";
-import { secretsMatch } from "./secret.js";
+
+import { secretsMatch } from "./secret";
+
+/** What a class link carries, and all it carries. */
+export interface ClassLinkPayload {
+  /** Article the class is about, as its `site/content` filename stem. */
+  slug: string;
+  /** Daily room name, derived rather than stored — see ./room.ts. */
+  room: string;
+  /** Expiry, epoch seconds. The link is dead *at* this second. */
+  exp: number;
+}
 
 /**
  * Longest token accepted before it is rejected unread. A legitimate
@@ -37,23 +48,40 @@ export const REASON = {
   BAD_SIGNATURE: "bad-signature",
   EXPIRED: "expired",
   ROOM_MISMATCH: "room-mismatch",
-};
+} as const;
 
-function isValidPayload(value) {
+export type VerifyFailureReason = (typeof REASON)[keyof typeof REASON];
+
+export type VerifyResult =
+  | { ok: true; payload: ClassLinkPayload }
+  | { ok: false; reason: VerifyFailureReason };
+
+export interface VerifyOptions {
+  /** Epoch seconds to judge expiry against. Defaults to the real clock. */
+  now?: number;
+  /**
+   * When given, the payload's room must equal it — so a valid link for
+   * one class cannot be replayed at another class's URL.
+   */
+  expectedRoom?: string;
+}
+
+function isValidPayload(value: unknown): value is ClassLinkPayload {
   if (typeof value !== "object" || value === null || Array.isArray(value)) {
     return false;
   }
-  if (typeof value.slug !== "string" || value.slug === "") return false;
-  if (typeof value.room !== "string" || value.room === "") return false;
+  const candidate = value as Record<string, unknown>;
+  if (typeof candidate.slug !== "string" || candidate.slug === "") return false;
+  if (typeof candidate.room !== "string" || candidate.room === "") return false;
   // Number.isFinite is false for non-numbers too, so this one check
   // covers a missing exp, a string exp, and the Infinity that
   // JSON.parse produces from an overflowing literal like 1e999.
-  if (!Number.isFinite(value.exp)) return false;
+  if (!Number.isFinite(candidate.exp)) return false;
   return true;
 }
 
 /** Serialise a payload to the URL-safe half of a token. */
-export function encodePayload(payload) {
+export function encodePayload(payload: unknown): string {
   return Buffer.from(JSON.stringify(payload), "utf8").toString("base64url");
 }
 
@@ -61,8 +89,8 @@ export function encodePayload(payload) {
  * Inverse of `encodePayload`, returning `null` rather than throwing for
  * anything that is not a well-formed payload.
  */
-export function decodePayload(encoded) {
-  let parsed;
+export function decodePayload(encoded: string): ClassLinkPayload | null {
+  let parsed: unknown;
   try {
     parsed = JSON.parse(Buffer.from(encoded, "base64url").toString("utf8"));
   } catch {
@@ -72,12 +100,17 @@ export function decodePayload(encoded) {
 }
 
 /** The HMAC half of a token, over the already-encoded payload. */
-export function signEncoded(encoded, secret) {
-  return createHmac("sha256", secret).update(encoded, "utf8").digest("base64url");
+export function signEncoded(encoded: string, secret: string): string {
+  return createHmac("sha256", secret)
+    .update(encoded, "utf8")
+    .digest("base64url");
 }
 
 /** Mint a token for `payload`. The inverse of `verifyToken`. */
-export function signPayload(payload, secret) {
+export function signPayload(
+  payload: ClassLinkPayload,
+  secret: string,
+): string {
   const encoded = encodePayload(payload);
   return `${encoded}.${signEncoded(encoded, secret)}`;
 }
@@ -85,17 +118,14 @@ export function signPayload(payload, secret) {
 /**
  * Verify a token and return its payload.
  *
- * @param token         the `<payload>.<signature>` string from the URL
- * @param secret        the signing secret
- * @param options.now   epoch seconds to judge expiry against; a link is
- *                      expired *at* its expiry second, not one after it
- * @param options.expectedRoom
- *                      when given, the payload's room must equal it, so
- *                      a valid link for one class cannot be replayed at
- *                      another class's URL
- * @returns `{ ok: true, payload }` or `{ ok: false, reason }`
+ * `token` is `unknown` because it arrives from a URL or a JSON body,
+ * where no annotation is a guarantee.
  */
-export function verifyToken(token, secret, options = {}) {
+export function verifyToken(
+  token: unknown,
+  secret: string,
+  options: VerifyOptions = {},
+): VerifyResult {
   const { now = Math.floor(Date.now() / 1000), expectedRoom } = options;
 
   if (typeof token !== "string") return { ok: false, reason: REASON.MALFORMED };
@@ -106,7 +136,7 @@ export function verifyToken(token, secret, options = {}) {
   const parts = token.split(".");
   if (parts.length !== 2) return { ok: false, reason: REASON.MALFORMED };
 
-  const [encoded, provided] = parts;
+  const [encoded, provided] = parts as [string, string];
   if (encoded === "" || provided === "") {
     return { ok: false, reason: REASON.MALFORMED };
   }
