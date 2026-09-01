@@ -1,0 +1,17 @@
+{
+  "$schema": "https://openapi.vercel.sh/microfrontends.json",
+  "applications": {
+    "english-learning-articles": {
+      "development": {
+        "fallback": "english-learning-articles.vercel.app"
+      }
+    },
+    "english-learning-class": {
+      "routing": [
+        {
+          "paths": ["/class/:path*"]
+        }
+      ]
+    }
+  }
+}
