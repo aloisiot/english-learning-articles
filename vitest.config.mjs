@@ -2,7 +2,7 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
-    projects: ["site", "class", "lib"],
+    projects: ["site", "class", "lib", "scripts"],
     coverage: {
       provider: "v8",
       // Where the pure logic modules live — link signing, room-name

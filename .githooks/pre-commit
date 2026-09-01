@@ -1,0 +1,12 @@
+#!/bin/sh
+#
+# Blocks a commit that would put env-file secrets in the repo.
+#
+# Committed to the repo rather than left in .git/hooks, which is not
+# versioned and so protects only the machine it was written on. It is
+# reached via core.hooksPath, wired by the root `prepare` script — see
+# scripts/check-env-files.mjs for what is actually checked.
+set -e
+
+root=$(git rev-parse --show-toplevel)
+exec node "$root/scripts/check-env-files.mjs"

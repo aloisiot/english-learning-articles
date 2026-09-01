@@ -8,6 +8,10 @@
  * workspace verify scripts (run via `--if-present`) mean an empty
  * placeholder workspace like class/ or lib/ costs nothing here until a
  * later phase gives it a real pipeline.
+ *
+ * The env-file check runs first and over everything tracked, not just
+ * what is staged: by the time this gate runs, "is a secret staged" is
+ * the wrong question. The pre-commit hook asks the staged version of it.
  */
 import { spawnSync } from "node:child_process";
 
@@ -21,6 +25,7 @@ function run(label, command, args) {
   console.log(`✓ ${label} passed`);
 }
 
+run("Env-file secrets", "node", ["scripts/check-env-files.mjs", "--tracked"]);
 run("Root install (npm ci)", "npm", ["ci"]);
 run("Unit tests (vitest)", "npm", ["test"]);
 run("Workspace verification", "npm", [

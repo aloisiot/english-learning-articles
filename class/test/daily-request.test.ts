@@ -45,9 +45,19 @@ describe("buildCreateRoomRequest", () => {
     expect(body.properties.eject_at_room_exp).toBe(true);
   });
 
-  it("ships none of the features phase 3 excludes", () => {
+  it("allows screen sharing, which the room and not the browser gates", () => {
+    // With this false, daily-js refuses locally — "not starting
+    // screenshare: enable_screenshare is false" — and the browser is
+    // never asked, so no permission prompt appears to explain it.
+    expect(body.properties.enable_screenshare).toBe(true);
+  });
+
+  it("leaves Daily's own chat off, since this app does not use it", () => {
+    // Chat here is sendAppMessage, which this property does not govern.
     expect(body.properties.enable_chat).toBe(false);
-    expect(body.properties.enable_screenshare).toBe(false);
+  });
+
+  it("keeps the room to the two people a class has", () => {
     expect(body.properties.max_participants).toBe(2);
   });
 

@@ -177,8 +177,9 @@ describe("decodePayload", () => {
     ["valid JSON that is not an object", encodePayload(42)],
     ["null", encodePayload(null)],
     ["an array", encodePayload([1, 2, 3])],
-    ["a missing slug", encodePayload({ room: "r", exp: NOW })],
     ["a non-string slug", encodePayload({ slug: 1, room: "r", exp: NOW })],
+    // Not the same as an absent slug: "no article" is spelled by leaving
+    // the field out, so an empty one is a payload this app never mints.
     ["an empty slug", encodePayload({ slug: "", room: "r", exp: NOW })],
     ["a missing room", encodePayload({ slug: "s", exp: NOW })],
     ["a non-string room", encodePayload({ slug: "s", room: 1, exp: NOW })],
@@ -189,6 +190,12 @@ describe("decodePayload", () => {
 
   it.each(invalid)("returns null for %s", (_label, encoded) => {
     expect(decodePayload(encoded)).toBeNull();
+  });
+
+  it("accepts a payload with no slug, for a class with no article", () => {
+    const withoutSlug = { room: "r", exp: NOW };
+
+    expect(decodePayload(encodePayload(withoutSlug))).toEqual(withoutSlug);
   });
 
   it("returns null for an exp that JSON overflows to Infinity", () => {
