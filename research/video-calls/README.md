@@ -174,20 +174,25 @@ scrolling article page with video attached.
 Expanded, with deliverables, tests and stop conditions, in
 [`08-implementation-plan.md`](08-implementation-plan.md). In brief:
 
-| Phase | What exists at the end |
-|---|---|
-| **0** | Four register items answered. No code. Blocking on Vercel's reply. |
-| **1** | The workspace and the test harness. The live site is unchanged. |
-| **2** | An empty class app reachable at `/class`. Proves the routing. |
-| **3** | **A call connects.** Signed link → Daily room → two people talking. Nothing else. |
-| **4** | The article rendered beside the call, over the JSON seam. No sync yet. |
-| **5** | Section sync, screen share, ephemeral chat. `lib/` extracted. |
-| **6** | Accounts. |
+**Reorganised 2026-08-30** against `SESSION-2026-08-30.md` and the repo
+as built. Phases 1–3 exist in code; **neither of their acceptance gates
+has been closed** — nothing is deployed and no real call has run — so
+the remaining phases are renumbered from 4.
 
-The first two phases ship nothing visible on purpose: Phase 0 because
-two unverified items could invalidate the architecture, Phase 1 because
-it touches the machinery that has broken a production deploy before and
-deserves exactly one suspect.
+| Phase | State | What exists at the end |
+|---|---|---|
+| **1** | ✅ done | The workspace and the test harness. Plus an unplanned env-safety subsystem, after a near-miss with a real API key. |
+| **2** | ⚠️ built, ungated | The class app and the `/class` rewrite are configured. **The Vercel account has zero projects.** |
+| **3** | ⚠️ built, ungated | Signed links, admin page, Daily join — nine tested modules. **No two-person call has run.** |
+| **4** | next | **Deploy, and close both skipped gates.** They merged: a student cannot join a localhost. |
+| **5** | | The article beside the call, over the JSON seam. Now also handles a class with no article. |
+| **6** | | Section sync and `lib/`. Chat and screen sharing already shipped, out of order. |
+| **7** | | Accounts. |
+
+The correction the session forced: **the gates were the plan, not the
+phases.** Skipping one does not remove it — it moves it, with interest,
+into the phase that finally has to close it. Phase 4 now carries four
+unknowns that would each have been cheaper alone.
 
 ---
 

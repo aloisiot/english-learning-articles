@@ -1,58 +1,42 @@
 /**
  * Deployment configuration for the articles site.
  *
- * TypeScript rather than JSON for exactly one reason: the class app's
- * host has to differ per environment. vercel.json is static — Vercel's
- * routing layer reads it from the repo, so a rewrite destination there
- * can only ever be a literal, and pointing a preview of this site at a
- * preview of the class app would mean editing a committed file. A
- * vercel.ts is evaluated at build time and can read the environment, so
- * the destination becomes something each Vercel environment sets for
- * itself.
+ * **The rewrite destination is a literal, and has to be.**
  *
- * `import type` is deliberate. The types come from @vercel/config, but
- * nothing is imported at runtime, so evaluating this file cannot fail on
- * module resolution — the one new way a config file could break that a
- * JSON file could not.
+ * This file previously computed it from a `CLASS_APP_DOMAIN` environment
+ * variable, so that a preview of this site could point at a preview of
+ * the class app. That does not work, and the way it failed is worth
+ * recording so it is not tried again the same way.
+ *
+ * Vercel validates this config *before* the build starts — the failed
+ * deployment has no build log at all, only:
+ *
+ *   The `vercel.ts` schema validation failed with the following message:
+ *   `rewrites[0]` missing required property `destination`
+ *
+ * Every literal field below passed that validation. The single computed
+ * one resolved to `undefined` and was dropped, which is what "missing"
+ * means here. So the config is read in a phase that does not run the
+ * file the way Node would, and a destination assembled at that point
+ * cannot be relied on.
+ *
+ * The cost of getting this wrong was high, and it was a design mistake
+ * rather than bad luck. The computation deliberately *threw* when the
+ * variable was absent, on the reasoning that a loud build failure beats
+ * a silent `https://undefined/class/:path*`. That reasoning was wrong in
+ * one direction it did not consider: the failure mode it produced was a
+ * failed production deploy, and production was rolled back to a commit
+ * from before the rewrite existed — so /class served a 404 for as long
+ * as nobody noticed. A wrong-but-valid destination breaks /class; an
+ * invalid config breaks the entire site's ability to deploy.
+ *
+ * If per-environment destinations are wanted later, the thing to
+ * establish first — on a preview branch, where a failed build costs
+ * nothing — is whether *any* value from the environment survives config
+ * validation. Vercel's `relatedProjects` is the built-in answer to the
+ * same problem and is the better thing to try.
  */
 import type { VercelConfig } from "@vercel/config/v1";
-
-/**
- * The class app's host for this environment, e.g. `class.example.com` or
- * `english-learning-class.vercel.app`.
- *
- * Throwing rather than defaulting is the whole point of doing this in
- * code. An unset variable interpolated into a template string yields
- * `https://undefined/class/:path*`, which is a perfectly valid config
- * that fails at the edge on every request to /class — a broken deploy
- * that looks like a successful one. Failing here fails the build
- * instead, which is where a missing variable should be noticed. This
- * mirrors `required()` in class/server/config.ts, for the same reason.
- *
- * A scheme or trailing slash is stripped rather than rejected: the value
- * is typed into a dashboard field by hand, `https://` is the obvious
- * thing to paste, and being strict about it would fail a build over
- * something unambiguous.
- */
-function classAppDomain(): string {
-  const value = process.env.CLASS_APP_DOMAIN;
-
-  if (typeof value !== "string" || value.trim() === "") {
-    throw new Error(
-      "CLASS_APP_DOMAIN is not set. It is the class app's host for this " +
-        "environment — the Vercel project's domain, without a scheme, e.g. " +
-        "english-learning-class.vercel.app. Set it on the site project in " +
-        "Vercel (Settings -> Environment Variables) for every environment " +
-        "that serves /class, and in site/.env.local for local builds. " +
-        "Without it the /class rewrite has nowhere to point.",
-    );
-  }
-
-  return value
-    .trim()
-    .replace(/^https?:\/\//i, "")
-    .replace(/\/+$/, "");
-}
 
 export const config: VercelConfig = {
   // Not a framework Vercel builds — `npm run build` produces a static
@@ -77,7 +61,13 @@ export const config: VercelConfig = {
   rewrites: [
     {
       source: "/class/:path*",
-      destination: `https://${classAppDomain()}/class/:path*`,
+      // Written out rather than assembled from a constant. Validation
+      // rejected the one value this file computed, and with the site's
+      // deploys blocked there is no reason to find out experimentally
+      // how much evaluation the validator does. It is the class
+      // project's stable production domain — its own <name>.vercel.app,
+      // not a deployment URL, which changes on every push.
+      destination: "https://english-learning-class.vercel.app/class/:path*",
     },
   ],
 };
