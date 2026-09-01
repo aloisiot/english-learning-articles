@@ -1,0 +1,20 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "outputDirectory": "out",
+  "buildCommand": "npm run build",
+  "installCommand": "cd .. && npm ci",
+  "trailingSlash": true,
+  "rewrites": [
+    {
+      "source": "/class/:path*",
+      "destination": "https://english-learning-class.vercel.app/class/:path*"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [{ "key": "x-site-config", "value": "vercel-json" }]
+    }
+  ]
+}

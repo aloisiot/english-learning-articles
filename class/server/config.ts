@@ -36,7 +36,7 @@ export const dailyDomain = (): string => required("DAILY_DOMAIN");
  * The origin students actually visit — the articles site's domain, not
  * this app's own Vercel URL.
  *
- * `/class` is reached through a rewrite in site/vercel.ts, so a link
+ * `/class` is reached through a rewrite in site/vercel.json, so a link
  * built from this app's request origin would point at the class
  * project's deployment URL and bypass the arrangement entirely. It has
  * to be stated rather than inferred.
