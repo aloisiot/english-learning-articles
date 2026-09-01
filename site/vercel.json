@@ -7,6 +7,14 @@
   "trailingSlash": true,
   "rewrites": [
     {
+      "source": "/__probe-internal",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/class",
+      "destination": "https://english-learning-class.vercel.app/class"
+    },
+    {
       "source": "/class/:path*",
       "destination": "https://english-learning-class.vercel.app/class/:path*"
     }
@@ -14,7 +22,12 @@
   "headers": [
     {
       "source": "/(.*)",
-      "headers": [{ "key": "x-site-config", "value": "vercel-json" }]
+      "headers": [
+        {
+          "key": "x-site-config",
+          "value": "vercel-json"
+        }
+      ]
     }
   ]
 }
