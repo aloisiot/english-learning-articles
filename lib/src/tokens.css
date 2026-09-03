@@ -1,0 +1,7 @@
+/*
+  The design system's tokens, shared by both apps.
+
+  Empty until the token groups are lifted out of site/app/globals.css.
+  It exists already so that the import seam in both apps is wired and
+  proven before anything depends on what it contains.
+*/

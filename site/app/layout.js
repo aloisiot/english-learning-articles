@@ -5,6 +5,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { themeScript } from "@/lib/theme";
 import { SearchIcon } from "./icons";
 import ThemeToggle from "./theme-toggle";
+import "@english-learning/lib/tokens.css";
 import "./globals.css";
 
 /*

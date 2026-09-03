@@ -2,7 +2,12 @@
   "name": "@english-learning/lib",
   "version": "0.0.0",
   "private": true,
-  "description": "Placeholder workspace for CSS tokens and React components shared between site/ and class/ (see research/video-calls). Populated starting Phase 5, once a second consumer exists.",
+  "type": "module",
+  "description": "Design tokens and presentational components shared by site/ and class/ (see research/accounts-and-scheduling/07-design-system.md). Consumed as TypeScript source and compiled by each app's bundler — see README.md.",
+  "exports": {
+    ".": "./src/index.ts",
+    "./tokens.css": "./src/tokens.css"
+  },
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest"
