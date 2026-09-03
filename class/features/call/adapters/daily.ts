@@ -2,7 +2,7 @@
  * The only place in the app that talks to Daily over the network.
  *
  * Everything interesting about these calls — which room properties are
- * set, what counts as success — lives in the pure class/lib/daily-request.ts
+ * set, what counts as success — lives in the pure features/call/domain/daily-request.ts
  * and is tested there. What is left here is the `fetch` itself, which is
  * exactly the part a unit test could only assert against its own mock
  * (research/video-calls/08-implementation-plan.md, "What unit tests can

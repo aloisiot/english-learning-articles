@@ -19,12 +19,12 @@
  *   on JoinCard.
  * - **Chat holds no history.** Messages ride on `sendAppMessage`, which
  *   reaches whoever is in the room at the time; there is no database in
- *   phase 1 to keep anything in. See class/lib/chat.ts.
+ *   phase 1 to keep anything in. See features/call/domain/chat.ts.
  * - **Screen sharing is offered only where the browser can do it.** See
  *   `useCanScreenShare` — the check is a capability, not a guess at the
  *   device.
  * - **Every tile is the shape of what is inside it**, so no video is
- *   ever cropped. See class/lib/video-fit.ts.
+ *   ever cropped. See features/call/domain/video-fit.ts.
  */
 import {
   DailyAudio,
@@ -49,7 +49,11 @@ import {
   type FormEvent,
 } from "react";
 
-import { MAX_CHAT_TEXT, buildChatPayload, parseChatPayload } from "@/features/call/domain/chat";
+import {
+  MAX_CHAT_TEXT,
+  buildChatPayload,
+  parseChatPayload,
+} from "@/features/call/domain/chat";
 import { initial } from "@/features/call/domain/initials";
 import {
   describeScreenShareError,
@@ -267,7 +271,7 @@ function Stage({ onLeave }: { onLeave: () => void }) {
   const { isSharingScreen, screens, startScreenShare, stopScreenShare } =
     useScreenShare({
       // Silent on a cancelled picker, loud on anything else — see
-      // class/lib/screen-share.ts for why that is the right way round.
+      // features/call/domain/screen-share.ts for why that is the right way round.
       onError: (event) =>
         setShareMessage(toShareMessage(describeScreenShareError(event.errorMsg))),
       onLocalScreenShareStarted: () => {
@@ -340,7 +344,7 @@ function Stage({ onLeave }: { onLeave: () => void }) {
 
       // The name comes from Daily's participant record rather than from
       // the message, so a peer cannot send one that appears to be from
-      // the other person. See class/lib/chat.ts.
+      // the other person. See features/call/domain/chat.ts.
       const sender = event.fromId
         ? daily?.participants()?.[event.fromId]
         : undefined;
