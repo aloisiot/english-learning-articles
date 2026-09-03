@@ -10,14 +10,15 @@ export default defineConfig({
       // is deliberately pointed at these rather than at the repo: a
       // repo-wide percentage would be met by testing the easy half.
       // See research/video-calls/08-implementation-plan.md.
-      // Both shapes while the move to feature slices is in progress. The
-      // globs change in the same commit as the modules, deliberately: the
-      // threshold is configured by path, so moving a module out from under
-      // its glob drops it from the report and the suite keeps passing while
-      // guarding nothing. See research/accounts-and-scheduling/06 §4.
+      //
+      // One glob per feature's domain, and it is load-bearing: the
+      // threshold is configured by path, so a module that moves out from
+      // under its glob leaves the report entirely and the suite goes on
+      // passing, guarding nothing and looking exactly as green. Any move
+      // of a domain module changes this line in the same commit.
+      // See research/accounts-and-scheduling/06 §4.
       include: [
         "class/features/*/domain/**/*.{js,mjs,ts,tsx}",
-        "class/lib/**/*.{js,mjs,ts,tsx}",
         "lib/**/*.{js,mjs,ts,tsx}",
       ],
       // `text` for the terminal, `html` for `npm run test:coverage:open`.

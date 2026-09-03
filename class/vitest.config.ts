@@ -11,12 +11,13 @@ export default defineConfig({
   test: {
     name: "class",
     environment: "node",
-    // Both shapes, while the migration to feature slices is in progress:
-    // test/ is the old flat directory, features/*/test/ the new home
-    // beside the module each file tests.
+    // Feature tests live beside the feature they test — that is the
+    // point of the layout. test/ survives the move holding only the
+    // workspace harness, which belongs to no feature and mirrors the
+    // same file in site/ and lib/.
     include: [
-      "test/**/*.test.{ts,tsx}",
       "features/*/test/**/*.test.{ts,tsx}",
+      "test/**/*.test.{ts,tsx}",
     ],
   },
 });
