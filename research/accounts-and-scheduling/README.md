@@ -39,6 +39,11 @@ two roles at once.
 - **Money:** not in the model. Recorded facts only.
 - **Joining a class:** from the dashboard, logged in.
 - **Cancellation windows:** deferred to the billing discussion.
+- **Code layout:** vertical feature slices — `call`, `access`,
+  `scheduling` — each owning its domain, adapters and UI, with Next.js
+  routes as thin entry points.
+- **Design system:** the site already has one; the class app's non-call
+  screens adopt it. The call surface stays dark and bespoke, on purpose.
 
 ## Contents
 
@@ -51,6 +56,10 @@ two roles at once.
 - [`04`](04-scheduling-and-booking.md) — slots, approval, holds, and why
   concrete slots dissolve the timezone problem
 - [`05`](05-register.md) — what is unverified
+- [`06`](06-application-architecture.md) — how `class/` is organised, and
+  the coverage config that must move with it
+- [`07`](07-design-system.md) — what the site already has, and what
+  belongs in `lib/`
 
 ## The answer in one page
 
@@ -105,3 +114,8 @@ enforces. All of these are in [`05`](05-register.md).
 
 It also did not design the screens, the RLS policies, or the migration
 order. Those follow once the register's first item is answered.
+
+[`06`](06-application-architecture.md) and [`07`](07-design-system.md)
+decide shape, not implementation: neither the feature-slice move nor the
+token extraction has been carried out, and both are deliberately
+independent of accounts so either can be done in a gap.
