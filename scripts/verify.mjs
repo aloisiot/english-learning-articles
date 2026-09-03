@@ -12,6 +12,13 @@
  * The env-file check runs first and over everything tracked, not just
  * what is staged: by the time this gate runs, "is a secret staged" is
  * the wrong question. The pre-commit hook asks the staged version of it.
+ *
+ * Tests run through `test:coverage` rather than `test`, so the 100%
+ * threshold on the domain modules is part of the gate rather than a
+ * command someone has to remember. It was not, and it silently failed
+ * for six commits before anyone ran it — the threshold is configured by
+ * path, which makes it exactly the kind of check that stops checking
+ * without stopping passing. Costs about a second.
  */
 import { spawnSync } from "node:child_process";
 
@@ -27,7 +34,7 @@ function run(label, command, args) {
 
 run("Env-file secrets", "node", ["scripts/check-env-files.mjs", "--tracked"]);
 run("Root install (npm ci)", "npm", ["ci"]);
-run("Unit tests (vitest)", "npm", ["test"]);
+run("Unit tests + domain coverage (vitest)", "npm", ["run", "test:coverage"]);
 run("Workspace verification", "npm", [
   "run",
   "verify",
