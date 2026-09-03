@@ -38,9 +38,17 @@ first day, by the founder.
 definition screen and chooses to continue as tutor or student. Nothing
 else in the platform is reachable until they have.
 
-This is a genuine state, not a redirect: an account exists that has no
-role yet. It needs to be representable, because a user can abandon
-sign-up halfway and come back tomorrow.
+This is a genuine state, not a redirect: **an account exists that has no
+role yet, and that state is persistent.** A user who closes the tab
+before choosing is shown the same screen on their next visit, and on
+every visit until they choose. The role is not held in a session, a
+cookie or a step counter — it is a nullable column on the profile, and
+its absence is what the gate tests.
+
+Stated because the alternative is easy to build by accident: a sign-up
+*flow* that shows the screen as its last step works perfectly until
+somebody closes the tab, and then leaves an account that can never
+acquire a role.
 
 Two things fall out of it.
 
