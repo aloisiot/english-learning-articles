@@ -34,7 +34,15 @@ export function initial(name: unknown): string {
   return firstGrapheme(trimmed).toLocaleUpperCase();
 }
 
-function firstGrapheme(value: string): string {
+/**
+ * The first grapheme of a string, or `NO_INITIAL` if it has none.
+ *
+ * Exported because its contract is wider than `initial`'s: `initial`
+ * never passes an empty string, so the empty case and the fallback below
+ * are unreachable through it and would otherwise be untested defensive
+ * code inside a module the suite holds at 100%.
+ */
+export function firstGrapheme(value: string): string {
   // Intl.Segmenter is in every browser this app supports and in the Node
   // version it is built with, but it is feature-detected rather than
   // assumed: falling back to code points degrades one emoji, while
