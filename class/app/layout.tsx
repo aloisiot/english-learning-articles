@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
-import "@english-learning/lib/tokens.css";
 import "./globals.css";
 
 // Kept out of search engines wholesale, at every phase — this app is

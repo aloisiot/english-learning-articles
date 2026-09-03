@@ -1,7 +1,150 @@
-/*
-  The design system's tokens, shared by both apps.
+/* ------------------------------------------------------------------
+   The design system's tokens — the "Quiet Editorial" palette, scale and
+   spacing described in site/docs/STYLE-SPEC.md.
 
-  Empty until the token groups are lifted out of site/app/globals.css.
-  It exists already so that the import seam in both apps is wired and
-  proven before anything depends on what it contains.
-*/
+   Lifted out of site/app/globals.css unchanged, so that class/ can look
+   like the same product (research/accounts-and-scheduling/07 §2). The
+   site remains the design's author; this file is only where it lives.
+
+   Serif for prose, system sans for everything that is not prose.
+   Hierarchy comes from size and space, never from colour or ornament:
+   there is no accent hue anywhere in this file.
+
+   One value here is not self-contained. --font-body reads --font-serif,
+   which site/ injects through next/font and class/ does not define, so
+   class/ falls through to the Charter/Georgia stack behind it. That is
+   correct rather than accidental: the webfont is the articles site's,
+   and a call screen has no reason to download it.
+   ------------------------------------------------------------------ */
+
+:root {
+  /* --- typefaces ------------------------------------------------- */
+  /* --font-serif is injected by next/font (see app/layout.js). */
+  --font-body: var(--font-serif, Charter), Charter, Georgia,
+    "Times New Roman", serif;
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+
+  /* --- type scale ------------------------------------------------ */
+  --text-2xs: 0.75rem; /* uppercase micro-labels */
+  --text-xs: 0.8125rem; /* metadata row, footer */
+  --text-sm: 0.875rem; /* interface text, buttons, nav */
+  --text-base: 1rem; /* secondary prose, definitions */
+  --text-body: 1.125rem; /* article body */
+
+  /* Headings, all roughly 40% above the sizes the spec's scale started
+     from. --text-section is its own token rather than --text-sm so that
+     growing the in-article headings leaves nav, buttons and the footer
+     where they were. */
+  --text-section: 1.1875rem; /* 19px — in-article section headings */
+  --text-lg: 1.9375rem; /* 31px — index item titles */
+  --text-xl: 2.4375rem; /* 39px — page title, mobile */
+  --text-2xl: 2.8125rem; /* 45px — page title, desktop */
+  /* Fluid between the two, so the title has no hard jump at the breakpoint. */
+  --text-title: clamp(2.4375rem, 2.1rem + 1.68vw, 2.8125rem);
+
+  /* --- line height ----------------------------------------------- */
+  --leading-body: 1.7; /* above the usual range: second-language reading needs the air */
+  --leading-heading: 1.25;
+  --leading-ui: 1.4;
+  --leading-list: 1.6;
+
+  /* --- spacing, 4px base ----------------------------------------- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-7: 1.75rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-18: 4.5rem;
+
+  /* --- cover-image radius ------------------------------------------ */
+  /* Proportional to the image's own display size, not a single fixed
+     value: the hero (~707px, full --measure) reads a corner radius that
+     a 144px list thumbnail would render as an almost-circular clip.
+     Two steps on the --space scale, not arbitrary numbers. */
+  --radius-cover-sm: var(--space-1); /* 4px  — 9rem list thumbnail */
+  --radius-cover-lg: var(--space-3); /* 12px — full-measure hero / stacked mobile thumbnail */
+
+  /* Space above a section heading is roughly three times the space
+     below it. That ratio is what makes sections findable at a glance
+     while scrolling during a class — the eye reads the gap, not a rule. */
+  --section-gap: var(--space-18);
+  --section-gap-after: var(--space-6);
+
+  /* --- colour ---------------------------------------------------- */
+  /* Both palettes are spelled out once here. The theme switch further
+     down only remaps which of the two --text and friends point at. */
+  --light-text: #1a1a1a; /* ~16:1 on --light-bg — AAA */
+  --light-muted: #6b6b6b; /* ~5.2:1 on --light-bg — AA */
+  --light-rule: #e5e5e5;
+  --light-bg: #fdfdfc; /* warm off-white: less glare over 30 minutes */
+  --light-surface: #ffffff; /* inputs read as distinct without a heavy border */
+  --light-mark: #f4ecc8;
+
+  --dark-text: #e6e3dd;
+  --dark-muted: #9b968d;
+  --dark-rule: #33312e;
+  --dark-bg: #1b1a18;
+  --dark-surface: #232120;
+  --dark-mark: #443c22;
+
+  color-scheme: light;
+  --text: var(--light-text);
+  --muted: var(--light-muted);
+  --rule: var(--light-rule);
+  --bg: var(--light-bg);
+  --surface: var(--light-surface);
+  --mark: var(--light-mark);
+  /* Light-on-dark makes thin serif strokes bloom, so dark mode steps the
+     prose weight down. Light mode has nothing to correct. */
+  --prose-wght: normal;
+
+  /* --- measure --------------------------------------------------- */
+  /* Widened ~30% from the original 34rem (revision: docs/STYLE-SPEC.md §4
+     "2026-08 width revision") — pages read as too narrow in practice,
+     especially once article-list thumbnails need room beside the text.
+     This pushes the reading column past the originally-documented
+     62-66ch target (now ~84ch) — an intentional trade of the earlier
+     optimal-line-length reasoning for a wider page. */
+  --measure: 44.2rem;
+  --gutter: var(--space-6);
+}
+
+/* --- theme -------------------------------------------------------- *
+
+   The dark palette applies in two situations: the reader's system asks
+   for dark and they have not overridden it, or they have chosen dark
+   explicitly. The two cannot be written as one rule, because one of them
+   lives inside a media query — hence the repeated block.
+
+   "Auto" is the absence of data-theme, so following the system remains
+   the default and still works with JavaScript disabled. */
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --text: var(--dark-text);
+    --muted: var(--dark-muted);
+    --rule: var(--dark-rule);
+    --bg: var(--dark-bg);
+    --surface: var(--dark-surface);
+    --mark: var(--dark-mark);
+    --prose-wght: "wght" 380;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --text: var(--dark-text);
+  --muted: var(--dark-muted);
+  --rule: var(--dark-rule);
+  --bg: var(--dark-bg);
+  --surface: var(--dark-surface);
+  --mark: var(--dark-mark);
+  --prose-wght: "wght" 380;
+}

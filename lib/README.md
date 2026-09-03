@@ -34,9 +34,19 @@ relative path across workspace folders, which
 
 ### CSS
 
-`./tokens.css` is exported separately and imported by each app's root
+`./tokens.css` is exported separately and imported by `site/`'s root
 layout. CSS crosses the seam with no language question at all, which is
 why `07` §5 puts tokens first.
+
+**`class/` does not import it at the root, and must not.** The tokens are
+light-first: `:root` carries `color-scheme: light` and a
+`prefers-color-scheme` block that flips it. The class app is dark, and
+its own stylesheet overrides the custom properties but not
+`color-scheme`, so a root-level import leaves its form controls and
+scrollbars light — and, through the media query, dependent on the
+viewer's operating system setting. The call surface is dark on purpose
+and exempt from the design system entirely (`07` §2), so the tokens reach
+the class app scoped to its non-call screens rather than globally.
 
 ## Proving it still works
 
