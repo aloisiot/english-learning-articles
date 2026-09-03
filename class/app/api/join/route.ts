@@ -9,7 +9,7 @@
 import { buildRoomUrl } from "@/features/call/domain/daily-request";
 import { verifyToken } from "@/lib/link";
 import { dailyApiKey, dailyDomain, linkSecret } from "@/server/config";
-import { ensureRoom, mintMeetingToken } from "@/server/daily";
+import { ensureRoom, mintMeetingToken } from "@/features/call/adapters/daily";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
