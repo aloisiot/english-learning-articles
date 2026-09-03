@@ -7,7 +7,7 @@ import {
   type RateLimitOptions,
   type RateLimitResult,
   type RateLimitState,
-} from "../lib/rate-limit";
+} from "../domain/rate-limit";
 
 const NOW = 1_800_000_000;
 const KEY = "203.0.113.7";

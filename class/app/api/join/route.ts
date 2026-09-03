@@ -7,7 +7,7 @@
  * security boundary.
  */
 import { buildRoomUrl } from "@/features/call/domain/daily-request";
-import { verifyToken } from "@/lib/link";
+import { verifyToken } from "@/features/access/domain/link";
 import { dailyApiKey, dailyDomain, linkSecret } from "@/server/config";
 import { ensureRoom, mintMeetingToken } from "@/features/call/adapters/daily";
 

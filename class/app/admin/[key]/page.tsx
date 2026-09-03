@@ -1,9 +1,9 @@
 import { notFound } from "next/navigation";
 
-import { secretsMatch } from "@/lib/secret";
+import { secretsMatch } from "@/features/access/domain/secret";
 import { adminPath } from "@/server/config";
 
-import LinkForm from "./link-form";
+import LinkForm from "@/features/access/ui/link-form";
 
 export const dynamic = "force-dynamic";
 

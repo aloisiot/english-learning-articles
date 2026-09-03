@@ -9,7 +9,7 @@ import {
   signPayload,
   verifyToken,
   type ClassLinkPayload,
-} from "../lib/link";
+} from "../domain/link";
 
 const SECRET = "a-signing-secret-for-tests";
 const OTHER_SECRET = "a-different-signing-secret";

@@ -21,7 +21,7 @@ vi.mock("node:crypto", async (importOriginal) => {
   };
 });
 
-const { secretsMatch } = await import("../lib/secret");
+const { secretsMatch } = await import("../domain/secret");
 
 describe("secretsMatch timing safety", () => {
   it("compares through crypto.timingSafeEqual, over equal-length digests", () => {

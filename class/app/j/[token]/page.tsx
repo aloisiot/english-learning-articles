@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { REASON, verifyToken, type VerifyFailureReason } from "@/lib/link";
+import { REASON, verifyToken, type VerifyFailureReason } from "@/features/access/domain/link";
 import { linkSecret } from "@/server/config";
 
 import CallClient from "@/features/call/ui/call-client";

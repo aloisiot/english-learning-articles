@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { secretsMatch } from "../lib/secret";
+import { secretsMatch } from "../domain/secret";
 
 describe("secretsMatch", () => {
   it("matches a secret against itself", () => {
