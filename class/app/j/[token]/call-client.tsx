@@ -51,7 +51,10 @@ import {
 
 import { MAX_CHAT_TEXT, buildChatPayload, parseChatPayload } from "@/lib/chat";
 import { initial } from "@/lib/initials";
-import { describeScreenShareError } from "@/lib/screen-share";
+import {
+  describeScreenShareError,
+  shouldYieldScreenShare,
+} from "@/lib/screen-share";
 import { tileRatio } from "@/lib/video-fit";
 
 /**
@@ -228,24 +231,89 @@ function JoinCard({
   );
 }
 
+/** A line shown above the controls: a failure, or a plain fact. */
+interface ShareMessage {
+  tone: "error" | "notice";
+  text: string;
+}
+
+/** `null` from the describer means "say nothing", which stays null here. */
+function toShareMessage(text: string | null): ShareMessage | null {
+  return text === null ? null : { tone: "error", text };
+}
+
+/** The session ids of everyone *else* currently sharing a screen. */
+function screensOf(
+  screens: readonly { session_id: string; local: boolean }[],
+): string[] {
+  return screens.filter((s) => !s.local).map((s) => s.session_id);
+}
+
 function Stage({ onLeave }: { onLeave: () => void }) {
   const daily = useDaily();
   const localSessionId = useLocalSessionId();
   const remoteIds = useParticipantIds({ filter: "remote" });
   const canScreenShare = useCanScreenShare();
-  const [shareError, setShareError] = useState<string | null>(null);
+  const [shareMessage, setShareMessage] = useState<ShareMessage | null>(null);
+
+  // What was on screen when this client's own share began, and when.
+  // Both are refs because they are read inside daily-react's callbacks,
+  // which are registered once — a value from state would be the one
+  // captured at registration. See shouldYieldScreenShare.
+  const shareStartedAt = useRef<number | null>(null);
+  const knownAtStart = useRef<readonly string[]>([]);
+  const screensRef = useRef(screensOf([]));
 
   const { isSharingScreen, screens, startScreenShare, stopScreenShare } =
     useScreenShare({
       // Silent on a cancelled picker, loud on anything else — see
       // class/lib/screen-share.ts for why that is the right way round.
-      onError: (event) => setShareError(describeScreenShareError(event.errorMsg)),
-      onLocalScreenShareStarted: () => setShareError(null),
+      onError: (event) =>
+        setShareMessage(toShareMessage(describeScreenShareError(event.errorMsg))),
+      onLocalScreenShareStarted: () => {
+        setShareMessage(null);
+        shareStartedAt.current = Date.now();
+        knownAtStart.current = screensRef.current;
+      },
+      onLocalScreenShareStopped: () => {
+        shareStartedAt.current = null;
+        knownAtStart.current = [];
+      },
     });
 
-  // At most two people are in the room, so at most one shared screen is
-  // worth showing; if both somehow share, the first is the one on stage.
-  const screen = screens[0];
+  const remoteSharers = screensOf(screens);
+  const remoteSharersKey = remoteSharers.join(",");
+  screensRef.current = remoteSharers;
+
+  // Only one screen at a time, and the newcomer wins. A client cannot
+  // stop somebody else's share — these are not owner tokens — so the one
+  // that yields is the one that stops itself.
+  useEffect(() => {
+    if (!localSessionId) return;
+
+    const yielding = shouldYieldScreenShare(
+      {
+        localSessionId,
+        sharing: isSharingScreen,
+        startedAt: shareStartedAt.current,
+        knownAtStart: knownAtStart.current,
+      },
+      remoteSharersKey === "" ? [] : remoteSharersKey.split(","),
+      Date.now(),
+    );
+
+    if (!yielding) return;
+
+    stopScreenShare();
+    setShareMessage({
+      tone: "notice",
+      text: "Your screen sharing stopped — the other person started sharing.",
+    });
+  }, [localSessionId, isSharingScreen, remoteSharersKey, stopScreenShare]);
+
+  // The stage shows one screen, and after the effect above there is only
+  // one to show. During the tick before it settles, the newest wins.
+  const screen = screens[screens.length - 1];
   const remoteId = remoteIds[0];
 
   const [chatOpen, setChatOpen] = useState(false);
@@ -349,13 +417,13 @@ function Stage({ onLeave }: { onLeave: () => void }) {
         />
       </div>
 
-      {shareError ? (
-        <p className="stage-error" role="status">
-          {shareError}
+      {shareMessage ? (
+        <p className="stage-error" data-tone={shareMessage.tone} role="status">
+          {shareMessage.text}
           <button
             type="button"
             className="stage-error-dismiss"
-            onClick={() => setShareError(null)}
+            onClick={() => setShareMessage(null)}
             aria-label="Dismiss"
           >
             <CloseIcon />
@@ -371,7 +439,7 @@ function Stage({ onLeave }: { onLeave: () => void }) {
             type="button"
             className={isSharingScreen ? "icon-button off" : "icon-button"}
             onClick={() => {
-              setShareError(null);
+              setShareMessage(null);
               if (isSharingScreen) stopScreenShare();
               else startScreenShare();
             }}

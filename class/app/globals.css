@@ -284,6 +284,17 @@ button.leave {
   font-size: 0.875rem;
 }
 
+/*
+  The same bar, without the alarm. Being told your share stopped because
+  the other person started theirs is a fact about the call, not a fault —
+  colouring it like a failure would suggest something went wrong.
+*/
+.stage-error[data-tone="notice"] {
+  background: #232830;
+  border-top-color: #3a4048;
+  color: var(--fg);
+}
+
 .stage-error-dismiss {
   margin-left: auto;
   flex: none;

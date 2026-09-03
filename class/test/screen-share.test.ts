@@ -3,6 +3,8 @@ import { describe, expect, it } from "vitest";
 import {
   GENERIC_SCREEN_SHARE_ERROR,
   describeScreenShareError,
+  shouldYieldScreenShare,
+  type LocalScreenShare,
 } from "../lib/screen-share";
 
 describe("describeScreenShareError", () => {
@@ -63,5 +65,91 @@ describe("describeScreenShareError", () => {
     // Failing towards silence would recreate the original bug, so
     // anything unrecognised is still shown.
     expect(describeScreenShareError(message)).toBe(GENERIC_SCREEN_SHARE_ERROR);
+  });
+});
+
+describe("shouldYieldScreenShare", () => {
+  const ME = "session-aaa";
+  const THEM = "session-zzz";
+  const NOW = 1_800_000_000_000;
+
+  const local = (over: Partial<LocalScreenShare> = {}): LocalScreenShare => ({
+    localSessionId: ME,
+    sharing: true,
+    startedAt: NOW - 60_000,
+    knownAtStart: [],
+    ...over,
+  });
+
+  it("does nothing when this client is not sharing", () => {
+    expect(
+      shouldYieldScreenShare(local({ sharing: false }), [THEM], NOW),
+    ).toBe(false);
+  });
+
+  it("does nothing when nobody else is sharing", () => {
+    expect(shouldYieldScreenShare(local(), [], NOW)).toBe(false);
+  });
+
+  it("yields to a share that started after this one", () => {
+    // The case the whole rule exists for: A is up, B starts, A stops.
+    expect(shouldYieldScreenShare(local(), [THEM], NOW)).toBe(true);
+  });
+
+  it("does not yield to a share that was already up", () => {
+    // The other half of the same moment, seen from B: the only remote
+    // share predates its own, so B keeps presenting.
+    expect(
+      shouldYieldScreenShare(local({ knownAtStart: [THEM] }), [THEM], NOW),
+    ).toBe(false);
+  });
+
+  it("leaves exactly one sharer when two start together", () => {
+    // Neither can tell who was first, so both would yield and nobody
+    // would be presenting. Session ids break it identically on both.
+    const justNow = NOW - 200;
+    const lower = shouldYieldScreenShare(
+      { localSessionId: ME, sharing: true, startedAt: justNow, knownAtStart: [] },
+      [THEM],
+      NOW,
+    );
+    const higher = shouldYieldScreenShare(
+      { localSessionId: THEM, sharing: true, startedAt: justNow, knownAtStart: [] },
+      [ME],
+      NOW,
+    );
+
+    expect([lower, higher]).toEqual([true, false]);
+  });
+
+  it("applies the plain rule once the window has passed", () => {
+    // Outside the window the newcomer is unambiguous, so the id
+    // tie-break must not keep a stale share alive.
+    expect(
+      shouldYieldScreenShare(
+        { localSessionId: THEM, sharing: true, startedAt: NOW - 5_000, knownAtStart: [] },
+        [ME],
+        NOW,
+      ),
+    ).toBe(true);
+  });
+
+  it("yields when the start time is unusable", () => {
+    // Unknown timing falls back to the plain rule rather than guessing.
+    for (const startedAt of [null, Number.NaN, Number.POSITIVE_INFINITY]) {
+      expect(shouldYieldScreenShare(local({ startedAt }), [THEM], NOW)).toBe(
+        true,
+      );
+    }
+  });
+
+  it("ignores remote shares it already knew about while yielding to a new one", () => {
+    expect(
+      shouldYieldScreenShare(
+        local({ knownAtStart: ["session-old"] }),
+        ["session-old", THEM],
+        NOW,
+      ),
+    ).toBe(true);
   });
 });
