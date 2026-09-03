@@ -6,7 +6,7 @@
  * this one decides what they are given, and only the second is a
  * security boundary.
  */
-import { buildRoomUrl } from "@/lib/daily-request";
+import { buildRoomUrl } from "@/features/call/domain/daily-request";
 import { verifyToken } from "@/lib/link";
 import { dailyApiKey, dailyDomain, linkSecret } from "@/server/config";
 import { ensureRoom, mintMeetingToken } from "@/server/daily";

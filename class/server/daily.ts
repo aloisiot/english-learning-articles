@@ -18,7 +18,7 @@ import {
   type DailyRequest,
   type MeetingTokenInput,
   type MeetingTokenResult,
-} from "@/lib/daily-request";
+} from "@/features/call/domain/daily-request";
 
 async function send({
   url,

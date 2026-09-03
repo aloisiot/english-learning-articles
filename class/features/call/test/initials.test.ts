@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
-import { NO_INITIAL, firstGrapheme, initial } from "../lib/initials";
+import { NO_INITIAL, firstGrapheme, initial } from "../domain/initials";
 
 describe("initial", () => {
   it("takes the first letter of a name, uppercased", () => {

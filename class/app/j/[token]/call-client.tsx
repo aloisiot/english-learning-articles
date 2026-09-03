@@ -49,13 +49,13 @@ import {
   type FormEvent,
 } from "react";
 
-import { MAX_CHAT_TEXT, buildChatPayload, parseChatPayload } from "@/lib/chat";
-import { initial } from "@/lib/initials";
+import { MAX_CHAT_TEXT, buildChatPayload, parseChatPayload } from "@/features/call/domain/chat";
+import { initial } from "@/features/call/domain/initials";
 import {
   describeScreenShareError,
   shouldYieldScreenShare,
-} from "@/lib/screen-share";
-import { tileRatio } from "@/lib/video-fit";
+} from "@/features/call/domain/screen-share";
+import { tileRatio } from "@/features/call/domain/video-fit";
 
 /**
  * Must match `basePath` in next.config.ts: fetch does not know about it,

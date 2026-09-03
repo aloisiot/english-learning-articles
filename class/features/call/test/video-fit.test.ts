@@ -4,7 +4,7 @@ import {
   CLOSED_TILE_RATIO,
   UNKNOWN_TILE_RATIO,
   tileRatio,
-} from "../lib/video-fit";
+} from "../domain/video-fit";
 
 describe("tileRatio", () => {
   const shapes: Array<[string, number]> = [

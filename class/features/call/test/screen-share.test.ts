@@ -5,7 +5,7 @@ import {
   describeScreenShareError,
   shouldYieldScreenShare,
   type LocalScreenShare,
-} from "../lib/screen-share";
+} from "../domain/screen-share";
 
 describe("describeScreenShareError", () => {
   it("explains the failure that had no UI at all", () => {

@@ -5,7 +5,7 @@ import {
   MAX_CHAT_TEXT,
   buildChatPayload,
   parseChatPayload,
-} from "../lib/chat";
+} from "../domain/chat";
 
 describe("buildChatPayload", () => {
   it("tags the message so it cannot be read as another kind", () => {

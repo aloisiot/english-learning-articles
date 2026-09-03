@@ -11,6 +11,12 @@ export default defineConfig({
   test: {
     name: "class",
     environment: "node",
-    include: ["test/**/*.test.{ts,tsx}"],
+    // Both shapes, while the migration to feature slices is in progress:
+    // test/ is the old flat directory, features/*/test/ the new home
+    // beside the module each file tests.
+    include: [
+      "test/**/*.test.{ts,tsx}",
+      "features/*/test/**/*.test.{ts,tsx}",
+    ],
   },
 });

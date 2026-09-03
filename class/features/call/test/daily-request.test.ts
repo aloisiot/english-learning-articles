@@ -8,7 +8,7 @@ import {
   buildRoomUrl,
   interpretCreateRoomResponse,
   interpretMeetingTokenResponse,
-} from "../lib/daily-request";
+} from "../domain/daily-request";
 
 const API_KEY = "daily-api-key-for-tests";
 const ROOM = "the-deal-that-ended-4f2a9c1b83";
