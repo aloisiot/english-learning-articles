@@ -19,8 +19,8 @@ profile          id (ours) · auth_user_id (theirs) · display_name
 profile_role     profile_id · role (owner│tutor│student)
                  -- a set, not a column: the author is owner and student
 
-tutor_settings   profile_id · requires_approval
-                 · approved_at · approved_by   -- owner approval
+tutor_settings   profile_id · requires_booking_approval
+                 · approved_at · approved_by      -- owner approval
 
 slot             id · tutor_id · starts_at (UTC) · duration_minutes
                  · status (open│held│booked│cancelled)
@@ -48,9 +48,10 @@ is a question that gets asked once something goes wrong, and a boolean
 cannot answer it. Null means not yet approved.
 
 Note the two approvals in this model are unrelated and easily confused:
-`tutor_settings.requires_approval` is the *tutor's* choice about vetting
+`requires_booking_approval` is the *tutor's* choice about vetting
 bookings; `approved_at` is the *owner's* decision about the tutor. One is
-a preference, the other is a gate.
+a preference, the other is a gate — and the longer name exists so the two
+cannot be misread for each other at a glance.
 
 ## 3. Why `slot` and `booking` are separate
 

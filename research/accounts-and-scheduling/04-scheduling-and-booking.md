@@ -48,9 +48,12 @@ the moment it lands.
 
 ## 3. Booking approval is per tutor
 
-`tutor_settings.requires_approval`. Some tutors will want to vet who
-takes their time; others will want any open slot filled without
+`tutor_settings.requires_booking_approval`. Some tutors will want to vet
+who takes their time; others will want any open slot filled without
 interruption. This is a property of the tutor, not a platform policy.
+
+Not to be confused with the owner approval in §2: that decides whether a
+tutor may be booked at all, this decides how a booking is accepted.
 
 ## 4. A pending request holds the slot
 
