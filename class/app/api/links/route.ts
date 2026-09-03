@@ -10,7 +10,7 @@
  */
 import { signPayload } from "@/features/access/domain/link";
 import { rateLimit, type RateLimitState } from "@/features/access/domain/rate-limit";
-import { classWindow, deriveRoomName } from "@/lib/room";
+import { classWindow, deriveRoomName } from "@/features/scheduling/domain/room";
 import { secretsMatch } from "@/features/access/domain/secret";
 import { adminSecret, linkSecret, publicOrigin } from "@/server/config";
 

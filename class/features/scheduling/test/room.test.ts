@@ -7,7 +7,7 @@ import {
   deriveRoomName,
   type ClassWindowInput,
   type DeriveRoomNameInput,
-} from "../lib/room";
+} from "../domain/room";
 
 const SLUG = "2026-08-13-the-deal-that-ended-it";
 const STARTS_AT = 1_800_000_000;
