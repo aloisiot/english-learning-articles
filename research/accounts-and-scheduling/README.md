@@ -88,8 +88,10 @@ With those, a migration is: dump the data (trivial), carry the users
 (easy — they are rows, and password hashes are portable), rewrite the RLS
 policies (moderate), and change one auth module. Without them, the same
 migration is a rewrite. **And GoTrue can be self-hosted against the same
-Postgres**, which is less a migration than a change of operator — the
-same move that would resolve the inactivity-pause risk.
+Postgres**, which is less a migration than a change of operator. It was
+also expected to be the answer to the inactivity-pause risk; that turned
+out to have a $25/month answer instead, so self-hosting is back to being
+only what it says it is — the exit.
 
 **The design itself is five entities**, of which four are ordinary and
 one is urgent. `session` records what actually happened — who taught, who
@@ -105,12 +107,18 @@ in the record is a gap in whatever is eventually invoiced from it.
 
 ## What this strand did not establish
 
-Whether Supabase's free tier pauses on inactivity — carried unresolved
-from the previous strand and still the one check that could change the
-vendor. Whether identity linking will carry a user from magic link to
-OAuth without duplicating them. Whether self-registration is compatible
-with the earlier "students are adults" assumption, which nothing now
-enforces. All of these are in [`05`](05-register.md).
+Whether identity linking will carry a user from magic link to OAuth
+without duplicating them. Whether self-registration is compatible with
+the earlier "students are adults" assumption, which nothing now
+enforces. Both are in [`05`](05-register.md).
+
+The one check that could have changed the vendor has since been made, on
+2026-09-03. It does pause — a week idle, confirmed on Supabase's own
+pricing page — and it is worse than the strand assumed, because restoring
+is a manual dashboard action and a student's arrival does not trigger it.
+It is also not a reason to leave: pausing is a free-tier billing policy,
+and Pro at $25/month does not pause. **Supabase stands**, on Pro before
+the first real student. [`05`](05-register.md) item 1 has the detail.
 
 It also did not design the screens, the RLS policies, or the migration
 order. Those follow once the register's first item is answered.

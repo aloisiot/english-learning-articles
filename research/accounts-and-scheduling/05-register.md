@@ -3,10 +3,93 @@
 Claims this strand leans on that were not checked against a primary
 source. Each says what would settle it.
 
+Items move out of the table below as they are settled, into the section
+above it.
+
+---
+
+## Settled
+
+### 1 — The pause is real, and restoring is manual
+
+*Checked 2026-09-03 against <https://supabase.com/pricing> and
+<https://supabase.com/docs/guides/platform/free-project-pausing>.*
+
+**The claim holds.** The pricing page states it plainly: *"Free projects
+are paused after 1 week of inactivity. Limit of 2 active projects."* The
+carried-over "~7 days" was accurate.
+
+Three details the strand did not have, and one of them matters more than
+the claim itself:
+
+- **Restoring is manual.** It is a dashboard action — open the project,
+  click Resume, wait somewhere between a few seconds and about three
+  minutes. **Nothing about this is self-healing.** The register guessed
+  the failure "surfaces when a student tries to join a class"; it is
+  worse than that, because the student's arrival does not fix it. The
+  teacher finds out from the student, and then goes to a dashboard.
+- **There is warning.** Supabase emails the project owner twice: roughly
+  a week before the pause, and again once it has happened. So the failure
+  is avoidable by anyone reading that mailbox — which is a real
+  mitigation, and also a single point of human failure.
+- **Data survives.** A paused project can be restored for up to a year.
+  But after **90 days** the automatic restore is withdrawn and the
+  project's infrastructure — including its API URL — is released, which
+  would change the environment variables on the other side.
+
+**What counts as activity is deliberately not a contract.** The docs say
+only that *"a few user requests to the database each day over the
+previous week is enough"*, and describe the target as projects with *"too
+few user queries"*. That vagueness is the vendor keeping room to tighten
+a cost control, and it is the reason to distrust a keep-warm ping as an
+availability strategy rather than as a convenience.
+
+**This does not disqualify Supabase.** That is the finding. Pausing is a
+free-tier billing policy, not a property of the platform: the Pro plan at
+**$25/month** does not pause at all. `02` §4's exit argument is untouched,
+and nothing in `03`'s data model is affected.
+
+So the three options are not equal:
+
+| Option | Verdict |
+|---|---|
+| **Pro, $25/month** | Removes the failure class outright. The recommendation. |
+| **Keep-warm ping** | Works today, on an undocumented heuristic the vendor has every reason to tighten. Acceptable for a project nobody depends on; not for a class a student has paid for and scheduled around. |
+| **Self-host GoTrue** | Disproportionate — it is the plan for *leaving* Supabase, not for declining a $25 bill, and it would lean on item 3, which is itself still unverified. |
+
+**Decision: Supabase stands as the vendor, on the Pro plan before the
+first real student.** The free tier is fine for the build — a pause
+during development is an annoyance, not an outage, because nobody is
+being let down by a project nobody is using. The upgrade is therefore
+tied to an event rather than a date: **it happens before the first
+student books, and before enrolment is opened to anyone outside this
+repo.** Two things make the free tier survivable until then, and both
+have to hold: the warning emails must reach a mailbox that is read, and
+the project must not sit paused for 90 days, which would change its
+API URL.
+
+### 2 — Free-tier limits confirmed
+
+*Same sources and date as item 1.*
+
+Confirmed from the vendor rather than from summaries: **50,000 MAU** and
+**500 MB** of database on the Free plan, alongside the **2 active
+projects** limit quoted above. The strand's numbers were right.
+
+The project count is the only one worth remembering. Two is enough for a
+development project and a production one, which is the arrangement this
+repo would want; a third — a staging project — would need a paid plan.
+That is not a constraint today, since preview environments are
+deliberately out of scope until there is a production-ready app.
+
+Volume is nowhere near any of these limits and is not expected to be.
+
+---
+
+## Still unverified
+
 | # | What is unproven | Why it matters | How to settle it |
 |---|---|---|---|
-| 1 | **Supabase free projects pause after ~7 days of inactivity.** Carried from [`video-calls/05`](../video-calls/05-accounts-and-access.md) §2, register item 12, still unchecked. | The failure surfaces *when a student tries to join a class*. A teaching schedule with a holiday plausibly goes seven days idle. This is the single item that could disqualify the vendor. | Read Supabase's own pricing page. Five minutes. |
-| 2 | **Supabase free-tier limits** — 50,000 MAU, 500 MB database. | Secondary summaries, not the vendor. Volume is tiny, so the risk is low, but the numbers should not be quoted as fact. | Same page as item 1. |
 | 3 | **GoTrue is self-hostable against the same Postgres, and this is a cheap exit.** [`02`](02-platform-dependence.md) §4 leans on it as the escape hatch that makes the whole vendor choice safer. | If self-hosting is harder than assumed, the migration story is materially worse and Supabase looks more like Clerk than claimed. | Read GoTrue's deployment docs. |
 | 4 | **Supabase stores password hashes in a portable format (bcrypt).** [`02`](02-platform-dependence.md) §4 claims passwords survive a migration. | If the format is proprietary or unreachable, every user resets their password on migration — annoying but survivable. Worth knowing which. | Inspect `auth.users` on a real project. |
 | 5 | **Supabase supports linking multiple identities to one user.** [`01`](01-what-this-must-do.md) §3 depends on it: magic link now, OAuth and password later, same human. | Account linking is where naive auth designs break. If it is not supported, the migration from magic link to OAuth creates duplicate people. | Supabase Auth docs on identity linking. |

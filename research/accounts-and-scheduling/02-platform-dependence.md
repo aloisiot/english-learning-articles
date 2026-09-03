@@ -100,9 +100,15 @@ Without those decisions, the same migration is a rewrite.
 **The escape hatch that makes this materially safer than the
 alternatives: GoTrue can be self-hosted.** Running it yourself against
 the same Postgres is not really a migration at all — the schema is
-already the right shape. That path also resolves the inactivity-pause
-risk, which is otherwise the strongest argument against Supabase
-([`05`](../video-calls/05-accounts-and-access.md) §2).
+already the right shape.
+
+This paragraph originally offered self-hosting as the answer to the
+inactivity-pause risk as well, on the assumption that the pause was the
+strongest argument against Supabase. Checking it on 2026-09-03 removed
+that argument rather than strengthening it: the pause is real, but it is
+a property of the free plan and not of the platform, and $25/month ends
+it ([`05`](05-register.md) item 1). Self-hosting GoTrue is the exit, and
+should not be reached for to avoid a bill.
 
 ## 5. The portability tax, stated plainly
 
