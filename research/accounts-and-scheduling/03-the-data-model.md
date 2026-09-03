@@ -19,7 +19,8 @@ profile          id (ours) · auth_user_id (theirs) · display_name
 profile_role     profile_id · role (owner│tutor│student)
                  -- a set, not a column: the author is owner and student
 
-tutor_settings   profile_id · requires_approval · listed
+tutor_settings   profile_id · requires_approval
+                 · approved_at · approved_by   -- owner approval
 
 slot             id · tutor_id · starts_at (UTC) · duration_minutes
                  · status (open│held│booked│cancelled)
@@ -40,9 +41,16 @@ The author is **owner and student simultaneously**, from day one
 before the first tutor arrives. A join table costs one extra query and
 removes a migration that would otherwise be certain.
 
-`listed` on `tutor_settings` is the hook for owner approval of
-self-declared tutors — a tutor exists as soon as they choose the role,
-but is not offered to students until the owner says so.
+`approved_at` on `tutor_settings` carries the owner approval that
+[`01`](01-what-this-must-do.md) §2 requires. It is a timestamp and an
+approver rather than a boolean, because "who let this tutor in, and when"
+is a question that gets asked once something goes wrong, and a boolean
+cannot answer it. Null means not yet approved.
+
+Note the two approvals in this model are unrelated and easily confused:
+`tutor_settings.requires_approval` is the *tutor's* choice about vetting
+bookings; `approved_at` is the *owner's* decision about the tutor. One is
+a preference, the other is a gate.
 
 ## 3. Why `slot` and `booking` are separate
 

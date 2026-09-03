@@ -27,7 +27,11 @@ two roles at once.
 - **Roles:** owner (the author), tutor, student. Held as a set, not a
   column.
 - **Availability:** concrete slots a tutor opens. No recurrence.
-- **Approval:** per tutor. Some vet bookings, some do not.
+- **Tutor approval:** a tutor's schedule is not published until the owner
+  approves them. The role is self-chosen; being bookable is not.
+- **Booking approval:** per tutor. Some vet bookings, some do not.
+- **Supabase is an adapter**, outside the business rules, behind a port
+  written in domain language.
 - **Pending bookings hold the slot**, with no automatic expiry.
 - **Timezones:** classes cross countries. UTC stored, local displayed.
 - **Session outcomes:** completed, student cancelled, student no-show,
@@ -67,8 +71,9 @@ one extra column and one join:
    the schema.
 3. Authorisation lives in server code, with RLS as defence in depth
    rather than as the whole model.
-4. Identity sits behind one module, as configuration and Daily already
-   do.
+4. Identity and persistence sit behind **ports written in domain
+   language**, with Supabase as an adapter on the far side — the same
+   shape `lib/daily-request.ts` and `server/daily.ts` already have.
 
 With those, a migration is: dump the data (trivial), carry the users
 (easy — they are rows, and password hashes are portable), rewrite the RLS

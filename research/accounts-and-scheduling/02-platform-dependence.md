@@ -113,8 +113,68 @@ to be abandoned, but because the same decisions produce a better-factored
 system regardless, and this repo has already twice benefited from putting
 one concern behind one module.
 
-**What is *not* worth doing:** an abstraction layer that hides Supabase
-behind a home-made interface capable of swapping providers. That designs
-an abstraction against one caller, which
-[`08`](../video-calls/08-implementation-plan.md) already rejects for
-`lib/`, and it is the reason vendor-agnostic layers usually leak anyway.
+## 6. The adapter boundary
+
+**Decision: Supabase is integrated as an adapter, outside the business
+rules.**
+
+An earlier draft of this document warned against "an abstraction layer
+that hides Supabase behind a home-made interface capable of swapping
+providers", on the grounds that it designs an abstraction against one
+caller. That warning was aimed at the wrong thing, and the distinction is
+worth stating because it decides whether this succeeds or leaks.
+
+**What does leak:** a *generic provider interface* — `AuthProvider`,
+`DatabaseClient` — invented by guessing what some future vendor might
+also offer. It is shaped by the vendors, so it ends up as the union of
+their features, and the first real migration finds it fits neither.
+
+**What does not leak:** a **port shaped by what this application needs**,
+with the vendor on the far side of it. The interface says
+`findConfirmedBookingFor(userId, at)`, not `from("bookings").select()`.
+It is derived from the domain, so it stays stable when the vendor
+changes — because it never described the vendor in the first place.
+
+The second is what "outside the business rules" means, and it is the one
+being adopted.
+
+### This repo already does exactly this, twice
+
+The pattern is not new here, which is the strongest argument that it will
+hold:
+
+- `class/lib/daily-request.ts` builds Daily's requests and interprets its
+  responses **as pure data**, with tests. `class/server/daily.ts` is "the
+  only place in the app that talks to Daily over the network", and holds
+  nothing but the `fetch`.
+- `class/server/config.ts` is the only place that reads the environment.
+
+Identity and persistence become the third and fourth instances of a shape
+the codebase already uses. Concretely:
+
+```
+class/lib/…            business rules, pure, tested at 100%
+                       — booking eligibility, session outcomes,
+                         slot-hold rules
+
+class/server/ports.ts  what the domain needs, in domain language
+                       — Identity, BookingStore, SessionStore
+
+class/server/supabase/ the adapter: the only files that import
+                       @supabase/supabase-js
+```
+
+### What this costs, and what it does not buy
+
+It costs an indirection and the discipline to keep the SDK import
+confined to one directory — enforceable by a lint rule or, in this repo's
+idiom, by a check in `scripts/`.
+
+It does **not** buy the ability to swap providers by changing one line.
+Nothing does. What it buys is that a swap is *bounded*: the business
+rules do not mention the vendor, so they do not change, and they are the
+part with the tests.
+
+The rule that keeps it honest: **the port is defined by the caller's
+needs, and is written before the adapter.** If a method exists because
+Supabase offers it, it is in the wrong place.

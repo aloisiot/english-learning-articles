@@ -44,14 +44,18 @@ sign-up halfway and come back tomorrow.
 
 Two things fall out of it.
 
-**Self-declared tutors are unvetted by construction.** Anyone who signs
-up can choose "tutor", open slots, and appear as somebody teachers'
-students might book. For bootstrapping — where every tutor is personally
-invited from another platform — that is fine. As a business it is not,
-and the gap should be closed by the owner role rather than by changing
-the gate: a tutor is self-declared but not *listed* until the owner
-approves them. Recording this now costs a boolean; discovering it later
-costs a public marketplace full of strangers.
+**Self-declared tutors are unvetted by construction, so approval is
+required.** Anyone who signs up can choose "tutor". **Decision: a tutor's
+schedule is not published until the owner approves them.**
+
+The gate stays self-service — the role is chosen, not granted — and the
+approval sits between having the role and being bookable. That split
+matters: an unapproved tutor can still complete their profile and prepare
+slots, so approval is not a wall in front of onboarding, only in front of
+students. What it prevents is a stranger appearing in a booking list.
+
+This is the mechanism that makes public sign-up survivable for a platform
+whose founding use case is inviting known tutors from elsewhere.
 
 **The gate is where consent belongs.** It is the one screen every user
 passes through exactly once, before doing anything. Whatever the privacy

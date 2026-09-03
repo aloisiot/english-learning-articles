@@ -34,13 +34,25 @@ pattern — which keeps every property above, because the generated rows
 are still instants. That upgrade is available later and is not needed
 now.
 
-## 2. Approval is per tutor
+## 2. A tutor's slots are invisible until the owner approves them
+
+Opening a slot and publishing it are different acts. An unapproved tutor
+may complete a profile and prepare slots; students do not see them.
+Approval is recorded as `tutor_settings.approved_at`, and every query
+that lists bookable slots joins through it.
+
+Putting the gate on *visibility* rather than on slot creation is what
+keeps onboarding usable: a tutor invited from another platform can set
+themselves up completely while approval is pending, and become bookable
+the moment it lands.
+
+## 3. Booking approval is per tutor
 
 `tutor_settings.requires_approval`. Some tutors will want to vet who
 takes their time; others will want any open slot filled without
 interruption. This is a property of the tutor, not a platform policy.
 
-## 3. A pending request holds the slot
+## 4. A pending request holds the slot
 
 **Decision:** the first student to request a slot locks it. Nobody else
 may request it while the tutor decides.
@@ -61,7 +73,7 @@ The second was considered and not chosen. It should be revisited the
 first time a slot is lost to it, which is a better trigger than a guess
 now.
 
-## 4. Entering the call
+## 5. Entering the call
 
 **Students join from their dashboard, logged in.** No emailed link, no
 signed token.
@@ -86,7 +98,7 @@ way to run a class for someone without an account, which is exactly the
 situation of a trial lesson with a tutor being courted from another
 platform — the founding use case of this platform.
 
-## 5. Cancellation windows
+## 6. Cancellation windows
 
 Deferred, deliberately, to whenever billing is discussed. The model
 supports the question — `student_cancelled` is distinguishable from
