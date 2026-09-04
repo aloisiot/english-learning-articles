@@ -11,7 +11,9 @@
  * looking like the security model (02 §3c).
  */
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
+import { GATE, gateFor } from "@/features/access/domain/role-gate";
 import {
   ACCESS_COOKIE,
   REFRESH_COOKIE,
@@ -80,4 +82,31 @@ export async function currentViewer(): Promise<Viewer | null> {
 
   const profile = await ensureProfile(authUser.id, authUser.email);
   return { profile, roles: await rolesOf(profile.id) };
+}
+
+/**
+ * The single enforcement point for "nothing else in the app is
+ * reachable" (01 §2).
+ *
+ * Every gated page and route calls this and nothing else decides it. The
+ * decision itself is `gateFor`, which is pure and tested; what is here
+ * is the redirect, which is the part a test would have to mock.
+ *
+ * It returns a Viewer rather than a boolean so that a caller physically
+ * cannot forget to use the result — the profile it needs and the check
+ * it must pass arrive together.
+ */
+export async function requireViewer(): Promise<Viewer> {
+  const viewer = await currentViewer();
+
+  switch (gateFor(viewer?.roles ?? null)) {
+    case GATE.SIGN_IN:
+      redirect("/sign-in");
+    // falls through to the redirect's never return
+    case GATE.CHOOSE_ROLE:
+      redirect("/choose-role");
+    default:
+      // gateFor only returns ALLOWED when a viewer exists.
+      return viewer as Viewer;
+  }
 }
