@@ -62,7 +62,7 @@ export async function clearSessionCookies(): Promise<void> {
  * forbids writing cookies from a Server Component. An earlier version
  * refreshed here and wrote the new pair back, which worked until the
  * first access token expired and then made every page a 500. Refreshing
- * is middleware's job now (class/middleware.ts), which runs first and is
+ * is the proxy's job now (class/proxy.ts), which runs first and is
  * allowed to write — so by the time this reads the jar, the token in it
  * is already current.
  */

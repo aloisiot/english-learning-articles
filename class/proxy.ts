@@ -1,14 +1,19 @@
 /**
  * Keeping the session alive, in the one place that is allowed to.
  *
+ * This is Next 16's `proxy` convention, which replaced `middleware` —
+ * same position in the request, renamed because "middleware" kept being
+ * read as the Express kind. It runs on the Node.js runtime, which is not
+ * configurable here and happens to be what the Supabase client wants.
+ *
  * Next only permits cookies to be written from a Route Handler, a Server
- * Action, or middleware. Refreshing used to happen inside
+ * Action, or here. Refreshing used to happen inside
  * currentViewer(), which pages call — so the first time an access token
  * expired, every page threw "Cookies can only be modified in a Server
  * Action or Route Handler" and returned a 500. It worked for exactly one
  * token lifetime, which is the worst possible way for it to be wrong.
  *
- * So refresh lives here. Middleware runs before the page, can write to
+ * So refresh lives here. The proxy runs before the page, can write to
  * the response, and can also hand the refreshed cookie to the request
  * the page is about to see — which is why the request's own cookie jar
  * is updated as well as the response's. Without that, the page would
@@ -31,7 +36,7 @@ import {
 import { refreshSession } from "@/features/access/adapters/supabase/identity";
 import { publicOrigin } from "@/server/config";
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const accessToken = request.cookies.get(ACCESS_COOKIE)?.value;
   const refreshToken = request.cookies.get(REFRESH_COOKIE)?.value;
 
