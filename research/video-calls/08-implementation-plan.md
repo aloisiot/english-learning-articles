@@ -226,6 +226,12 @@ question, and [`03`](03-provider-options-and-costs.md) is where it goes.
 
 ## Phase 5 — Accounts, scheduling, and the session record
 
+> **Built 2026-09-03.** The code is written and the gate passes; what is
+> outstanding is not code. See **Where this stands** at the end of this
+> section — the Supabase project has to exist and one real booked class
+> has to be run end to end before this phase's gate closes, exactly as
+> Phase 4's did.
+
 **Deliverable:** tutors and students have accounts, a class can be
 scheduled rather than hand-minted from an admin page, and every session
 that happens leaves a durable record of who taught, who attended, and
@@ -268,6 +274,40 @@ but a booking UI is where timezone bugs actually live.
 Re-check register item 12 (the Supabase inactivity pause) before choosing
 a provider. Chat history becomes possible here for the first time, which
 is the natural moment to revisit open item 7 below.
+
+### Where this stands
+
+**Built.** Magic-link sign-in with no password and no separate
+verification step; the role gate as a persistent state; owner bootstrap
+and tutor settings; owner approval gating visibility rather than slot
+creation; concrete slots stored as UTC instants; requesting, accepting
+and declining with the slot held in between; joining from a booking
+alongside the signed link, which stays; and the append-only session
+record. Five migrations, three feature slices, and 545 tests with the
+domain modules at 100%.
+
+Three guards were added to `npm run verify` along the way, all of the
+same family — a rule that was true when written and could quietly stop
+being true: the coverage threshold itself, the `@supabase/supabase-js`
+adapter boundary, and the call surface's exemption from the design
+system.
+
+**Not done, and not code.** The Supabase project does not exist yet, so
+nothing here has run against a real database. Custom SMTP, the EU region
+and the one-month session are configuration; the email template has to
+use `{{ .TokenHash }}` or the callback receives nothing it can read; and
+the owner role has to be granted by running `0003` by hand, because it is
+the one role nobody may grant themselves.
+
+**This phase's gate, by analogy with Phase 4's:** a class booked by a
+student, accepted by a tutor, joined by both from their dashboards, and
+a session row afterwards that says what happened. Until that has
+happened once, this phase is built rather than closed — and the lesson
+of Phase 4 is precisely that those are different.
+
+The known-open item inside it: the hold on a pending booking has no
+automatic expiry, accepted with its cost in [`04`](../accounts-and-scheduling/04-scheduling-and-booking.md) §4.
+The trigger to revisit is the first slot actually lost to it.
 
 ## Phase 6 — The article in the call
 

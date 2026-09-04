@@ -86,17 +86,68 @@ Volume is nowhere near any of these limits and is not expected to be.
 
 ---
 
+### 6, 7, 8 — settled by building against them
+
+*2026-09-03, from Supabase's own configuration surfaces while creating
+the project and wiring sign-in.*
+
+**Item 6 — built-in email needs replacing.** Confirmed, and it is worse
+than "unsuitable for production": Supabase's built-in sender is rate
+limited to a handful of messages an hour and is explicitly not for real
+traffic. While magic link is the only credential, email delivery *is* the
+availability of the system (01 §3), so custom SMTP is a day-one
+requirement rather than a hardening step. It is in the setup checklist
+and the app cannot work without it.
+
+**Item 7 — the region is chosen once.** Confirmed: a project's region is
+fixed at creation, and moving means creating a new project and migrating.
+EU it is, and the decision is one-shot as assumed.
+
+**Item 8 — session lifetime is project-level.** Confirmed. There is no
+per-role session length, so 01 §4's recommendation stands unchanged: keep
+the session long, and require fresh re-authentication for sensitive
+actions once any exist. None do.
+
+### 5 — identity linking, now moot for the current design
+
+*2026-09-03.*
+
+The claim was that Supabase supports linking several identities to one
+user, and 01 §3 depended on it so that a person arriving later through
+Google would not become a second account.
+
+**It is still unverified as stated, and the design no longer rests on
+it.** `profile` is keyed by our own id with `auth_user_id` as the only
+reference outward, and `email` is deliberately not unique and not a key.
+So the question has moved: linking is now a *migration* problem for the
+day a second credential type is added, not a correctness problem for
+today. It stays on this list, moved down, because that day is intended.
+
+---
+
 ## Still unverified
 
 | # | What is unproven | Why it matters | How to settle it |
 |---|---|---|---|
 | 3 | **GoTrue is self-hostable against the same Postgres, and this is a cheap exit.** [`02`](02-platform-dependence.md) §4 leans on it as the escape hatch that makes the whole vendor choice safer. | If self-hosting is harder than assumed, the migration story is materially worse and Supabase looks more like Clerk than claimed. | Read GoTrue's deployment docs. |
 | 4 | **Supabase stores password hashes in a portable format (bcrypt).** [`02`](02-platform-dependence.md) §4 claims passwords survive a migration. | If the format is proprietary or unreachable, every user resets their password on migration — annoying but survivable. Worth knowing which. | Inspect `auth.users` on a real project. |
-| 5 | **Supabase supports linking multiple identities to one user.** [`01`](01-what-this-must-do.md) §3 depends on it: magic link now, OAuth and password later, same human. | Account linking is where naive auth designs break. If it is not supported, the migration from magic link to OAuth creates duplicate people. | Supabase Auth docs on identity linking. |
-| 6 | **Supabase's built-in email is unsuitable for production and needs custom SMTP.** [`01`](01-what-this-must-do.md) §3 treats this as a day-one requirement. | While magic link is the only credential, email *is* the availability of the system. | Supabase Auth SMTP docs. |
-| 7 | **A Supabase project's region is chosen once and cannot be changed.** Relevant because EEA students make region a GDPR-adjacent decision. | If it is changeable, the decision is reversible and less urgent. If not, it is a one-shot choice. | Supabase project settings docs. |
-| 8 | **Session lifetime is project-level, not per-role.** [`01`](01-what-this-must-do.md) §4 builds the re-authentication recommendation on it. | If per-role sessions are possible, the owner account could simply hold a shorter one and the recommendation is unnecessary. | Supabase Auth session settings. |
 | 9 | **GDPR consent thresholds for minors vary by member state (13–16).** | [`01`](01-what-this-must-do.md) §6 raises it because self-registration removed the enforcement that "students are adults" previously had. | Not a code question. Legal reading, or a decision to keep enrolment gated. |
+
+## Answered by building
+
+Recorded here rather than left implied, because "we built it and it
+worked" is evidence and should be legible as such.
+
+- **The hold has no expiry, and the free mitigation is enough for now.**
+  04 §4 chose surfacing pending requests over a scheduled job. Built that
+  way; the trigger to revisit is still the first slot actually lost.
+- **RLS as defence in depth held up in practice.** Every route decides
+  authorisation in server code before querying, and the policies grant
+  only self-reads. Nothing needed a policy to be permissive to work,
+  which is the sign the ordering is the right way round (02 §3c).
+- **The port survived contact with the adapter.** `server/ports.ts` was
+  written before any Supabase code and did not change when the adapter
+  arrived — which is the test 02 §6 implicitly sets for it.
 
 ## Decisions taken without research, and knowingly
 

@@ -142,5 +142,18 @@ sharing and a vertical phone camera. `research/video-calls/08` Phase 4's
 gate is closed. Room expiry without intervention is the one part nobody
 watched.
 
-Accounts, roles, scheduling and the session record are being built on top
-of it now — `research/accounts-and-scheduling/` is the strand.
+Accounts, roles, scheduling and the session record are **built but not
+yet run against a real database** — `research/accounts-and-scheduling/`
+is the strand, and `research/video-calls/08` Phase 5 "Where this stands"
+says what is outstanding. The Supabase project does not exist yet, so
+sign-in, booking and the session record have never executed. Phase 5's
+gate is one real booked class, end to end.
+
+Three checks in `npm run verify` guard rules that would otherwise rot
+silently: `check:boundary` (no `@supabase/supabase-js` outside
+`features/*/adapters/`), `check:call` (no design-system token inside the
+call surface), and the 100% coverage threshold. Each exists because this
+repo has been bitten by a rule that stopped being true without anything
+failing.
+
+Migrations live in `class/supabase/migrations/` and are applied by hand.
