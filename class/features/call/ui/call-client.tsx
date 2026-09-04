@@ -93,21 +93,31 @@ interface JoinResponse {
 
 export default function CallClient({
   token,
+  bookingId,
   slug,
 }: {
-  token: string;
+  token?: string;
+  bookingId?: string;
   slug?: string;
 }) {
   const callObject = useCallObject({});
 
   return (
     <DailyProvider callObject={callObject}>
-      <Call token={token} slug={slug} />
+      <Call token={token} bookingId={bookingId} slug={slug} />
     </DailyProvider>
   );
 }
 
-function Call({ token, slug }: { token: string; slug?: string }) {
+function Call({
+  token,
+  bookingId,
+  slug,
+}: {
+  token?: string;
+  bookingId?: string;
+  slug?: string;
+}) {
   const daily = useDaily();
   const meetingState = useMeetingState();
   const [name, setName] = useState("");
@@ -125,7 +135,9 @@ function Call({ token, slug }: { token: string; slug?: string }) {
         const response = await fetch(JOIN_ENDPOINT, {
           method: "POST",
           headers: { "content-type": "application/json" },
-          body: JSON.stringify({ token }),
+          // One endpoint, two proofs: a signed token for someone
+          // without an account, a booking id for someone with one.
+          body: JSON.stringify(bookingId ? { bookingId } : { token }),
         });
 
         if (!response.ok) {
@@ -148,7 +160,7 @@ function Call({ token, slug }: { token: string; slug?: string }) {
         setPending(false);
       }
     },
-    [daily, token],
+    [daily, token, bookingId],
   );
 
   if (meetingState === "joined-meeting") {

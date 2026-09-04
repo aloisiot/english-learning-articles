@@ -286,6 +286,29 @@ label.inline input {
   flex-shrink: 0;
 }
 
+/* A link that has to look like the button beside it. */
+.button {
+  display: inline-block;
+  font: inherit;
+  font-family: var(--font-sans);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin: var(--space-8) 0;
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--rule);
+  font-size: var(--text-sm);
+}
+
 /*
   The call.
 
