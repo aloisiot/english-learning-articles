@@ -280,6 +280,12 @@ label.inline input {
   width: auto;
 }
 
+.row-actions {
+  display: flex;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
 /*
   The call.
 
