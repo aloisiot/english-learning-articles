@@ -216,7 +216,12 @@ button.leave {
   margin: var(--space-6) 0 var(--space-12);
 }
 
+.choices form {
+  display: flex;
+}
+
 .choices button {
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;

@@ -24,9 +24,13 @@ export async function POST(request: Request) {
   const role = form.get("role");
 
   if (!isSelfAssignable(role)) {
-    return NextResponse.redirect(new URL("/class/choose-role", request.url), {
-      status: 303,
-    });
+    // Carries a reason rather than bouncing silently to the same screen.
+    // A redirect-to-self with no message is indistinguishable from a page
+    // that did nothing, which is exactly how this went unnoticed.
+    return NextResponse.redirect(
+      new URL("/class/choose-role?problem=no-role", request.url),
+      { status: 303 },
+    );
   }
 
   await grantRole(viewer.profile.id, role);

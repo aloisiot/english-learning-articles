@@ -6,7 +6,12 @@ import { currentViewer } from "@/server/session";
 
 export const dynamic = "force-dynamic";
 
-export default async function ChooseRolePage() {
+export default async function ChooseRolePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ problem?: string }>;
+}) {
+  const { problem } = await searchParams;
   const viewer = await currentViewer();
   const decision = gateFor(viewer?.roles ?? null);
 
@@ -20,6 +25,13 @@ export default async function ChooseRolePage() {
         This decides what you see. You are not locked in — if you teach and
         learn here, you can hold both.
       </p>
+
+      {problem === "no-role" && (
+        <p className="error">
+          That did not come through — no choice reached the server. Please
+          press one of the two again.
+        </p>
+      )}
 
       <RoleChoice />
 
