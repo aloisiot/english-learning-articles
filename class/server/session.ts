@@ -24,7 +24,6 @@ import {
 import {
   authUserFor,
   ensureProfile,
-  refreshSession,
   rolesOf,
 } from "@/features/access/adapters/supabase/identity";
 import { publicOrigin } from "@/server/config";
@@ -59,25 +58,20 @@ export async function clearSessionCookies(): Promise<void> {
  * while signed out, and the role gate exists precisely because "signed
  * in with nothing chosen" is a state a profile can sit in indefinitely.
  *
- * The access token is short-lived and the session is a month, so an
- * expired access token is the normal case rather than a failure. It is
- * refreshed silently and the new pair written back.
+ * **Read-only, deliberately.** This is called from pages, and Next
+ * forbids writing cookies from a Server Component. An earlier version
+ * refreshed here and wrote the new pair back, which worked until the
+ * first access token expired and then made every page a 500. Refreshing
+ * is middleware's job now (class/middleware.ts), which runs first and is
+ * allowed to write — so by the time this reads the jar, the token in it
+ * is already current.
  */
 export async function currentViewer(): Promise<Viewer | null> {
   const jar = await cookies();
   const accessToken = jar.get(ACCESS_COOKIE)?.value;
-  const refreshToken = jar.get(REFRESH_COOKIE)?.value;
+  if (!accessToken) return null;
 
-  let authUser = accessToken ? await authUserFor(accessToken) : null;
-
-  if (!authUser && refreshToken) {
-    const refreshed = await refreshSession(refreshToken);
-    if (refreshed) {
-      await setSessionCookies(refreshed);
-      authUser = await authUserFor(refreshed.accessToken);
-    }
-  }
-
+  const authUser = await authUserFor(accessToken);
   if (!authUser) return null;
 
   const profile = await ensureProfile(authUser.id, authUser.email);
