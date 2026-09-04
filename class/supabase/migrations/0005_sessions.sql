@@ -50,14 +50,21 @@ create index if not exists session_tutor_idx
 
 -- One session per booking. A class happened once, however many times the
 -- endpoint that records it is called.
+--
+-- Not a partial index, deliberately, even though booking_id is nullable.
+-- The adapter records with ON CONFLICT (booking_id), and Postgres refuses
+-- to match that against a partial index unless the predicate is restated
+-- in the statement too. A plain unique index behaves identically here,
+-- because Postgres already treats NULLs as distinct — a session whose
+-- booking has been deleted does not collide with another.
 create unique index if not exists session_one_per_booking
-  on public.session (booking_id)
-  where booking_id is not null;
+  on public.session (booking_id);
 
 alter table public.session enable row level security;
 
 -- Read your own history. No insert, update or delete policy exists: the
 -- record is written by server code and never amended.
+drop policy if exists session_own_read on public.session;
 create policy session_own_read on public.session
   for select
   using (

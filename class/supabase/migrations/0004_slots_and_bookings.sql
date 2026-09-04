@@ -67,10 +67,12 @@ alter table public.booking enable row level security;
 
 -- Students see open slots; everyone sees their own bookings. Writes go
 -- through server code, so there are deliberately no write policies.
+drop policy if exists slot_open_read on public.slot;
 create policy slot_open_read on public.slot
   for select
   using (status = 'open');
 
+drop policy if exists slot_own_read on public.slot;
 create policy slot_own_read on public.slot
   for select
   using (
@@ -80,6 +82,7 @@ create policy slot_own_read on public.slot
     )
   );
 
+drop policy if exists booking_own_read on public.booking;
 create policy booking_own_read on public.booking
   for select
   using (

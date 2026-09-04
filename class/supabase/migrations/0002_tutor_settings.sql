@@ -46,6 +46,7 @@ alter table public.tutor_settings enable row level security;
 
 -- A tutor may read their own settings. Approving is a server-side act
 -- with the service-role key; there is deliberately no policy granting it.
+drop policy if exists tutor_settings_self_read on public.tutor_settings;
 create policy tutor_settings_self_read on public.tutor_settings
   for select
   using (

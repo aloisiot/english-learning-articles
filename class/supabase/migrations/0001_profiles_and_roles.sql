@@ -77,10 +77,12 @@ alter table public.profile_role enable row level security;
 -- A person may read their own profile and their own roles. Nothing here
 -- grants a write: every write goes through server code holding the
 -- service-role key, which is where the authorisation decision is made.
+drop policy if exists profile_self_read on public.profile;
 create policy profile_self_read on public.profile
   for select
   using (auth_user_id = auth.uid());
 
+drop policy if exists profile_role_self_read on public.profile_role;
 create policy profile_role_self_read on public.profile_role
   for select
   using (

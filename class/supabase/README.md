@@ -1,7 +1,9 @@
 # Database
 
 Migrations for the Supabase project behind the class app. Plain SQL, run
-in filename order, and each one is written to be re-runnable.
+in filename order, and each one is written to be re-runnable — every
+`create` is guarded, and the policies are dropped before being recreated
+because Postgres has no `create policy if not exists`.
 
 ## Applying them
 
@@ -23,6 +25,15 @@ supabase db push
 | | |
 |---|---|
 | `0001_profiles_and_roles.sql` | `profile` and `profile_role` |
+| `0002_tutor_settings.sql` | the tutor's vetting preference, and the owner's approval |
+| `0003_owner_bootstrap.sql` | **run last, by hand, after signing in once** |
+| `0004_slots_and_bookings.sql` | `slot` and `booking` |
+| `0005_sessions.sql` | `session`, append-only |
+
+`0003` is the odd one and the order matters: it grants the owner role by
+looking up a profile by email, and no profile exists until somebody has
+signed in. Run `0001`, `0002`, `0004`, `0005`, sign in, then edit `0003`
+to your own address and run it.
 
 ## Two things that look wrong and are not
 
