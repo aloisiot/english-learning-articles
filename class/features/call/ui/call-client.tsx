@@ -60,6 +60,14 @@ import {
   shouldYieldScreenShare,
 } from "@/features/call/domain/screen-share";
 import { tileRatio } from "@/features/call/domain/video-fit";
+import {
+  CameraIcon,
+  ChatIcon,
+  CloseIcon,
+  LeaveIcon,
+  MicIcon,
+  ScreenIcon,
+} from "@english-learning/lib";
 
 /**
  * Must match `basePath` in next.config.ts: fetch does not know about it,
@@ -763,87 +771,5 @@ function MediaToggle({ kind }: { kind: MediaKind }) {
     >
       {kind === "audio" ? <MicIcon on={on} /> : <CameraIcon on={on} />}
     </button>
-  );
-}
-
-/*
-  Icons are inline SVG rather than a library: there are five of them, and
-  a dependency that ships hundreds would be most of a megabyte for the
-  privilege of not writing these paths. `currentColor` lets the button
-  states below drive them.
-*/
-
-const SVG = {
-  width: 22,
-  height: 22,
-  viewBox: "0 0 24 24",
-  fill: "none",
-  stroke: "currentColor",
-  strokeWidth: 1.8,
-  strokeLinecap: "round" as const,
-  strokeLinejoin: "round" as const,
-  "aria-hidden": true,
-  focusable: false,
-};
-
-/** A line through the icon, for the "off" half of a toggle. */
-function Slash() {
-  return <line x1="3" y1="21" x2="21" y2="3" />;
-}
-
-function MicIcon({ on }: { on: boolean }) {
-  return (
-    <svg {...SVG}>
-      <rect x="9" y="2" width="6" height="11" rx="3" />
-      <path d="M5 11a7 7 0 0 0 14 0" />
-      <line x1="12" y1="18" x2="12" y2="22" />
-      {on ? null : <Slash />}
-    </svg>
-  );
-}
-
-function CameraIcon({ on }: { on: boolean }) {
-  return (
-    <svg {...SVG}>
-      <rect x="2" y="6" width="13" height="12" rx="2.5" />
-      <path d="M15 10.5 22 7v10l-7-3.5z" />
-      {on ? null : <Slash />}
-    </svg>
-  );
-}
-
-function ScreenIcon({ on }: { on: boolean }) {
-  return (
-    <svg {...SVG}>
-      <rect x="2" y="4" width="20" height="13" rx="2" />
-      <line x1="8" y1="21" x2="16" y2="21" />
-      <line x1="12" y1="17" x2="12" y2="21" />
-      {on ? null : <Slash />}
-    </svg>
-  );
-}
-
-function ChatIcon() {
-  return (
-    <svg {...SVG}>
-      <path d="M21 12a8 8 0 0 1-8 8H7l-4 3v-6.5A8 8 0 0 1 11 4h2a8 8 0 0 1 8 8z" />
-    </svg>
-  );
-}
-
-function LeaveIcon() {
-  return (
-    <svg {...SVG}>
-      <path d="M2.5 15.5a16 16 0 0 1 19 0l-2.5 3-4-1.5v-2.6a12 12 0 0 0-6 0V17l-4 1.5z" />
-    </svg>
-  );
-}
-
-function CloseIcon() {
-  return (
-    <svg {...SVG}>
-      <line x1="5" y1="5" x2="19" y2="19" />
-      <line x1="19" y1="5" x2="5" y2="19" />
-    </svg>
   );
 }

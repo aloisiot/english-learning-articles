@@ -1,4 +1,4 @@
-import { defineConfig } from "vitest/config";
+import { coverageConfigDefaults, defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
@@ -21,6 +21,19 @@ export default defineConfig({
         "class/features/*/domain/**/*.{js,mjs,ts,tsx}",
         "lib/**/*.{js,mjs,ts,tsx}",
       ],
+      // Presentational components are exempt, and the rule is the file
+      // extension rather than a list of paths, so it cannot go stale:
+      // in lib/, .tsx is a component and .ts is logic.
+      //
+      // An icon holds no decision. Covering one means rendering it and
+      // asserting its path data, which is the golden-value mistake this
+      // repo already names — a test that asserts the code does what the
+      // code does. The threshold exists for modules that decide things,
+      // and it is worth more if it is not diluted by markup.
+      // Spread rather than replaced: passing a bare array overrides
+      // Vitest's own exclusions, which is how lib/vitest.config.mjs
+      // turned up in the report at 0% the first time this was written.
+      exclude: [...coverageConfigDefaults.exclude, "lib/**/*.tsx"],
       // `text` for the terminal, `html` for `npm run test:coverage:open`.
       // Vitest also defaults to clover and json, which nothing here reads.
       reporter: ["text", "html"],

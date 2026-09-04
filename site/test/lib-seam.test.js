@@ -7,13 +7,18 @@
  * name rather than by a path across workspace folders — so that a break
  * in it fails here, with a short message, instead of surfacing later as
  * a bundler error inside a page.
+ *
+ * It deliberately does not render anything. What is being tested is that
+ * a JavaScript app can reach a TypeScript-and-JSX module at all.
  */
 import { describe, expect, it } from "vitest";
 
-import { linked } from "@english-learning/lib";
+import { AutoIcon, MoonIcon, SearchIcon, SunIcon } from "@english-learning/lib";
 
 describe("the lib workspace, seen from site", () => {
-  it("resolves by package name and exports what it says", () => {
-    expect(linked).toBe(true);
+  it("resolves by package name and exports the icons this app uses", () => {
+    for (const icon of [SearchIcon, SunIcon, MoonIcon, AutoIcon]) {
+      expect(icon).toBeTypeOf("function");
+    }
   });
 });
