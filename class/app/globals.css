@@ -118,6 +118,97 @@ button.leave {
   text-decoration-color: var(--text);
 }
 
+/* ------------------------------------------------------------------
+   The application surface: sign-in, the role gate, the dashboard.
+
+   Documents and forms, so they use the shared tokens and read like the
+   articles site. Everything below the call's comment banner is the call
+   and does not.
+   ------------------------------------------------------------------ */
+
+.page {
+  margin: 0 auto;
+  padding: var(--space-12) var(--space-6) var(--space-16);
+  width: min(100% - 2 * var(--gutter), var(--measure));
+}
+
+.page-narrow {
+  max-width: 32rem;
+}
+
+.page h1 {
+  font-size: var(--text-lg);
+  line-height: var(--leading-heading);
+  margin: 0 0 var(--space-6);
+}
+
+.page h2 {
+  font-size: var(--text-section);
+  line-height: var(--leading-heading);
+  margin: 0 0 var(--space-3);
+}
+
+/* A column of form controls, evenly spaced. */
+.stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+  width: 100%;
+}
+
+.stack label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: var(--text-sm);
+  color: var(--muted);
+  width: 100%;
+  max-width: 22rem;
+}
+
+.stack input,
+.stack select,
+.stack textarea {
+  font: inherit;
+  font-family: var(--font-sans);
+  padding: var(--space-2) 0.65rem;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.panel {
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: var(--space-5);
+  background: var(--surface);
+}
+
+.hint {
+  font-size: var(--text-xs);
+  color: var(--muted);
+  max-width: 34rem;
+}
+
+/* A button that reads as a link, for an action inside a sentence. */
+.link-button {
+  font: inherit;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: var(--muted);
+  text-underline-offset: 0.15em;
+}
+
+.link-button:hover {
+  text-decoration-color: var(--text);
+}
+
 /*
   The call.
 
