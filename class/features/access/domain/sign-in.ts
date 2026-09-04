@@ -115,3 +115,38 @@ export function callbackUrl(origin: string, returnTo: unknown): string {
   url.searchParams.set("return_to", safeReturnTo(returnTo));
   return url.toString();
 }
+
+/**
+ * The kinds of email link this app will verify.
+ *
+ * Supabase sends a *different template* depending on why the mail went
+ * out — a first-time address gets "Confirm signup", a known one gets
+ * "Magic Link" — and the link carries which in its `type`. Hard-coding
+ * one of them works right up until the first new user, which is exactly
+ * how this was found.
+ *
+ * `email` is the generic that covers signup and sign-in both, and is
+ * what the templates should carry. The others are accepted because the
+ * same callback will serve password recovery and email changes when
+ * those exist, and because refusing an unknown type is better than
+ * passing it through to the provider.
+ */
+export const VERIFICATION_TYPES = [
+  "email",
+  "signup",
+  "magiclink",
+  "recovery",
+  "invite",
+  "email_change",
+] as const;
+
+export type VerificationType = (typeof VERIFICATION_TYPES)[number];
+
+/** The default is the generic one, not the one this app happens to send. */
+export const DEFAULT_VERIFICATION_TYPE: VerificationType = "email";
+
+export function verificationType(raw: unknown): VerificationType {
+  return VERIFICATION_TYPES.includes(raw as VerificationType)
+    ? (raw as VerificationType)
+    : DEFAULT_VERIFICATION_TYPE;
+}

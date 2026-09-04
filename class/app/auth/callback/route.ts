@@ -11,6 +11,7 @@ import {
   SIGN_IN_FAILURE,
   classifySignInFailure,
   safeReturnTo,
+  verificationType,
 } from "@/features/access/domain/sign-in";
 import { verifyMagicLink } from "@/features/access/adapters/supabase/identity";
 import { setSessionCookies } from "@/server/session";
@@ -21,6 +22,9 @@ export async function GET(request: Request) {
   const url = new URL(request.url);
   const tokenHash = url.searchParams.get("token_hash");
   const returnTo = safeReturnTo(url.searchParams.get("return_to"));
+  // Which template sent them here — signup for a new address, magic link
+  // for a known one. The link says; this must not assume.
+  const type = verificationType(url.searchParams.get("type"));
 
   const failed = (reason: string) =>
     NextResponse.redirect(
@@ -29,7 +33,7 @@ export async function GET(request: Request) {
 
   if (!tokenHash) return failed(SIGN_IN_FAILURE.MALFORMED);
 
-  const verified = await verifyMagicLink(tokenHash);
+  const verified = await verifyMagicLink(tokenHash, type);
   if (!verified.ok) return failed(classifySignInFailure(verified.error));
 
   await setSessionCookies(verified.tokens);

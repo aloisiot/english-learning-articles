@@ -2,12 +2,15 @@ import { describe, expect, it } from "vitest";
 
 import {
   DEFAULT_RETURN_TO,
+  DEFAULT_VERIFICATION_TYPE,
+  VERIFICATION_TYPES,
   SIGN_IN_FAILURE,
   callbackUrl,
   classifySignInFailure,
   isPlausibleEmail,
   normaliseEmail,
   safeReturnTo,
+  verificationType,
 } from "../domain/sign-in";
 
 describe("normaliseEmail", () => {
@@ -149,5 +152,35 @@ describe("callbackUrl", () => {
     expect(callbackUrl("https://class-app.vercel.app", "/")).toContain(
       "https://class-app.vercel.app/class/auth/callback",
     );
+  });
+});
+
+describe("verificationType", () => {
+  /*
+    Supabase picks a template from *why* the mail went out: a first-time
+    address gets "Confirm signup", a known one gets "Magic Link", and the
+    link carries which in its type. Hard-coding one worked until the very
+    first new user — which is how this was found, on the first real
+    sign-up attempt.
+  */
+  it.each(VERIFICATION_TYPES)("passes %s through", (type) => {
+    expect(verificationType(type)).toBe(type);
+  });
+
+  it("accepts the signup type a brand-new address produces", () => {
+    expect(verificationType("signup")).toBe("signup");
+  });
+
+  it.each(["", "SIGNUP", "sms", "phone_change", "../evil", undefined, null, 7, {}])(
+    "falls back to the generic type for %s",
+    (raw) => {
+      expect(verificationType(raw)).toBe(DEFAULT_VERIFICATION_TYPE);
+    },
+  );
+
+  it("defaults to the generic rather than to what this app happens to send", () => {
+    // "email" covers signup and sign-in both; defaulting to "magiclink"
+    // would reintroduce exactly the bug this replaced.
+    expect(DEFAULT_VERIFICATION_TYPE).toBe("email");
   });
 });

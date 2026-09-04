@@ -7,6 +7,7 @@
  * the signal that they are the right things to have left out of the
  * domain rather than the wrong things to leave untested.
  */
+import type { VerificationType } from "@/features/access/domain/sign-in";
 import type { Profile, ProfileId, Role } from "@/server/ports";
 
 import { anonClient, serviceClient } from "./client";
@@ -40,11 +41,12 @@ export interface SessionTokens {
  */
 export async function verifyMagicLink(
   tokenHash: string,
+  type: VerificationType,
 ): Promise<
   { ok: true; tokens: SessionTokens } | { ok: false; error: string }
 > {
   const { data, error } = await anonClient().auth.verifyOtp({
-    type: "email",
+    type,
     token_hash: tokenHash,
   });
 
