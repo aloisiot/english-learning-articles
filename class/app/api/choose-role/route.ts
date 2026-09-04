@@ -9,6 +9,7 @@ import { NextResponse } from "next/server";
 
 import { isSelfAssignable } from "@/features/access/domain/role-gate";
 import { grantRole } from "@/features/access/adapters/supabase/identity";
+import { ensureTutorSettings } from "@/features/access/adapters/supabase/tutors";
 import { currentViewer } from "@/server/session";
 
 export async function POST(request: Request) {
@@ -29,6 +30,11 @@ export async function POST(request: Request) {
   }
 
   await grantRole(viewer.profile.id, role);
+
+  // A tutor with no settings row has nothing to edit and nothing for the
+  // owner to approve, so the row is part of becoming a tutor rather than
+  // something created lazily on first visit to a settings page.
+  if (role === "tutor") await ensureTutorSettings(viewer.profile.id);
 
   return NextResponse.redirect(new URL("/class/dashboard", request.url), {
     status: 303,
