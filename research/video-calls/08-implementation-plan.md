@@ -10,9 +10,19 @@
 
 > **Updated 2026-09-02.** Both projects are deployed, `/class` serves the
 > class app on the site's domain, the admin page works in production, and
-> a call connects. Phase 2's gate is closed. Phase 4's is not: the call
-> was two browsers on one machine, so the real-network, two-people,
-> full-duration and room-expiry halves of it are still open.
+> a call connects. Phase 2's gate is closed.
+
+> **Phase 4's gate closed 2026-09-03.** A real class was run with a second
+> person on their own network, and nothing failed. Chat carried messages
+> between two browsers, the unread badge counted messages the reader did
+> not send, the screen-share picker opened, and a vertical phone camera
+> went through the tile-shape rule. All four had been verified
+> structurally and none had been seen working; they now have.
+>
+> This is recorded rather than assumed because the whole point of the
+> gate was that the code could not supply this half. Everything built
+> afterwards stands on a call that is known to work between two people,
+> which is what the gate existed to establish.
 >
 > Two decisions changed with it. **`/class` is routed by a Vercel
 > microfrontends group, not by a rewrite** — the rewrite never worked and
@@ -165,10 +175,14 @@ and the six variables are set on the class project. Deployment Protection
 turned out not to obstruct anything, so the worry recorded against it is
 discharged rather than pending.
 
-What remains is the half the code cannot supply. A call **connects** —
-link minted, room created lazily, token accepted, two participants
-present — but only between two browsers on one machine. Everything about
-a second person on a second network is still assumption.
+**Closed 2026-09-03.** A real class ran with a second person on their own
+network and surfaced no defects. The four features listed below as
+never-exercised were exercised, and worked.
+
+What follows is the work as it was written before the run, kept because
+it records what was actually unknown rather than being rewritten to look
+as though it always held. The one item still genuinely open is room
+expiry without intervention, which nobody watched for.
 
 Work:
 

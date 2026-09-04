@@ -136,7 +136,11 @@ deployments will 500 until they are wired. That is a decision, not a bug.
 
 ## Current state
 
-The class app is deployed and a call connects, but **no class has been
-run by two people on two networks** — `research/video-calls/08` Phase 4
-is the open gate, and chat, screen sharing and the unread badge have been
-verified structurally rather than live.
+The class app is deployed and **a real class has been run by two people
+on two networks** (2026-09-03), exercising chat, the unread badge, screen
+sharing and a vertical phone camera. `research/video-calls/08` Phase 4's
+gate is closed. Room expiry without intervention is the one part nobody
+watched.
+
+Accounts, roles, scheduling and the session record are being built on top
+of it now — `research/accounts-and-scheduling/` is the strand.
