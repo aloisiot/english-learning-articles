@@ -17,6 +17,7 @@
     "test:coverage:open": "node scripts/coverage.mjs",
     "check:env": "node scripts/check-env-files.mjs --tracked",
     "check:boundary": "node scripts/check-adapter-boundary.mjs",
+    "check:call": "node scripts/check-call-surface.mjs",
     "check:supabase": "node scripts/check-supabase.mjs",
     "verify": "node scripts/verify.mjs"
   },

@@ -34,6 +34,7 @@ function run(label, command, args) {
 
 run("Env-file secrets", "node", ["scripts/check-env-files.mjs", "--tracked"]);
 run("Adapter boundary", "node", ["scripts/check-adapter-boundary.mjs"]);
+run("Call surface", "node", ["scripts/check-call-surface.mjs"]);
 run("Root install (npm ci)", "npm", ["ci"]);
 run("Unit tests + domain coverage (vitest)", "npm", ["run", "test:coverage"]);
 run("Workspace verification", "npm", [
