@@ -36,10 +36,39 @@ export const dailyDomain = (): string => required("DAILY_DOMAIN");
  * The origin students actually visit — the articles site's domain, not
  * this app's own Vercel URL.
  *
- * `/class` is reached through a rewrite in site/vercel.json, so a link
+ * `/class` is reached through the microfrontends group declared in
+ * site/microfrontends.json, so a link
  * built from this app's request origin would point at the class
  * project's deployment URL and bypass the arrangement entirely. It has
  * to be stated rather than inferred.
  */
 export const publicOrigin = (): string =>
   required("CLASS_PUBLIC_ORIGIN").replace(/\/+$/, "");
+
+/**
+ * Supabase project URL. Not a secret, but read through the same gate as
+ * everything else so that a half-configured deployment fails loudly on
+ * the first request rather than assembling a URL containing "undefined".
+ */
+export const supabaseUrl = (): string => required("SUPABASE_URL");
+
+/**
+ * The service-role key.
+ *
+ * It bypasses every RLS policy, so it is the one credential in this file
+ * whose leak is total rather than partial. Server-side only, never
+ * NEXT_PUBLIC_, and never handed to a browser: authorisation is decided
+ * in server code and RLS is defence in depth behind it
+ * (research/accounts-and-scheduling/02 §3c). That ordering is what makes
+ * this key dangerous — the database will not second-guess it.
+ */
+export const supabaseServiceRoleKey = (): string =>
+  required("SUPABASE_SERVICE_ROLE_KEY");
+
+/**
+ * The anon key, for the sign-in flow.
+ *
+ * Used where the request should act as the visitor rather than as the
+ * application — sending a magic link, and exchanging it for a session.
+ */
+export const supabaseAnonKey = (): string => required("SUPABASE_ANON_KEY");

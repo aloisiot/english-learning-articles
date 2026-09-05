@@ -11,6 +11,13 @@ export default defineConfig({
   test: {
     name: "class",
     environment: "node",
-    include: ["test/**/*.test.{ts,tsx}"],
+    // Feature tests live beside the feature they test — that is the
+    // point of the layout. test/ survives the move holding only the
+    // workspace harness, which belongs to no feature and mirrors the
+    // same file in site/ and lib/.
+    include: [
+      "features/*/test/**/*.test.{ts,tsx}",
+      "test/**/*.test.{ts,tsx}",
+    ],
   },
 });

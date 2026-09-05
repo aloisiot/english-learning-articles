@@ -1,20 +1,38 @@
 /*
-  Deliberately plain, and deliberately not the articles site's stylesheet.
+  This app is two surfaces, and they are styled from different places.
 
-  Phase 4 duplicates styling on purpose and writes down what it
-  duplicated; that list is what phase 5 extracts into lib/. Reaching for
-  the site's tokens now would be extracting an abstraction against one
-  caller (research/video-calls/08-implementation-plan.md). Until then this
-  is only enough to make a call usable.
+  The **application surface** — the notice screens, the join screen, the
+  admin page — takes the shared design system from
+  @english-learning/lib, imported by app/layout.js just before this file.
+  Same tokens, same serif, same light and dark as the articles site, so
+  that a student meets one product rather than two.
+
+  The **call** does not, and the exemption is the point rather than an
+  oversight: video interfaces are dark because the video is the light.
+  Everything inside .stage is restored to the call's own dark palette
+  below, so no token can reach it whatever the reader's theme says.
+
+  See research/accounts-and-scheduling/07-design-system.md §2, which
+  states the split, and lib/README.md, which explains why the tokens are
+  not simply imported at the root of this app.
 */
 
 :root {
-  --bg: #14161a;
-  --fg: #f2f3f5;
-  --muted: #9aa3ad;
+  /* This app's own, because the site's palette has no accent hue at all
+     — hierarchy there comes from size and space. A call needs a live
+     control and a destructive one to be told apart at a glance. */
   --accent: #4c8bf5;
   --danger: #e5534b;
-  --font-sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* The call's palette, named here and applied on .stage. */
+  --call-bg: #14161a;
+  --call-fg: #f2f3f5;
+  --call-muted: #9aa3ad;
+  --call-surface: #232830;
+  --call-rule: #3a4048;
+
+  /* The app surface speaks in --fg; the design system calls it --text. */
+  --fg: var(--text);
 }
 
 * {
@@ -30,8 +48,8 @@ body {
 body {
   background: var(--bg);
   color: var(--fg);
-  font-family: var(--font-sans);
-  line-height: 1.5;
+  font-family: var(--font-body);
+  line-height: var(--leading-body);
 }
 
 h1 {
@@ -41,7 +59,7 @@ h1 {
 
 .muted {
   color: var(--muted);
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
 }
 
 .error {
@@ -50,10 +68,10 @@ h1 {
 
 button {
   font: inherit;
-  padding: 0.55rem 1.1rem;
-  border: 1px solid #3a4048;
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--rule);
   border-radius: 6px;
-  background: #232830;
+  background: var(--surface);
   color: var(--fg);
   cursor: pointer;
 }
@@ -76,16 +94,352 @@ button.leave {
 .notice {
   max-width: 32rem;
   margin: 0 auto;
-  padding: 4rem 1.5rem;
+  padding: var(--space-16) var(--space-6);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.75rem;
+  gap: var(--space-3);
 }
 
+/*
+  Matched to the site's treatment rather than left on --accent. The
+  design system has no accent hue at all — a blue link is the one thing
+  on these screens that would still say "different product", and this is
+  the screen a student meets when a link has gone wrong.
+*/
 .notice a {
-  color: var(--accent);
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
+  text-decoration-color: var(--muted);
 }
+
+.notice a:hover {
+  text-decoration-color: var(--text);
+}
+
+/* ------------------------------------------------------------------
+   The application surface: sign-in, the role gate, the dashboard.
+
+   Documents and forms, so they use the shared tokens and read like the
+   articles site. Everything below the call's comment banner is the call
+   and does not.
+   ------------------------------------------------------------------ */
+
+.page {
+  margin: 0 auto;
+  padding: var(--space-12) var(--space-6) var(--space-16);
+  width: min(100% - 2 * var(--gutter), var(--measure));
+}
+
+.page-narrow {
+  max-width: 32rem;
+}
+
+.page h1 {
+  font-size: var(--text-lg);
+  line-height: var(--leading-heading);
+  margin: 0 0 var(--space-6);
+}
+
+.page h2 {
+  font-size: var(--text-section);
+  line-height: var(--leading-heading);
+  margin: 0 0 var(--space-3);
+}
+
+/* A column of form controls, evenly spaced. */
+.stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+  width: 100%;
+}
+
+.stack label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: var(--text-sm);
+  color: var(--muted);
+  width: 100%;
+  max-width: 22rem;
+}
+
+.stack input,
+.stack select,
+.stack textarea {
+  font: inherit;
+  font-family: var(--font-sans);
+  padding: var(--space-2) 0.65rem;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.panel {
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: var(--space-5);
+  background: var(--surface);
+}
+
+.hint {
+  font-size: var(--text-xs);
+  color: var(--muted);
+  max-width: 34rem;
+}
+
+/* A button that reads as a link, for an action inside a sentence. */
+.link-button {
+  font: inherit;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: var(--muted);
+  text-underline-offset: 0.15em;
+}
+
+.link-button:hover {
+  text-decoration-color: var(--text);
+}
+
+/* The role gate's two cards. Buttons, because choosing is an action. */
+.choices {
+  display: grid;
+  gap: var(--space-4);
+  margin: var(--space-6) 0 var(--space-12);
+}
+
+.choices form {
+  display: flex;
+}
+
+.choices button {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  text-align: left;
+  padding: var(--space-5);
+  border-radius: 8px;
+}
+
+.choice-title {
+  font-family: var(--font-body);
+  font-size: var(--text-section);
+}
+
+.choice-body {
+  font-size: var(--text-sm);
+  color: var(--muted);
+  line-height: var(--leading-ui);
+}
+
+.notice-block {
+  border-top: 1px solid var(--rule);
+  padding-top: var(--space-6);
+}
+
+/* A list of records with an action at the end of each. */
+.rows {
+  list-style: none;
+  margin: 0 0 var(--space-8);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: var(--space-4);
+}
+
+.row p {
+  margin: var(--space-1) 0 0;
+}
+
+/* A checkbox reads as one line with its label, not as a stacked field. */
+label.inline {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: none;
+  color: var(--text);
+  font-size: var(--text-base);
+}
+
+label.inline input {
+  width: auto;
+}
+
+.row-actions {
+  display: flex;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+/* A link that has to look like the button beside it. */
+.button {
+  display: inline-block;
+  font: inherit;
+  font-family: var(--font-sans);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin: var(--space-8) 0;
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--rule);
+  font-size: var(--text-sm);
+}
+
+/* Join form, on the notice screen. */
+.join-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 20rem;
+}
+
+.join-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+
+.join-form input {
+  font: inherit;
+  padding: var(--space-2) 0.65rem;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--fg);
+}
+
+.join-form button {
+  align-self: flex-start;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Admin link generator. */
+.admin {
+  max-width: 34rem;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+}
+
+.admin form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.admin label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+
+.admin input {
+  font: inherit;
+  padding: var(--space-2) 0.65rem;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--fg);
+}
+
+.admin button {
+  align-self: flex-start;
+}
+
+.result {
+  margin-top: var(--space-8);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--rule);
+}
+
+.result .link {
+  word-break: break-all;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: var(--text-xs);
+  background: var(--surface);
+  padding: var(--space-3);
+  border-radius: 6px;
+}
+
+.result dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-1) var(--space-4);
+  font-size: var(--text-sm);
+}
+
+.result dt {
+  color: var(--muted);
+}
+
+.result dd {
+  margin: 0;
+}
+
+.admin .optional {
+  text-transform: uppercase;
+  font-size: var(--text-2xs);
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.admin .hint {
+  font-size: var(--text-2xs);
+  color: var(--muted);
+}
+
+
+/* ==================================================================
+   Below this line is the CALL, and nothing below it uses the design
+   system. The palette is restored on .stage, so the call stays dark
+   whatever the reader's theme says (07 §2). A test asserts that no
+   design-system token appears past this banner — the exemption is
+   only real if something checks it.
+   ================================================================== */
 
 /*
   The call.
@@ -97,6 +451,23 @@ button.leave {
   actually look at.
 */
 .stage {
+  /* The exemption, made concrete. Restoring the palette here rather than
+     leaving the tokens out of the app means the call is dark whatever
+     the reader's theme is set to, and any rule that reaches in from the
+     app surface renders dark rather than punching a light hole. */
+  color-scheme: dark;
+  --bg: var(--call-bg);
+  --fg: var(--call-fg);
+  --text: var(--call-fg);
+  --muted: var(--call-muted);
+  --surface: var(--call-surface);
+  --rule: var(--call-rule);
+
+  /* Interface, not prose — the call keeps the system sans and the
+     tighter leading it was built with. */
+  font-family: var(--font-sans);
+  line-height: 1.5;
+
   height: 100dvh;
   display: grid;
   /* Video area, then an optional message row, then the controls. `auto`
@@ -282,6 +653,17 @@ button.leave {
   border-top: 1px solid var(--danger);
   color: #f4c9c6;
   font-size: 0.875rem;
+}
+
+/*
+  The same bar, without the alarm. Being told your share stopped because
+  the other person started theirs is a fact about the call, not a fault —
+  colouring it like a failure would suggest something went wrong.
+*/
+.stage-error[data-tone="notice"] {
+  background: #232830;
+  border-top-color: #3a4048;
+  color: var(--fg);
 }
 
 .stage-error-dismiss {
@@ -596,122 +978,4 @@ button.leave {
     /* Clear of a phone's home indicator. */
     padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
   }
-}
-
-/* Join form, on the notice screen. */
-.join-form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  width: 100%;
-  max-width: 20rem;
-}
-
-.join-form label {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  font-size: 0.875rem;
-  color: var(--muted);
-}
-
-.join-form input {
-  font: inherit;
-  padding: 0.5rem 0.65rem;
-  border: 1px solid #3a4048;
-  border-radius: 6px;
-  background: #1b1f25;
-  color: var(--fg);
-}
-
-.join-form button {
-  align-self: flex-start;
-}
-
-.visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
-/* Admin link generator. */
-.admin {
-  max-width: 34rem;
-  margin: 0 auto;
-  padding: 3rem 1.5rem;
-}
-
-.admin form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-top: 1.5rem;
-}
-
-.admin label {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  font-size: 0.875rem;
-  color: var(--muted);
-}
-
-.admin input {
-  font: inherit;
-  padding: 0.5rem 0.65rem;
-  border: 1px solid #3a4048;
-  border-radius: 6px;
-  background: #1b1f25;
-  color: var(--fg);
-}
-
-.admin button {
-  align-self: flex-start;
-}
-
-.result {
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid #2c323a;
-}
-
-.result .link {
-  word-break: break-all;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.8125rem;
-  background: #1b1f25;
-  padding: 0.75rem;
-  border-radius: 6px;
-}
-
-.result dl {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 0.25rem 1rem;
-  font-size: 0.875rem;
-}
-
-.result dt {
-  color: var(--muted);
-}
-
-.result dd {
-  margin: 0;
-}
-
-.admin .optional {
-  text-transform: uppercase;
-  font-size: 0.6875rem;
-  letter-spacing: 0.04em;
-  color: #6f7883;
-}
-
-.admin .hint {
-  font-size: 0.75rem;
-  color: #6f7883;
 }

@@ -1,9 +1,9 @@
 import Link from "next/link";
 
-import { REASON, verifyToken, type VerifyFailureReason } from "@/lib/link";
+import { REASON, verifyToken, type VerifyFailureReason } from "@/features/access/domain/link";
 import { linkSecret } from "@/server/config";
 
-import CallClient from "./call-client";
+import CallClient from "@/features/call/ui/call-client";
 
 // The token is in the URL and the secret is read per request, so there
 // is nothing here to prerender.

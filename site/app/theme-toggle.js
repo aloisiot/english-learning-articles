@@ -1,7 +1,7 @@
 "use client";
 
 import { THEME_KEY } from "@/lib/theme";
-import { AutoIcon, MoonIcon, SunIcon } from "./icons";
+import { AutoIcon, MoonIcon, SunIcon } from "@english-learning/lib";
 
 const ORDER = ["auto", "light", "dark"];
 

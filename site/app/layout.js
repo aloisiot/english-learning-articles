@@ -3,8 +3,9 @@ import { Source_Serif_4 } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { themeScript } from "@/lib/theme";
-import { SearchIcon } from "./icons";
+import { SearchIcon } from "@english-learning/lib";
 import ThemeToggle from "./theme-toggle";
+import "@english-learning/lib/tokens.css";
 import "./globals.css";
 
 /*

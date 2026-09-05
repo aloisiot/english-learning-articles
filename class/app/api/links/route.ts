@@ -8,10 +8,10 @@
  * nothing to steal from this endpoint but the secret itself, and nothing
  * it issues that outlives the request.
  */
-import { signPayload } from "@/lib/link";
-import { rateLimit, type RateLimitState } from "@/lib/rate-limit";
-import { classWindow, deriveRoomName } from "@/lib/room";
-import { secretsMatch } from "@/lib/secret";
+import { signPayload } from "@/features/access/domain/link";
+import { rateLimit, type RateLimitState } from "@/features/access/domain/rate-limit";
+import { classWindow, deriveRoomName } from "@/features/scheduling/domain/room";
+import { secretsMatch } from "@/features/access/domain/secret";
 import { adminSecret, linkSecret, publicOrigin } from "@/server/config";
 
 export const runtime = "nodejs";
@@ -20,7 +20,7 @@ export const dynamic = "force-dynamic";
 /**
  * Per-instance, and therefore partial: a serverless platform may run
  * several of these at once, and each counts on its own. See the note in
- * class/lib/rate-limit.ts — this is adequate against a script pointed at
+ * features/access/domain/rate-limit.ts — this is adequate against a script pointed at
  * one URL and weak against a distributed attacker, which is the trade
  * phase 1 accepts for having nowhere shared to count.
  */

@@ -8,6 +8,12 @@ const nextConfig = {
   // Emit articles/<slug>/index.html rather than articles/<slug>.html, so
   // Pagefind reports clean result URLs like /articles/<slug>/.
   trailingSlash: true,
+
+  // The shared workspace package ships TypeScript source rather than a
+  // build, so Next has to compile it. It arrives through a symlink and is
+  // otherwise indistinguishable from a published dependency, which Next
+  // would leave alone. See lib/README.md.
+  transpilePackages: ["@english-learning/lib"],
 };
 
 export default nextConfig;

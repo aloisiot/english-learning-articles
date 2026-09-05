@@ -8,38 +8,68 @@
 > [§ Sequencing rationale](#sequencing-rationale-revised); what changed
 > is recorded rather than overwritten.
 
+> **Updated 2026-09-02.** Both projects are deployed, `/class` serves the
+> class app on the site's domain, the admin page works in production, and
+> a call connects. Phase 2's gate is closed.
+
+> **Phase 4's gate closed 2026-09-03.** A real class was run with a second
+> person on their own network, and nothing failed. Chat carried messages
+> between two browsers, the unread badge counted messages the reader did
+> not send, the screen-share picker opened, and a vertical phone camera
+> went through the tile-shape rule. All four had been verified
+> structurally and none had been seen working; they now have.
+>
+> This is recorded rather than assumed because the whole point of the
+> gate was that the code could not supply this half. Everything built
+> afterwards stands on a call that is known to work between two people,
+> which is what the gate existed to establish.
+>
+> Two decisions changed with it. **`/class` is routed by a Vercel
+> microfrontends group, not by a rewrite** — the rewrite never worked and
+> is gone. And **accounts, auth and scheduling move from last to next**,
+> which reverses this plan's most deliberate sequencing call; the reason
+> is recorded in [§ Sequencing rationale](#sequencing-rationale-revised)
+> rather than quietly applied.
+
 > **The question:** Given docs 01–07, what is the smallest first thing
 > worth building, in what order does the rest follow, and how is each
 > phase known to be finished?
 
 **Short answer, restated for where the work actually is:** the code for
-Phases 1–3 exists and is well tested, but **nothing is deployed and no
-real call has ever run**. Those two unmet gates have *merged* — a
-student cannot join a localhost, so proving the routing and proving a
-call are now one phase, not two. Meanwhile the easy half of old Phase 5
-(chat, screen sharing, responsive layout) shipped ahead of both gates,
-which moves several unknowns into the first live call.
+Phases 1–3 exists and is well tested, it is deployed, `/class` serves it
+on the real domain, and a call connects. What has *not* happened is a
+class — two people, two networks, thirty minutes, a room that expires on
+its own afterwards. The routing gate is closed and the call gate is
+half-closed, which is a materially better position than a week ago and
+still not the same as proven.
+
+The easy half of old Phase 5 (chat, screen sharing, responsive layout)
+shipped ahead of both gates, and none of it has been exercised by two
+people yet. Those unknowns are still queued in Phase 4.
 
 ---
 
 ## Where the plan stands
 
-Verified by reading the repository on 2026-08-30, not only the session
-record.
+Verified by reading the repository and querying the live deployments on
+2026-09-02, not only the session record.
 
 | Original phase | State | Evidence |
 |---|---|---|
-| **0** Verify before building | **Partly closed** | Register item 4 answered in practice — `installCommand: "cd .. && npm ci"` in both configs, plus *Include files outside the Root Directory*. Items 1, 2 and 6 still open. |
+| **0** Verify before building | **Partly closed** | Register item 4 answered in practice — `installCommand: "cd .. && npm ci"` in both configs, plus *Include files outside the Root Directory*. **Item 2 is now closed**, though not with the answer it asked for (below). Items 1 and 6 still open. |
 | **1** Workspace and harness | **Done** | Root `package.json` with `workspaces: ["site","class","lib"]`; Vitest + v8 coverage; `scripts/verify.mjs` running env check → root `npm ci` → tests → per-workspace verify. |
-| **2** Empty class app at `/class` | **Built, gate not closed** | `site/vercel.ts` and `class/vercel.json` exist and are coherent. **The Vercel account has zero projects.** Nothing is deployed; the rewrite has never served a request. |
-| **3** A call connects | **Built, gate not closed** | Nine modules in `class/lib/`, each with a matching test file, plus `secret-timing` and a harness test. **No two-person call has been run.** |
+| **2** Empty class app at `/class` | **Done, gate closed** | Both Vercel projects exist and deploy. `https://english-learning-articles.vercel.app/class` returns 200 with `<title>Class</title>` and `noindex, nofollow`; `/class/j/<token>` and `/class/admin/<key>` resolve; `/`, an article page and `/dictionary/<shard>` are unaffected. Routed by `site/microfrontends.json`, not by a rewrite. |
+| **3** A call connects | **Built, gate half closed** | Nine modules in `class/lib/`, each with a matching test file, plus `secret-timing` and a harness test. A call **connects** — the admin page mints a link, the link opens, the room is created lazily and the token admits. It has only been done from two browsers on one machine, so nothing about a second person, a second network or a thirty-minute duration is proven. |
 | **4** The article in the call | **Not started** | No `force-static` articles JSON route on the site — `dictionary/[shard]/route.js` is still the only one. The class app carries a slug through the token but fetches and renders no article. |
-| **5** Teaching the class | **Half done, out of order** | Chat, screen sharing and the responsive layout are built. Section sync is not. `lib/` is still the empty placeholder its own `package.json` describes as "populated starting Phase 5". |
-| **6** Accounts | Not started | Correct — it was always last. |
+| **5** Teaching the class | **Half done, out of order, and now deprioritised** | Chat, screen sharing and the responsive layout are built and deployed; none has been used by two people. Section sync is not built. `lib/` is still the empty placeholder its own `package.json` describes. Accounts now come first — see the resequencing below. |
+| **6** Accounts | Not started, **and promoted to next** | The reasoning that put it last assumed the product was a call. It is a tutoring business, and payment and scheduling need identity. Now Phase 5. |
 
-The line that matters is the repetition of *gate not closed*. Both
-phases were designed around a verification the code cannot supply on its
-own, and in both cases the code was written and the verification skipped.
+The line that mattered a week ago was the repetition of *gate not
+closed*. One of the two is now closed and the other is half closed, and
+the correction holds in a smaller form: the remaining half of Phase 3's
+gate is the half the code cannot supply on its own, and it is the half
+still outstanding. A call that connects between two tabs on one laptop
+proves the token path. It proves nothing about a network.
 
 ## What the build changed about the plan's assumptions
 
@@ -50,20 +80,41 @@ idiom, and `class/` is `.ts`/`.tsx` with a typecheck in the gate. This
 has an unnoticed consequence for a later phase: `lib/` will have to
 serve a **JavaScript consumer (`site/`) and a TypeScript one
 (`class/`)**. That is ordinary but not free, and it should be decided
-deliberately in Phase 6 rather than discovered.
+deliberately in Phase 7 rather than discovered.
 
-**`site/vercel.json` became `site/vercel.ts`.** The rewrite destination
-now comes from `CLASS_APP_DOMAIN` so a site preview can point at a class
-preview, with `classAppDomain()` throwing rather than defaulting —
-because `https://undefined/class/:path*` is a valid config that fails at
-the edge, which is a broken deploy that looks like a successful one.
-The reasoning is sound and the failure mode it prevents is real.
+**`/class` is routed by a microfrontends group, and the rewrite never
+worked.** This is the largest correction on the page, and the route to it
+is worth keeping because every step of it looked reasonable.
 
-But it makes register item 2 **larger, not smaller**. There are now two
-unproven things stacked: that Vercel evaluates a TypeScript config at
-build time as expected, and that a rewrite reaches another project's
-deployment. One deploy has to prove both, and if it fails, the two
-causes are entangled. Worth knowing before debugging starts.
+`site/vercel.json` first became `site/vercel.ts`, computing the rewrite
+destination from `CLASS_APP_DOMAIN` so a site preview could point at a
+class preview, with the getter *throwing* when the variable was absent —
+on the argument that a loud failure beats a silent
+`https://undefined/class/:path*`. Vercel validates that config **before
+the build starts**, the one computed value in it resolved to nothing, and
+the deployment failed schema validation with `rewrites[0] missing
+required property destination`. Production rolled back to a commit
+predating the rewrite. The lesson is specific: for a config file, "fail
+loudly" does not mean a visible error — it means a deploy that never
+happens and a silent rollback to whatever shipped last.
+
+With a literal destination the deploy succeeded and `/class` still 404ed.
+A header probe added to the same file **did** appear on every response,
+which proved the config reached the edge and narrowed the fault to the
+`rewrites` array specifically rather than the file being ignored.
+
+The resolution was to stop debugging the mechanism and change it.
+`site/microfrontends.json` declares the site as the default application
+and routes `/class/:path*` to the class project; Vercel's routing layer
+does the rest. It worked immediately.
+
+**So register item 2 is closed, with the opposite of the expected
+answer.** The question was whether a rewrite can reach another project's
+production URL. Here it cannot, and the product built for the problem
+can. Two consequences worth carrying: there is no hostname to configure,
+so the `CLASS_APP_DOMAIN` idea is not merely unused but unnecessary; and
+**microfrontends is available on the Hobby plan** — confirmed against the
+live team, which had been an open worry.
 
 **An env-safety subsystem exists that the plan never asked for.** A
 pre-commit hook and `scripts/check-env-files.mjs`, versioned under
@@ -80,7 +131,7 @@ plan is what someone reads to know what the pipeline does.
 **A class no longer needs an article.** Not in the original plan, which
 assumed every class was about one. The slug is now omitted from the
 token payload rather than emptied, so "no article" has one spelling.
-This changes Phase 5 below.
+This changes Phase 6 below.
 
 ## The testing rule, restated
 
@@ -111,63 +162,154 @@ A **third rule** is added, from bug 1 of the session:
    a diff. **Control characters go in source as escapes** — identical at
    runtime, reviewable in a diff.
 
-## Phase 4 — Deploy, and close both skipped gates
+## Phase 4 — Close the call gate
 
-**Deliverable:** two Vercel projects, `/class` live on the real domain,
-and a 1:1 class run end to end with a real student on their own network.
+**Deliverable:** a real 30-minute class, two people on two networks, and
+a room that expires afterwards without intervention.
 
-These were Phase 2's and Phase 3's separate acceptance criteria. They
-merge here because they can no longer be closed independently — a
-student cannot join a call on your laptop. Within the phase the original
-order still holds: deploy first, confirm `/class` serves, *then* call.
+**The deployment half of this phase is done.** Both projects build from
+the same repo with Root Directory `site/` and `class/` and *Include files
+outside the Root Directory*. `/class` serves the class app on the site's
+domain, `/class/admin/<key>` renders the link generator in production,
+and the six variables are set on the class project. Deployment Protection
+turned out not to obstruct anything, so the worry recorded against it is
+discharged rather than pending.
+
+**Closed 2026-09-03.** A real class ran with a second person on their own
+network and surfaced no defects. The four features listed below as
+never-exercised were exercised, and worked.
+
+What follows is the work as it was written before the run, kept because
+it records what was actually unknown rather than being rewritten to look
+as though it always held. The one item still genuinely open is room
+expiry without intervention, which nobody watched for.
 
 Work:
 
-- **Create both projects** from the same repo — Root Directory `site/`
-  and `class/`, both with *Include files outside the Root Directory* so
-  `cd .. && npm ci` reaches the root lockfile.
-- **`CLASS_APP_DOMAIN` on the site project**, for every environment that
-  serves `/class`. The build now fails without it, which is the intended
-  behaviour.
-- **The six `class/.env.example` variables on the class project**, with
-  **fresh values for the three `CLASS_*` secrets**. Rotating
-  `CLASS_LINK_SECRET` is the only link-revocation mechanism there is, so
-  production must not share it with anything used in testing.
-  `CLASS_ADMIN_PATH` needs to be long and unguessable; the `cap` that
-  appeared during testing is not.
-- **Check Deployment Protection on the class project.** If it covers the
-  production deployment, the site's rewrite proxies into an auth wall and
-  `/class` breaks in a way that looks like a routing bug. Check it before
-  concluding anything about the rewrite.
+- **Run a real class.** A student on their own connection, a full
+  thirty minutes, and then confirm the room is gone without anyone
+  closing it.
+- **Exercise what was built past the gate, while a second person is
+  there.** Chat has never carried a message between two browsers; the
+  unread badge has never counted a message the reader did not send; the
+  screen-share picker has never opened on a room that permits it; and no
+  vertical phone camera has been through the tile-shape rule. Each was
+  verified structurally, which was worth doing and is not the same thing.
+- **A room predating the `enable_screenshare` fix will still refuse to
+  share.** Rooms are created from the link and never updated, so test
+  with a link generated after that change rather than concluding the
+  feature is broken.
 - **Answer register item 6 while here:** whether a Daily room created but
   never joined is billable.
 
-**Tests:** nothing new is unit-testable — this phase is deployment and a
-live call. Saying so is the point: the verification is a URL that serves
-and a call that connects, and mocking either would prove only that the
-mock behaves as written.
+Environment variables are set for **Production only**, deliberately. The
+class app's getters throw on anything missing, so every preview
+deployment will 500 on every route — expected, not a defect, and left
+that way until there is a production-ready app worth previewing against.
+When previews are wired, `CLASS_LINK_SECRET` and `CLASS_ADMIN_SECRET`
+must differ from production: rotating the link secret is the only
+revocation mechanism there is, so a shared one makes every test link
+valid against production.
 
-**Done when:** `https://<domain>/class` serves the class app;
-`/articles/...` still serves the static site with no proxy hop; a real
-30-minute class runs with a student on their own network; the room
-expires afterwards without intervention.
+**Tests:** nothing new is unit-testable — this phase is a live call.
+Saying so is the point: the verification is a call that connects between
+two people, and mocking it would prove only that the mock behaves as
+written.
 
-**Stop if:** the rewrite cannot reach the class project, or Deployment
-Protection cannot be relaxed for it. Fall back to a subdomain — it costs
-nothing architecturally and only changes URLs.
+**Done when:** a real 30-minute class runs with a student on their own
+network, chat and screen sharing are seen working between two people, and
+the room expires afterwards without intervention.
 
-**What this phase inherits from the ordering.** Chat, screen sharing,
-unread counting and the responsive layout were built ahead of it, and
-were verified structurally — against the real stylesheet, driven by the
-ratios `onResize` would supply, at measured viewports — but never against
-live streams. So the chat round trip, unread counting, screen sharing
-end to end, and whether Daily reports the expected aspect ratio for a
-rotated phone camera are all **first-live-call discoveries in this
-phase** rather than settled ones. That is the cost of building past a
-gate, and it is worth paying attention to precisely because the work
-itself was good.
+**Stop if:** the call fails in a way that is not a configuration
+problem — media that will not traverse a real network is a provider
+question, and [`03`](03-provider-options-and-costs.md) is where it goes.
 
-## Phase 5 — The article in the call
+## Phase 5 — Accounts, scheduling, and the session record
+
+> **Built 2026-09-03.** The code is written and the gate passes; what is
+> outstanding is not code. See **Where this stands** at the end of this
+> section — the Supabase project has to exist and one real booked class
+> has to be run end to end before this phase's gate closes, exactly as
+> Phase 4's did.
+
+**Deliverable:** tutors and students have accounts, a class can be
+scheduled rather than hand-minted from an admin page, and every session
+that happens leaves a durable record of who taught, who attended, and
+when.
+
+**This was Phase 7, and moving it is a reversal of this plan's most
+deliberate sequencing call.** The reason is recorded in
+[§ Sequencing rationale](#sequencing-rationale-revised): the old ordering
+assumed the product was a call, and it is a tutoring business. Payment —
+of the tutor, by the student — cannot be reconstructed from a room that
+has already expired, and scheduling and payment both need identity first.
+
+Three things this phase decides, and they are worth deciding before code:
+
+- **The stateless design ends here, and that is the real cost.** Phase 1
+  worked without a database because nothing had to be remembered: the
+  signed link *is* the authorisation, and the room is derived rather than
+  stored. A session record is a database. `class/lib/link.ts` keeps its
+  tests and gains a caller — a session check where a signature check
+  is — so nothing is thrown away, but the GDPR surface in
+  [`05`](05-accounts-and-access.md) §5 opens for real, over attendance
+  records for people who may be minors.
+- **The session record is a financial record, not a log.** Analysis,
+  tutor payment and student payment were named together but do not want
+  the same thing. The billable fact — who taught, who attended, start,
+  end, duration — should be written once at session end and be
+  append-only; analytics is then a read over it rather than a second
+  log. This is the part that cannot be added retroactively.
+- **Payment is recorded, not built.** The decision is to capture what a
+  payment system will need and to implement none of it, so that adding
+  one later is not a migration.
+
+**Open before starting.** Two answers change the design materially and
+neither is in the repository: whether students self-register or a tutor
+invites them — self-registration is a much larger auth and consent
+surface — and whether scheduling has to cross timezones.
+`class/lib/room.ts` is scrupulously UTC-only, which sets this up well,
+but a booking UI is where timezone bugs actually live.
+
+Re-check register item 12 (the Supabase inactivity pause) before choosing
+a provider. Chat history becomes possible here for the first time, which
+is the natural moment to revisit open item 7 below.
+
+### Where this stands
+
+**Built.** Magic-link sign-in with no password and no separate
+verification step; the role gate as a persistent state; owner bootstrap
+and tutor settings; owner approval gating visibility rather than slot
+creation; concrete slots stored as UTC instants; requesting, accepting
+and declining with the slot held in between; joining from a booking
+alongside the signed link, which stays; and the append-only session
+record. Five migrations, three feature slices, and 545 tests with the
+domain modules at 100%.
+
+Three guards were added to `npm run verify` along the way, all of the
+same family — a rule that was true when written and could quietly stop
+being true: the coverage threshold itself, the `@supabase/supabase-js`
+adapter boundary, and the call surface's exemption from the design
+system.
+
+**Not done, and not code.** The Supabase project does not exist yet, so
+nothing here has run against a real database. Custom SMTP, the EU region
+and the one-month session are configuration; the email template has to
+use `{{ .TokenHash }}` or the callback receives nothing it can read; and
+the owner role has to be granted by running `0003` by hand, because it is
+the one role nobody may grant themselves.
+
+**This phase's gate, by analogy with Phase 4's:** a class booked by a
+student, accepted by a tutor, joined by both from their dashboards, and
+a session row afterwards that says what happened. Until that has
+happened once, this phase is built rather than closed — and the lesson
+of Phase 4 is precisely that those are different.
+
+The known-open item inside it: the hold on a pending booking has no
+automatic expiry, accepted with its cost in [`04`](../accounts-and-scheduling/04-scheduling-and-booking.md) §4.
+The trigger to revisit is the first slot actually lost to it.
+
+## Phase 6 — The article in the call
 
 **Deliverable:** `site` publishes `/articles/<slug>.json` from a
 `force-static` route; the class app fetches it and renders the article
@@ -176,7 +318,7 @@ beside the call. Static — no sync yet.
 This proves the content seam ([`07`](07-two-app-architecture.md) §3,
 register item 10) and is the last structural unknown in the architecture.
 
-Amended for the optional-article decision: the token may carry **no**
+Amended for the optional-article decision, and now sitting after accounts: the token may carry **no**
 slug, so the class page has two shapes — with an article and without —
 and the second is not an error state. The link module already enforces
 that a *present* slug is non-empty; the renderer has to treat absence as
@@ -184,7 +326,7 @@ ordinary.
 
 Styling is **duplicated deliberately** here rather than extracted, per
 the decision to create `lib/` only once a second consumer exists. Note
-what gets duplicated; that list is Phase 6's input.
+what gets duplicated; that list is Phase 7's input.
 
 **Tests:**
 
@@ -208,14 +350,14 @@ site deploy with no class-app redeploy.
 `dictionary/[shard]/route.js` enumerates shards. Fall back to a
 build-time generated JSON file in `public/`.
 
-## Phase 6 — Section sync, and `lib/`
+## Phase 7 — Section sync, and `lib/`
 
 **Deliverable:** teacher-led section sync with student detach, per
 [`06`](06-shared-article-view.md). Chat and screen sharing are already
 done, so this phase is the sync and the extraction.
 
 `lib/` is populated here, with a clearer input than the plan originally
-had: what Phase 5 duplicated, plus the CSS tokens and the dictionary
+had: what Phase 6 duplicated, plus the CSS tokens and the dictionary
 popover. **Decide the JS/TS boundary explicitly** — `site/` is JavaScript
 and `class/` is TypeScript, so the package has to be consumable by both.
 
@@ -239,43 +381,49 @@ and `class/` is TypeScript, so the package has to be consumable by both.
 **Stop if:** nothing here is architecturally risky. If it stalls, it
 stalls on design, and the call still works without it.
 
-## Phase 7 — Accounts
-
-Unchanged from the original Phase 6. Deliberately last, and only after
-answering what accounts will carry a year out. Nothing before it is
-thrown away: the token path is identical, with a session check replacing
-a signature check, so `class/lib/link.ts` keeps its tests and gains a
-caller.
-
-Re-check register item 12 (the Supabase inactivity pause) before choosing
-a provider. Chat history becomes possible here for the first time, which
-is the natural moment to revisit open item 7 below.
-
 ---
 
 ## Open items from 2026-08-30, triaged
 
-**Into Phase 4:** create the two Vercel projects (1); the Hobby
-commercial-use question, still open and still blocking *launch* rather
-than building (2); Deployment Protection on the class project (3); the
-screen-share error strings, which are observed behaviour rather than
-documented and fail towards being visible (8).
+**Closed since:** the two Vercel projects exist and deploy (1);
+Deployment Protection never obstructed anything (3); `npm audit` reports
+zero vulnerabilities, the three high-severity ones having come from
+`@vercel/config`, which went with the rewrite (from `.next-steps.md`).
+
+**Still into Phase 4:** the Hobby commercial-use question, still open and
+still blocking *launch* rather than building (2) — note that
+microfrontends itself turned out to be available on Hobby, which was a
+separate worry and is now discharged; the screen-share error strings,
+which are observed behaviour rather than documented and fail towards
+being visible (8).
 
 **Housekeeping, do now, unrelated to any phase:** `site/lib/dictionary-data/*.json`
 is stale and `npm run verify` regenerates it (5); `.DS_Store` is tracked
 (6); `.claude/launch.json` — keep or drop (11).
 
 **Accepted, not defects:** chat has no history, which is what "no
-database" means and is correct until Phase 7 (7); the commit granularity
+database" means and is correct until Phase 5 (7); the commit granularity
 note, which records a real constraint rather than a task (10).
 
 **Deferred with a reason:** the pre-commit hook is bypassable via
 `--no-verify` and merge commits (9) — the genuinely unbypassable version
 is a server-side push rule or a CI check, which is worth adding once CI
-exists and is not worth building CI for alone. Vercel's `relatedProjects`
-(4) would remove the manual `CLASS_APP_DOMAIN` for previews; revisit
-**after** Phase 4 succeeds, because adopting it is much easier once the
-manual version is known to work than while debugging a first deploy.
+exists and is not worth building CI for alone.
+
+**Moot:** Vercel's `relatedProjects` (4) was to remove a manual
+`CLASS_APP_DOMAIN` for previews. There is no rewrite and no such
+variable; the microfrontends group already knows where the other
+project's deployments are. Preview environments are deliberately unwired
+until there is a production-ready app — see Phase 4.
+
+**Dropped:** "solve the inconsistency fail" from `.next-steps.md`.
+Nothing in the repository names it and its author no longer recalls what
+it meant.
+
+**A note on `.next-steps.md`.** It is a priority list being reevaluated,
+not a scope list. A phase in this plan that does not appear there is
+unscheduled, not cancelled — the two documents answer different
+questions and should not be read as competing.
 
 ## Sequencing rationale, revised
 
@@ -283,29 +431,67 @@ The original reasoning held and mostly still does:
 
 - **Phase 1 isolated** because it touched the machinery that had broken
   production once. It worked — the workspace conversion landed cleanly.
-- **Deployment before the article seam** because routing is the least
-  verified structural claim in the strand, and `vercel.ts` has made it a
-  larger claim rather than a smaller one.
+- **Deployment before the article seam** because routing was the least
+  verified structural claim in the strand. It was also the one that took
+  four failed deploys to settle, which vindicates the ordering: had it sat
+  behind two more phases of feature work, the same debugging would have
+  happened with more code resting on it.
 - **`lib/` late** because extracting an abstraction against one caller
-  designs the wrong abstraction. Phase 5 duplicates on purpose.
-- **Accounts last** because they are the most expensive decision that
-  buys the least today ([`05`](05-accounts-and-access.md) §4).
+  designs the wrong abstraction. The article phase duplicates on purpose.
+- **Accounts last** because they were the most expensive decision that
+  bought the least today ([`05`](05-accounts-and-access.md) §4).
+  **Reversed on 2026-09-02 — see below.**
 
-What the session revised: **the gates were the plan, not the phases.**
+**Why accounts moved from last to next.** The original reasoning was
+sound about cost and wrong about the product. It weighed accounts as a
+feature of a video call, where they buy little: the signed link already
+admits the right two people, and a session check would replace a
+signature check without changing anything a student sees. But the product
+is a tutoring business. Tutors are paid for sessions, students pay for
+sessions, and neither number can be reconstructed from a Daily room that
+expired ten minutes after the class. Section sync makes a class better;
+accounts and a session record make it *sellable*, and one of those is
+load-bearing for the thing existing at all.
+
+The cost the original ordering identified has not gone away — it has been
+accepted. Accounts end the stateless design, open the GDPR surface in
+[`05`](05-accounts-and-access.md) §5, and introduce the first database.
+That is why the new Phase 5 leads with three decisions rather than a task
+list: the expensive part is choosing what to persist, not persisting it.
+
+What is *not* a reason: nothing about the call is finished. Phase 4's
+gate is still open, and building accounts on a call flow that two people
+have never used would repeat exactly the mistake this plan already
+records — writing code past a gate and paying for it later, with
+interest, in whichever phase finally has to close it. **Phase 4 stays
+first.**
+
+What the earlier session revised: **the gates were the plan, not the
+phases.**
 Each phase's "Done when" was written to be the phase, and building three
 phases' worth of code without closing two of the gates left the plan
 describing an order the work did not follow. The correction is not to
 loosen the gates but to notice that skipping one does not remove it — it
 moves it, with interest, into the phase that finally has to close it.
-Phase 4 is that phase, and it is now carrying four unknowns that would
-each have been cheaper alone.
+Phase 4 is that phase, and it is still carrying the unknowns — chat, the
+unread badge, screen sharing and camera shapes between two real people —
+that would each have been cheaper alone.
 
 ## What is deliberately not in this plan
 
-Recording, group calls, scheduling, class history, assigned articles,
-saved vocabulary, and anything persisted before Phase 7. Each was
+Recording, group calls, assigned articles and saved vocabulary. Each was
 excluded by a decision recorded in the [README](README.md), and each
 would change the GDPR surface in [`05`](05-accounts-and-access.md) §5.
+
+**Scheduling and class history are no longer on this list.** They moved
+into Phase 5 with accounts, because a tutoring business needs them and
+because the session record they imply is the one thing that cannot be
+backfilled. Their GDPR consequences are not waived by being wanted, and
+[`05`](05-accounts-and-access.md) §5 is now Phase 5 reading rather than
+Phase 7 reading.
+
+**Payment processing remains excluded.** The decision is to record what a
+payment system would need and to build none of it.
 
 Mobile support remains out of scope as a *target*, though the responsive
 work done in this session means the call no longer breaks on a phone.
